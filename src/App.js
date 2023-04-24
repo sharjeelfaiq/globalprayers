@@ -90,9 +90,14 @@ const App = () => {
 
   return (
     <>
-      <div className="container w-75 table-responsive{-sm|-md|-lg|-xl} text-center my-5 clock-container">
+      <div className="container w-75 table-responsive{-sm|-md|-lg|-xl} text-center my-3 clock-container">
         <table className="table table-bordered rounded table-dark">
           <thead>
+            <tr>
+              <th colSpan="2">
+                <h2 className="m-1">Quetta Prayer Timings</h2>
+              </th>
+            </tr>
             <tr>
               <th colSpan="2" className="table-secondary">
                 <h2 className="m-1">{displayTime}</h2>

@@ -2,9 +2,10 @@
 
 body {
   background-image: url("./Images/mosque-bg.jpg");
-  background-size: cover;
+  background-size:cover;
   background-repeat: no-repeat;
   background-position: center center;
+  height: 100vh;
 }
 
 body::before {
