@@ -83,9 +83,9 @@ const App = () => {
     const date = new Date();
     const hours = (date.getHours() % 12).toString().padStart(2, "0");
     const minutes = date.getMinutes().toString().padStart(2, "0");
-    const seconds = date.getSeconds().toString().padStart(2, "0");
+    // const seconds = date.getSeconds().toString().padStart(2, "0");
     const meridian = hours >= 12 ? "PM" : "AM";
-    const currentTime = `${hours} : ${minutes} : ${seconds} ${meridian}`;
+    const currentTime = `${hours} : ${minutes} ${meridian}`;
     setDisplayTime(currentTime);
   };
 
@@ -102,12 +102,15 @@ const App = () => {
           <thead>
             <tr>
               <th colSpan="2">
-                <h2 className="m-1">Quetta Prayer Timings | {today}</h2>
+                <h4 className="m-1">Quetta Prayer Timings</h4>
               </th>
             </tr>
             <tr>
-              <th colSpan="2" className="table-secondary">
-                <h4 className="m-1">{displayTime}</h4>
+              <th className="table-secondary">
+                <h5 className="m-1">{today}</h5>
+              </th>
+              <th className="table-secondary" style={{ width: "50%" }}>
+                <h5 className="m-1 beat-effect time-element">{displayTime}</h5>
               </th>
             </tr>
             <tr>
