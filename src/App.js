@@ -13,9 +13,9 @@ const App = () => {
     try {
       const year = 2023;
       const month = 4;
-      const city = "Quetta";
       const country = "Pakistan";
-      const method = 1;
+      const city = "Quetta";
+      const method = "1";
       const response = await fetch(
         `https://api.aladhan.com/v1/calendarByCity/${year}/${month}?city=${city}&country=${country}&method=${method}`
       );
@@ -90,71 +90,67 @@ const App = () => {
 
   return (
     <>
-      {
-        <>
-          <div className="container w-75 table-responsive{-sm|-md|-lg|-xl} text-center my-5 clock-container">
-            <table className="table table-bordered rounded table-dark">
-              <thead>
-                <tr>
-                  <th colSpan="2" className="table-secondary">
-                    <h2 className="m-1">{displayTime}</h2>
-                  </th>
-                </tr>
-                <tr>
-                  <th scope="col">
-                    <h4>Namaz</h4>
-                  </th>
-                  <th scope="col">
-                    <h4>Time</h4>
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {data.data &&
-                  timesArr.map(([key, value]) => {
-                    const date = new Date();
-                    const timeParts = value.split(":");
-                    date.setHours(parseInt(timeParts[0]));
-                    date.setMinutes(parseInt(timeParts[1]));
+      <div className="container w-75 table-responsive{-sm|-md|-lg|-xl} text-center my-5 clock-container">
+        <table className="table table-bordered rounded table-dark">
+          <thead>
+            <tr>
+              <th colSpan="2" className="table-secondary">
+                <h2 className="m-1">{displayTime}</h2>
+              </th>
+            </tr>
+            <tr>
+              <th scope="col">
+                <h4>Namaz</h4>
+              </th>
+              <th scope="col">
+                <h4>Time</h4>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {data.data &&
+              timesArr.map(([key, value]) => {
+                const date = new Date();
+                const timeParts = value.split(":");
+                date.setHours(parseInt(timeParts[0]));
+                date.setMinutes(parseInt(timeParts[1]));
 
-                    let minutes = date.getMinutes();
-                    if (key === "Fajr") {
-                      minutes = minutes + 60; // increment by 2 hours
-                    } else if (key === "Dhuhr") {
-                      minutes = 120;
-                    } else if (key === "Asr") {
-                      minutes = minutes + 60; // increment by 1 hour
-                    } else if (key === "Isha") {
-                      minutes = (minutes + 15) % 60; // increment by 15 minutes
-                    }
-                    date.setMinutes(minutes);
+                let minutes = date.getMinutes();
+                if (key === "Fajr") {
+                  minutes = minutes + 60; // increment by 2 hours
+                } else if (key === "Dhuhr") {
+                  minutes = 120;
+                } else if (key === "Asr") {
+                  minutes = minutes + 60; // increment by 1 hour
+                } else if (key === "Isha") {
+                  minutes = (minutes + 15) % 60; // increment by 15 minutes
+                }
+                date.setMinutes(minutes);
 
-                    const formattedTime = date.toLocaleString("en-US", {
-                      hour: "numeric",
-                      minute: "numeric",
-                      hour12: true,
-                    });
-                    return (
-                      <tr>
-                        <td>
-                          <h5>{key}</h5>
-                        </td>
-                        <td>
-                          <h5>{formattedTime}</h5>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                <tr className="table-active">
-                  <td colSpan="2">
-                    <h4 className="slide-in m-1">{slidingTimeArr[index]}</h4>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </>
-      }
+                const formattedTime = date.toLocaleString("en-US", {
+                  hour: "numeric",
+                  minute: "numeric",
+                  hour12: true,
+                });
+                return (
+                  <tr>
+                    <td>
+                      <h5>{key}</h5>
+                    </td>
+                    <td>
+                      <h5>{formattedTime}</h5>
+                    </td>
+                  </tr>
+                );
+              })}
+            <tr className="table-active">
+              <td colSpan="2">
+                <h4 className="slide-in m-1">{slidingTimeArr[index]}</h4>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </>
   );
 };
