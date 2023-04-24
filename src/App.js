@@ -7,6 +7,7 @@ const App = () => {
   const [slidingTimeArr, setSlidingTimeArr] = useState([]); //initialize a state variable named slidingTimeArr and setSlidingTimeArr function to update it
   const [index, setIndex] = useState(0); //initialize a state variable named index and setIndex function to update it. This variable will keep track of the current index of the array
   const [displayTime, setDisplayTime] = useState(null);
+  const [today, setToday] = useState("");
 
   const fetchAPI = async () => {
     //function to fetch data from the API
@@ -37,11 +38,17 @@ const App = () => {
     if (data.data) {
       //check if data has been fetched from the API
       const date = new Date();
-      const currentDate = date.getDate(); //get the current date
+      const currentDate = date.getDate() - 1; //get the current date
 
       const timingsObj = data.data.map((item) => {
         return item.timings;
       });
+
+      const datesObj = data.data.map((item) => {
+        return item.date;
+      });
+
+      setToday(datesObj[currentDate].readable);
 
       const entries = Object.entries(timingsObj[currentDate]);
       const copiedEntries = entries.filter((element, index) => {
@@ -60,11 +67,11 @@ const App = () => {
           return `${key}: ${timeString}`;
         }
       );
-      setSlidingTimeArr(
-        timingsArr.filter((element, index) => {
-          return ![7, 8, 9, 10].includes(index);
-        })
-      ); //update the state variable named slidingTimeArr with an array of prayer times in 12-hour format for the current date
+      const filteredArr = timingsArr.filter((element, index) => {
+        return ![7, 8, 9, 10].includes(index);
+      });
+
+      setSlidingTimeArr(filteredArr); //update the state variable named slidingTimeArr with an array of prayer times in 12-hour format for the current date
       const interval = setInterval(() => {
         setIndex((index) => (index + 1) % slidingTimeArr.length); //update the index every 10 seconds
       }, 10000);
@@ -95,12 +102,12 @@ const App = () => {
           <thead>
             <tr>
               <th colSpan="2">
-                <h2 className="m-1">Quetta Prayer Timings</h2>
+                <h2 className="m-1">Quetta Prayer Timings | {today}</h2>
               </th>
             </tr>
             <tr>
               <th colSpan="2" className="table-secondary">
-                <h2 className="m-1">{displayTime}</h2>
+                <h4 className="m-1">{displayTime}</h4>
               </th>
             </tr>
             <tr>
@@ -121,6 +128,7 @@ const App = () => {
                 date.setMinutes(parseInt(timeParts[1]));
 
                 let minutes = date.getMinutes();
+
                 if (key === "Fajr") {
                   minutes = minutes + 60; // increment by 2 hours
                 } else if (key === "Dhuhr") {
