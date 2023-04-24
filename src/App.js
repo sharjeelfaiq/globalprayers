@@ -90,8 +90,8 @@ const App = () => {
 
   return (
     <>
-      <div className="container w-75 table-responsive{-sm|-md|-lg|-xl} text-center my-3 clock-container">
-        <table className="table table-bordered rounded table-dark">
+      <div className="container w-75 table-responsive{-sm|-md|-lg|-xl} text-center clock-container">
+        <table className="table table-bordered rounded table-dark my-5">
           <thead>
             <tr>
               <th colSpan="2">
