@@ -103,7 +103,9 @@ const App = () => {
   return (
     <>
       <div className="container w-75 table-responsive{-sm|-md|-lg|-xl} text-center clock-container">
-        <h1 className="my-4">{islamicDate}</h1>
+        <h1 className="my-4" style={{ color: "white" }}>
+          {islamicDate}
+        </h1>
         <table className="table table-bordered rounded table-dark my-4">
           <thead>
             <tr>
