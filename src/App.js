@@ -8,6 +8,7 @@ const App = () => {
   const [index, setIndex] = useState(0); //initialize a state variable named index and setIndex function to update it. This variable will keep track of the current index of the array
   const [displayTime, setDisplayTime] = useState(null);
   const [today, setToday] = useState("");
+  const [islamicDate, setIslamicDate] = useState("");
 
   const fetchAPI = async () => {
     //function to fetch data from the API
@@ -47,6 +48,10 @@ const App = () => {
       const datesObj = data.data.map((item) => {
         return item.date;
       });
+
+      const dateInIslam = `${datesObj[currentDate].hijri.month.ar} ${datesObj[currentDate].hijri.day} ,${datesObj[currentDate].hijri.year}`;
+
+      setIslamicDate(dateInIslam);
 
       setToday(datesObj[currentDate].readable);
 
@@ -98,7 +103,8 @@ const App = () => {
   return (
     <>
       <div className="container w-75 table-responsive{-sm|-md|-lg|-xl} text-center clock-container">
-        <table className="table table-bordered rounded table-dark my-5">
+        <h1 className="my-4">{islamicDate}</h1>
+        <table className="table table-bordered rounded table-dark my-4">
           <thead>
             <tr>
               <th colSpan="2">
@@ -115,10 +121,14 @@ const App = () => {
             </tr>
             <tr>
               <th scope="col">
-                <h4>Namaz</h4>
+                <h4>
+                  <b>Namaz</b>
+                </h4>
               </th>
               <th scope="col">
-                <h4>Time</h4>
+                <h4>
+                  <b>Time</b>
+                </h4>
               </th>
             </tr>
           </thead>
