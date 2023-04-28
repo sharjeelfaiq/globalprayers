@@ -18,8 +18,9 @@ const App = () => {
       const country = "Pakistan";
       const city = "Quetta";
       const method = "1";
+      const school = "1";
       const response = await fetch(
-        `https://api.aladhan.com/v1/calendarByCity/${year}/${month}?city=${city}&country=${country}&method=${method}`
+        `https://api.aladhan.com/v1/calendarByCity/${year}/${month}?city=${city}&country=${country}&method=${method}&school=${school}`
       );
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
@@ -49,7 +50,9 @@ const App = () => {
         return item.date;
       });
 
-      const dateInIslam = `${datesObj[currentDate].hijri.month.ar} ${datesObj[currentDate].hijri.day} ,${datesObj[currentDate].hijri.year}`;
+      const dateInIslam = `${datesObj[currentDate].hijri.month.ar} ${
+        datesObj[currentDate + 1].hijri.day
+      } ,${datesObj[currentDate].hijri.year}`;
 
       setIslamicDate(dateInIslam);
 
@@ -149,7 +152,7 @@ const App = () => {
                 } else if (key === "Dhuhr") {
                   minutes = 120;
                 } else if (key === "Asr") {
-                  minutes = minutes + 100; // increment by 1 hour
+                  minutes = minutes + 30; // increment by 1 hour
                 } else if (key === "Isha") {
                   minutes = (minutes + 15) % 60; // increment by 15 minutes
                 }
