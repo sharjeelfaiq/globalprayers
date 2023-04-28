@@ -149,7 +149,7 @@ const App = () => {
                 } else if (key === "Dhuhr") {
                   minutes = 120;
                 } else if (key === "Asr") {
-                  minutes = minutes + 60; // increment by 1 hour
+                  minutes = minutes + 100; // increment by 1 hour
                 } else if (key === "Isha") {
                   minutes = (minutes + 15) % 60; // increment by 15 minutes
                 }
