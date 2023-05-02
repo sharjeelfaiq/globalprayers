@@ -13,8 +13,9 @@ const App = () => {
   const fetchAPI = async () => {
     //function to fetch data from the API
     try {
-      const year = 2023;
-      const month = 4;
+      const date = new Date();
+      const year = date.getFullYear();
+      const month = date.getMonth() + 1;
       const country = "Pakistan";
       const city = "Quetta";
       const method = "1";
