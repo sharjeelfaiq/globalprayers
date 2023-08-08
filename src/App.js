@@ -6,9 +6,13 @@ const App = () => {
   const [timesArr, setTimesArr] = useState([]); //initialize a state variable named timesArr and setTimesArr function to update it
   const [slidingTimeArr, setSlidingTimeArr] = useState([]); //initialize a state variable named slidingTimeArr and setSlidingTimeArr function to update it
   const [index, setIndex] = useState(0); //initialize a state variable named index and setIndex function to update it. This variable will keep track of the current index of the array
-  const [displayTime, setDisplayTime] = useState(null);
+  // const [displayTime, setDisplayTime] = useState(null);
   const [today, setToday] = useState("");
   const [islamicDate, setIslamicDate] = useState("");
+  const [hour, setHour] = useState("");
+  const [minute, setMinute] = useState("");
+  const [second, setSecond] = useState("");
+  const [meridian, setMeridian] = useState("");
 
   const fetchAPI = async () => {
     //function to fetch data from the API
@@ -90,12 +94,13 @@ const App = () => {
 
   const getTime = () => {
     const date = new Date();
-    const hours = (date.getHours() % 12).toString().padStart(2, "0");
-    const minutes = date.getMinutes().toString().padStart(2, "0");
+    const h = setHour((date.getHours() % 12).toString().padStart(2, "0") === "00" ? "12" : setHour((date.getHours() % 12).toString().padStart(2, "0")));
+    const m = setMinute(date.getMinutes().toString().padStart(2, "0"));
+    const s = setSecond(date.getSeconds().toString().padStart(2, "0"));
     // const seconds = date.getSeconds().toString().padStart(2, "0");
-    const meridian = hours >= 12 ? "PM" : "AM";
-    const currentTime = `${hours} : ${minutes} ${meridian}`;
-    setDisplayTime(currentTime);
+    setMeridian(h >= 12 ? "PM" : "AM");
+    const currentTime = `${h} : ${m} ${meridian}`;
+    // setDisplayTime(currentTime);
   };
 
   useEffect(() => {
@@ -107,10 +112,10 @@ const App = () => {
   return (
     <>
       <div className="container w-75 table-responsive{-sm|-md|-lg|-xl} text-center clock-container">
-        <h1 className="my-4" style={{ color: "white" }}>
+        <h1 className="my-4 date-shadow" style={{ color: "white" }}>
           {islamicDate}
         </h1>
-        <table className="table table-bordered rounded table-dark my-4">
+        <table className="table table-bordered rounded table-dark my-4 table-shadow">
           <thead>
             <tr>
               <th colSpan="2">
@@ -122,7 +127,7 @@ const App = () => {
                 <h5 className="m-1">{today}</h5>
               </th>
               <th className="table-secondary" style={{ width: "50%" }}>
-                <h5 className="m-1 beat-effect time-element">{displayTime}</h5>
+                <h5 className="m-1">{hour}<span className="beat-effect time-element">:</span>{minute}<span className="beat-effect time-element">:</span>{second} {meridian}</h5>
               </th>
             </tr>
             <tr>

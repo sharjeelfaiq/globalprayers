@@ -80,3 +80,8 @@ thead tr:nth-child(2) th:nth-child(2) {
     transform: translateX(-105%);
   }
 }
+.table-shadow {
+  box-shadow: 0px 20px 14px -9px rgba(255,255,255,0.58);
+  -webkit-box-shadow: 0px 20px 14px -9px rgba(255,255,255,0.58);
+  -moz-box-shadow: 0px 20px 14px -9px rgba(255,255,255,0.58);
+}
