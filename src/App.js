@@ -95,11 +95,11 @@ const App = () => {
   const getTime = () => {
     const date = new Date();
     const h = setHour((date.getHours() % 12).toString().padStart(2, "0") === "00" ? "12" : setHour((date.getHours() % 12).toString().padStart(2, "0")));
-    const m = setMinute(date.getMinutes().toString().padStart(2, "0"));
-    const s = setSecond(date.getSeconds().toString().padStart(2, "0"));
+    setMinute(date.getMinutes().toString().padStart(2, "0"));
+    setSecond(date.getSeconds().toString().padStart(2, "0"));
     // const seconds = date.getSeconds().toString().padStart(2, "0");
     setMeridian(h >= 12 ? "PM" : "AM");
-    const currentTime = `${h} : ${m} ${meridian}`;
+    // const currentTime = `${h} : ${m} ${meridian}`;
     // setDisplayTime(currentTime);
   };
 
