@@ -2,10 +2,10 @@ import React, { useEffect, useState } from "react";
 import "./App.css";
 
 const App = () => {
-  const [data, setData] = useState([]); //initialize a state variable named data and setData function to update it
-  const [timesArr, setTimesArr] = useState([]); //initialize a state variable named timesArr and setTimesArr function to update it
-  const [slidingTimeArr, setSlidingTimeArr] = useState([]); //initialize a state variable named slidingTimeArr and setSlidingTimeArr function to update it
-  const [index, setIndex] = useState(0); //initialize a state variable named index and setIndex function to update it. This variable will keep track of the current index of the array
+  const [data, setData] = useState([]);
+  const [timesArr, setTimesArr] = useState([]);
+  const [slidingTimeArr, setSlidingTimeArr] = useState([]);
+  const [index, setIndex] = useState(0);
   // const [displayTime, setDisplayTime] = useState(null);
   const [today, setToday] = useState("");
   const [islamicDate, setIslamicDate] = useState("");
@@ -13,37 +13,52 @@ const App = () => {
   const [minute, setMinute] = useState("");
   const [second, setSecond] = useState("");
   const [meridian, setMeridian] = useState("");
+  const [selectCity, setSelectCity] = useState("Quetta");
 
-  const fetchAPI = async () => {
-    //function to fetch data from the API
-    try {
-      const date = new Date();
-      const year = date.getFullYear();
-      const month = date.getMonth() + 1;
-      const country = "Pakistan";
-      const city = "Quetta";
-      const method = "1";
-      const school = "1";
-      const response = await fetch(
-        `https://api.aladhan.com/v1/calendarByCity/${year}/${month}?city=${city}&country=${country}&method=${method}&school=${school}`
-      );
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-      const json = await response.json();
-      setData(json); //update the state variable named data with the response from the API
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  const city_names = [
+    "Quetta",
+    "Karachi",
+    "Lahore",
+    "Islamabad",
+    "Multan",
+    "Faisalabad",
+    "Gujarat",
+    "Rawalpindi",
+    "Peshawar",
+    "Hyderabad",
+    "Bahawalpur"
+  ];
 
   useEffect(() => {
-    fetchAPI(); //call the fetchAPI function when the component mounts
-  }, []);
+    const fetchAPI = async () => {
+      try {
+        const date = new Date();
+        const year = date.getFullYear();
+        const month = date.getMonth() + 1;
+        const country = "Pakistan";
+        const city = selectCity;
+        const method = "1";
+        const school = "1";
+        const response = await fetch(
+          `https://api.aladhan.com/v1/calendarByCity/${year}/${month}?city=${city}&country=${country}&method=${method}&school=${school}`
+        );
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        const json = await response.json();
+        setData(json); //update the state variable named data with the response from the API
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchAPI(); // Call the fetchAPI function when selectCity changes
+
+    return () => {setSelectCity(localStorage.getItem("city"))}
+  }, [selectCity]);
 
   useEffect(() => {
     if (data.data) {
-      //check if data has been fetched from the API
       const date = new Date();
       const currentDate = date.getDate() - 1; //get the current date
 
@@ -55,9 +70,8 @@ const App = () => {
         return item.date;
       });
 
-      const dateInIslam = `${datesObj[currentDate].hijri.month.ar} ${
-        datesObj[currentDate + 1].hijri.day
-      } ,${datesObj[currentDate].hijri.year}`;
+      const dateInIslam = `${datesObj[currentDate].hijri.month.ar} ${datesObj[currentDate + 1].hijri.day
+        } ,${datesObj[currentDate].hijri.year}`;
 
       setIslamicDate(dateInIslam);
 
@@ -97,10 +111,7 @@ const App = () => {
     const h = setHour((date.getHours() % 12).toString().padStart(2, "0") === "00" ? "12" : (date.getHours() % 12).toString().padStart(2, "0"));
     setMinute(date.getMinutes().toString().padStart(2, "0"));
     setSecond(date.getSeconds().toString().padStart(2, "0"));
-    // const seconds = date.getSeconds().toString().padStart(2, "0");
     setMeridian(h >= 12 ? "PM" : "AM");
-    // const currentTime = `${h} : ${m} ${meridian}`;
-    // setDisplayTime(currentTime);
   };
 
   useEffect(() => {
@@ -118,15 +129,15 @@ const App = () => {
         <table className="table table-bordered rounded table-dark my-4 table-shadow">
           <thead>
             <tr>
-              <th colSpan="2">
-                <h4 className="m-1">Quetta Prayer Timings</h4>
+              <th colSpan="3">
+                <h4 className="m-1">{selectCity} Prayer Timings</h4>
               </th>
             </tr>
             <tr>
               <th className="table-secondary">
                 <h5 className="m-1">{today}</h5>
               </th>
-              <th className="table-secondary" style={{ width: "50%" }}>
+              <th className="table-secondary" colSpan={2} style={{ width: "50%" }}>
                 <h5 className="m-1">{hour}<span className="beat-effect time-element">:</span>{minute}<span className="beat-effect time-element">:</span>{second} {meridian}</h5>
               </th>
             </tr>
@@ -136,7 +147,7 @@ const App = () => {
                   <b>Namaz</b>
                 </h4>
               </th>
-              <th scope="col">
+              <th scope="col" colSpan={2}>
                 <h4>
                   <b>Time</b>
                 </h4>
@@ -151,7 +162,8 @@ const App = () => {
                 date.setHours(parseInt(timeParts[0]));
                 date.setMinutes(parseInt(timeParts[1]));
 
-                let minutes = date.getMinutes();
+                // Set Jamat timings                
+                /* let minutes = date.getMinutes();
 
                 if (key === "Fajr") {
                   minutes = minutes + 60; // increment by 2 hours
@@ -162,7 +174,7 @@ const App = () => {
                 } else if (key === "Isha") {
                   minutes = (minutes + 15) % 60; // increment by 15 minutes
                 }
-                date.setMinutes(minutes);
+                date.setMinutes(minutes); */
 
                 const formattedTime = date.toLocaleString("en-US", {
                   hour: "numeric",
@@ -181,12 +193,20 @@ const App = () => {
                 );
               })}
             <tr className="table-active">
-              <td colSpan="2">
+              <td colSpan="3">
                 <h4 className="slide-in m-1">{slidingTimeArr[index]}</h4>
               </td>
             </tr>
           </tbody>
         </table>
+      </div>
+      <div>
+        <label htmlFor="city" style={{ color: "#fff", margin: "0px 0px 0px 80px" }}>Choose city:</label>
+        <select id="city" onChange={(e) => {setSelectCity(e.target.value); localStorage.setItem("city", e.target.value)} } style={{ margin: "0px 0px 0px 10px" }}>
+          {city_names.map((city, index) => (
+            <option value={city} key={index}>{city}</option>
+          ))}
+        </select>
       </div>
     </>
   );
