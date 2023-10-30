@@ -135,7 +135,7 @@ const App = () => {
           <thead>
             <tr>
               <th colSpan="3">
-                <h4 className="m-1">{selectCity} Prayer Timings</h4>
+                <h4 className="m-1">{selectCity ? selectCity : "Quetta"} Prayer Timings</h4>
               </th>
             </tr>
             <tr>
