@@ -24,7 +24,6 @@ const App = () => {
     "Gujarat",
     "Rawalpindi",
     "Peshawar",
-    "Hyderabad",
     "Bahawalpur"
   ];
 
