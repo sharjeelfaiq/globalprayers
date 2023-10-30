@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import "./App.css";
 
+const windowWidth = window.innerWidth;
+
 const App = () => {
   const [data, setData] = useState([]);
   const [timesArr, setTimesArr] = useState([]);
@@ -13,7 +15,6 @@ const App = () => {
   const [second, setSecond] = useState("");
   const [meridian, setMeridian] = useState("");
   const [selectCity, setSelectCity] = useState(null);
-  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
   const city_names = [
     "Quetta",
