@@ -13,7 +13,7 @@ const App = () => {
   const [minute, setMinute] = useState("");
   const [second, setSecond] = useState("");
   const [meridian, setMeridian] = useState("");
-  const [selectCity, setSelectCity] = useState("Quetta");
+  const [selectCity, setSelectCity] = useState(null);
 
   const city_names = [
     "Quetta",
@@ -36,7 +36,7 @@ const App = () => {
         const year = date.getFullYear();
         const month = date.getMonth() + 1;
         const country = "Pakistan";
-        const city = selectCity;
+        const city = selectCity === null ? "Quetta" : selectCity;
         const method = "1";
         const school = "1";
         const response = await fetch(
@@ -46,15 +46,15 @@ const App = () => {
           throw new Error(`HTTP error! Status: ${response.status}`);
         }
         const json = await response.json();
-        setData(json); //update the state variable named data with the response from the API
+        setData(json);
       } catch (error) {
         console.error(error);
       }
     };
 
-    fetchAPI(); // Call the fetchAPI function when selectCity changes
+    fetchAPI();
 
-    return () => {setSelectCity(localStorage.getItem("city"))}
+    setSelectCity(localStorage.getItem("city"))
   }, [selectCity]);
 
   useEffect(() => {
@@ -120,6 +120,11 @@ const App = () => {
     }, 1000);
   }, []);
 
+  const onCityChange = (e) => {
+    setSelectCity(e.target.value);
+    localStorage.setItem("city", e.target.value);
+  }
+
   return (
     <>
       <div className="container w-75 table-responsive{-sm|-md|-lg|-xl} text-center clock-container">
@@ -162,20 +167,6 @@ const App = () => {
                 date.setHours(parseInt(timeParts[0]));
                 date.setMinutes(parseInt(timeParts[1]));
 
-                // Set Jamat timings                
-                /* let minutes = date.getMinutes();
-
-                if (key === "Fajr") {
-                  minutes = minutes + 60; // increment by 2 hours
-                } else if (key === "Dhuhr") {
-                  minutes = 120;
-                } else if (key === "Asr") {
-                  minutes = minutes + 30; // increment by 1 hour
-                } else if (key === "Isha") {
-                  minutes = (minutes + 15) % 60; // increment by 15 minutes
-                }
-                date.setMinutes(minutes); */
-
                 const formattedTime = date.toLocaleString("en-US", {
                   hour: "numeric",
                   minute: "numeric",
@@ -202,7 +193,7 @@ const App = () => {
       </div>
       <div>
         <label htmlFor="city" style={{ color: "#fff", margin: "0px 0px 0px 80px" }}>Choose city:</label>
-        <select id="city" onChange={(e) => {setSelectCity(e.target.value); localStorage.setItem("city", e.target.value)} } style={{ margin: "0px 0px 0px 10px" }}>
+        <select id="city" onChange={onCityChange} style={{ margin: "0px 0px 0px 10px" }}>
           {city_names.map((city, index) => (
             <option value={city} key={index}>{city}</option>
           ))}
