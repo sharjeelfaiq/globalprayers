@@ -69,7 +69,7 @@ const App = () => {
         return item.date;
       });
 
-      const dateInIslam = `${datesObj[currentDate].hijri.month.ar} ${datesObj[currentDate + 1].hijri.day
+      const dateInIslam = `${datesObj[currentDate].hijri.month.en} ${datesObj[currentDate].hijri.day
         } ,${datesObj[currentDate].hijri.year}`;
 
       setIslamicDate(dateInIslam);
