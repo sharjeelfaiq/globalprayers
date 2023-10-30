@@ -13,6 +13,7 @@ const App = () => {
   const [second, setSecond] = useState("");
   const [meridian, setMeridian] = useState("");
   const [selectCity, setSelectCity] = useState(null);
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
   const city_names = [
     "Quetta",
@@ -132,27 +133,27 @@ const App = () => {
           <thead>
             <tr>
               <th colSpan="3">
-                <h4 className="m-1">{selectCity ? selectCity : "Quetta"} Prayer Timings</h4>
+                <p className={windowWidth < 550 ? `m-1 h6` : `m-1 h4`}>{selectCity ? selectCity : "Quetta"} Prayer Timings</p>
               </th>
             </tr>
             <tr>
               <th className="table-secondary">
-                <h5 className="m-1">{today}</h5>
+                <p className={windowWidth < 550 ? `m-1 h6` : `m-1 h5`}>{today}</p>
               </th>
               <th className="table-secondary" colSpan={2} style={{ width: "50%" }}>
-                <h5 className="m-1">{hour}<span className="beat-effect time-element">:</span>{minute}<span className="beat-effect time-element">:</span>{second} {meridian}</h5>
+                <p className={windowWidth < 550 ? `m-1 h6` : `m-1 h5`}>{hour}<span className="beat-effect time-element">:</span>{minute}<span className="beat-effect time-element">:</span>{second} {meridian}</p>
               </th>
             </tr>
             <tr>
               <th scope="col">
-                <h4>
+                <p className={windowWidth < 550 ? `h5` : `h4`}>
                   <b>Namaz</b>
-                </h4>
+                </p>
               </th>
               <th scope="col" colSpan={2}>
-                <h4>
+                <p className={windowWidth < 550 ? `h5` : `h4`}>
                   <b>Time</b>
-                </h4>
+                </p>
               </th>
             </tr>
           </thead>
@@ -172,17 +173,17 @@ const App = () => {
                 return (
                   <tr>
                     <td>
-                      <h5>{key}</h5>
+                      <p className={windowWidth < 550 ? `h6` : `h5`}>{key}</p>
                     </td>
                     <td>
-                      <h5>{formattedTime}</h5>
+                      <p className={windowWidth < 550 ? `h6` : `h5`}>{formattedTime}</p>
                     </td>
                   </tr>
                 );
               })}
             <tr className="table-active">
-              <td colSpan="3">
-                <h4 className="slide-in m-1">{slidingTimeArr[index]}</h4>
+              <td colSpan="2">
+                <p className={windowWidth < 550 ? `h5 slide-in m-1` : `h4 slide-in m-1`}>{slidingTimeArr[index]}</p>
               </td>
             </tr>
           </tbody>
