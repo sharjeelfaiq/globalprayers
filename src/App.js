@@ -47,14 +47,13 @@ const App = () => {
         }
         const json = await response.json();
         setData(json);
+        setSelectCity(localStorage.getItem("city"))
       } catch (error) {
         console.error(error);
       }
     };
 
     fetchAPI();
-
-    setSelectCity(localStorage.getItem("city"))
   }, [selectCity]);
 
   useEffect(() => {
@@ -193,7 +192,7 @@ const App = () => {
       </div>
       <div>
         <label htmlFor="city" style={{ color: "#fff", margin: "0px 0px 0px 80px" }}>Choose city:</label>
-        <select id="city" onChange={onCityChange} style={{ margin: "0px 0px 0px 10px" }}>
+        <select id="city" onChange={onCityChange} value={selectCity} style={{ margin: "0px 0px 0px 10px" }}>
           {city_names.map((city, index) => (
             <option value={city} key={index}>{city}</option>
           ))}
