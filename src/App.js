@@ -6,7 +6,6 @@ const App = () => {
   const [timesArr, setTimesArr] = useState([]);
   const [slidingTimeArr, setSlidingTimeArr] = useState([]);
   const [index, setIndex] = useState(0);
-  // const [displayTime, setDisplayTime] = useState(null);
   const [today, setToday] = useState("");
   const [islamicDate, setIslamicDate] = useState("");
   const [hour, setHour] = useState("");
@@ -78,7 +77,7 @@ const App = () => {
 
       const entries = Object.entries(timingsObj[currentDate]);
       const copiedEntries = entries.filter((element, index) => {
-        return ![1, 4, 7, 8, 9, 10].includes(index);
+        return ![4, 7, 8, 9, 10].includes(index);
       });
       setTimesArr(copiedEntries); //update the state variable named timesArr with an array of prayer times for the current date
 
