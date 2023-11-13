@@ -128,13 +128,13 @@ const App = () => {
     <>
       <div className="container w-75 table-responsive{-sm|-md|-lg|-xl} text-center clock-container">
         <h1 className="my-4 date-shadow" style={{ color: "white" }}>
-          {islamicDate}
+          {selectCity ? selectCity : "Quetta"} Prayer Timings
         </h1>
         <table className="table table-bordered rounded table-dark my-4 table-shadow">
           <thead>
             <tr>
               <th colSpan="3">
-                <p className={windowWidth < 550 ? `m-1 h6` : `m-1 h4`}>{selectCity ? selectCity : "Quetta"} Prayer Timings</p>
+                <p className={windowWidth < 550 ? `m-1 h6` : `m-1 h3`}>{islamicDate}</p>
               </th>
             </tr>
             <tr>
