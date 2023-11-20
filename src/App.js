@@ -135,7 +135,7 @@ const App = () => {
     <>
       <div className="container w-75 table-responsive{-sm|-md|-lg|-xl} text-center clock-container">
         <h1 className="my-4 date-shadow" style={{ color: "white" }}>
-          {selectedCity ? selectedCity : "Quetta"} Prayer Timings
+          {selectedCity ? selectedCity : "Quetta"} Prayer Timings {selectedSchool === "0" ? "(Shafi)" : "(Hanafi)"}
         </h1>
         <table className="table table-bordered rounded table-dark my-4 table-shadow">
           <thead>
