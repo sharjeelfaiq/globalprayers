@@ -5,7 +5,6 @@ const App = () => {
   const [data, setData] = useState([]);
   const [timesArr, setTimesArr] = useState([]);
   // const [slidingTimeArr, setSlidingTimeArr] = useState([]);
-  const [index, setIndex] = useState(0);
   const [today, setToday] = useState("");
   const [islamicDate, setIslamicDate] = useState("");
   const [hour, setHour] = useState("");
