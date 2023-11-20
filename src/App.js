@@ -4,7 +4,6 @@ import "./App.css";
 const App = () => {
   const [data, setData] = useState([]);
   const [timesArr, setTimesArr] = useState([]);
-  // const [slidingTimeArr, setSlidingTimeArr] = useState([]);
   const [today, setToday] = useState("");
   const [islamicDate, setIslamicDate] = useState("");
   const [hour, setHour] = useState("");
@@ -134,8 +133,8 @@ const App = () => {
   return (
     <>
       <div className="container w-75 table-responsive{-sm|-md|-lg|-xl} text-center clock-container">
-        <h1 className="my-4 date-shadow" style={{ color: "white" }}>
-          {selectedCity ? selectedCity : "Quetta"} Prayer Timings {selectedSchool === "0" ? "(Shafi)" : "(Hanafi)"}
+        <h1 className="my-4 date-shadow" style={{ color: "white" }} title={selectedSchool === "0" ? `Shafi Prayer Timings` : `Hanafi Prayer Timings`}>
+          {selectedCity ? selectedCity : "Quetta"} Prayer Timings {selectedSchool === "0" ? <span style={{ fontStyle: "italic", fontSize: "20px" }}>(Shafi)</span> : <span style={{ fontStyle: "italic", fontSize: "20px" }}>(Hanafi)</span>}
         </h1>
         <table className="table table-bordered rounded table-dark my-4 table-shadow">
           <thead>
