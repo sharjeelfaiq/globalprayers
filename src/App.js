@@ -85,28 +85,7 @@ const App = () => {
       const copiedEntries = entries.filter((element, index) => {
         return ![4, 7, 8, 9, 10].includes(index);
       });
-      setTimesArr(copiedEntries); //update the state variable named timesArr with an array of prayer times for the current date
-
-      const timingsArr = Object.entries(timingsObj[currentDate]).map(
-        ([key, value]) => {
-          const date = new Date(`January 1, 2022 ${value}`);
-          const timeString = date.toLocaleTimeString([], {
-            hour: "2-digit",
-            minute: "2-digit",
-            hour12: true,
-          });
-          return `${key}: ${timeString}`;
-        }
-      );
-      /* const filteredArr = timingsArr.filter((element, index) => {
-        return ![7, 8, 9, 10].includes(index);
-      });
-
-      setSlidingTimeArr(filteredArr);
-      const interval = setInterval(() => {
-        setIndex((index) => (index + 1) % slidingTimeArr.length); //update the index every 10 seconds
-      }, 10000);
-      return () => clearInterval(interval); //clear the interval on unmount */
+      setTimesArr(copiedEntries);
     }
   }, [data]);
 
