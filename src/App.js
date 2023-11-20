@@ -200,24 +200,24 @@ const App = () => {
       </div>
       <div style={{ margin: "0px 0px 0px 50px" }}>
         <div>
-          <label htmlFor="city" style={{ fontSize:"14px", color: "#fff", margin: "2px 5px 2px 0px", display: "inline-block", width: "60px", textAlign: "right" }}>City:</label>
-          <select id="city" onChange={onCityChange} style={{ fontSize: "14px"}} value={selectedCity}>
+          <label htmlFor="city" style={{ fontSize: "14px", color: "#fff", margin: "2px 5px 2px 0px", display: "inline-block", width: "60px", textAlign: "right" }}>City:</label>
+          <select id="city" onChange={onCityChange} style={{ fontSize: "14px" }} value={selectedCity}>
             {city_names.map((city, index) => (
               <option value={city} key={index}>{city}</option>
             ))}
           </select>
         </div>
         <div>
-          <label htmlFor="school" style={{ fontSize:"14px", color: "#fff", margin: "2px 5px 2px 0px", display: "inline-block", width: "60px", textAlign: "right" }}>School:</label>
-          <select id="school" onChange={onSchoolChange} style={{ fontSize: "14px"}} value={selectedSchool}>
+          <label htmlFor="school" style={{ fontSize: "14px", color: "#fff", margin: "2px 5px 2px 0px", display: "inline-block", width: "60px", textAlign: "right" }}>School:</label>
+          <select id="school" onChange={onSchoolChange} style={{ fontSize: "14px" }} value={selectedSchool}>
             {schools.map((school, index) => (
               <option value={school} key={index}>{school === "0" ? "Shafi" : "Hanafi"}</option>
             ))}
           </select>
         </div>
         <div>
-          <label htmlFor="method" style={{ fontSize:"14px", color: "#fff", margin: "2px 5px 2px 0px", display: "inline-block", width: "60px", textAlign: "right" }} className="font-sm">Method:</label>
-          <select id="method" onChange={onMethodChange} style={{ fontSize: "14px"}} value={selectedMethod}>
+          <label htmlFor="method" style={{ fontSize: "14px", color: "#fff", margin: "2px 5px 2px 0px", display: "inline-block", width: "60px", textAlign: "right" }} className="font-sm">Method:</label>
+          <select id="method" onChange={onMethodChange} style={{ fontSize: "14px" }} value={selectedMethod}>
             {methods.map((method, index) => {
               if (method === "0") {
                 return (
@@ -291,6 +291,8 @@ const App = () => {
                 return (
                   <option value={method} key={index}>Ministry of Endowments and Islamic Affairs, Qatar</option>
                 )
+              } else {
+                return null;
               }
             })}
           </select>
