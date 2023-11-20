@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from "react";
 import "./App.css";
 
-const windowWidth = window.innerWidth;
-
 const App = () => {
   const [data, setData] = useState([]);
   const [timesArr, setTimesArr] = useState([]);
-  const [slidingTimeArr, setSlidingTimeArr] = useState([]);
+  // const [slidingTimeArr, setSlidingTimeArr] = useState([]);
   const [index, setIndex] = useState(0);
   const [today, setToday] = useState("");
   const [islamicDate, setIslamicDate] = useState("");
@@ -17,6 +15,7 @@ const App = () => {
   const [selectedCity, setSelectedCity] = useState(null);
   const [selectedSchool, setSelectedSchool] = useState(null);
   const [selectedMethod, setSelectedMethod] = useState(null);
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
   const city_names = [
     "Quetta",
@@ -99,17 +98,17 @@ const App = () => {
           return `${key}: ${timeString}`;
         }
       );
-      const filteredArr = timingsArr.filter((element, index) => {
+      /* const filteredArr = timingsArr.filter((element, index) => {
         return ![7, 8, 9, 10].includes(index);
       });
 
-      setSlidingTimeArr(filteredArr); //update the state variable named slidingTimeArr with an array of prayer times in 12-hour format for the current date
+      setSlidingTimeArr(filteredArr);
       const interval = setInterval(() => {
         setIndex((index) => (index + 1) % slidingTimeArr.length); //update the index every 10 seconds
       }, 10000);
-      return () => clearInterval(interval); //clear the interval on unmount
+      return () => clearInterval(interval); //clear the interval on unmount */
     }
-  }, [data, slidingTimeArr.length]);
+  }, [data]);
 
   const getTime = () => {
     const date = new Date();
@@ -120,9 +119,23 @@ const App = () => {
   };
 
   useEffect(() => {
-    setInterval(() => {
+    const interval = setInterval(() => {
       getTime();
     }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
+
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
   }, []);
 
   const onCityChange = (e) => {
@@ -200,7 +213,8 @@ const App = () => {
               })}
             <tr className="table-active">
               <td colSpan="2">
-                <p className={windowWidth < 550 ? `h5 slide-in m-1` : `h4 slide-in m-1`}>{slidingTimeArr[index]}</p>
+                {/* <p className={windowWidth < 550 ? `h5 slide-in m-1` : `h4 slide-in m-1`}>{slidingTimeArr[index]}</p> */}
+                <p className={windowWidth < 550 ? `h5 slide-in m-1` : `h4 slide-in m-1`}>Next prayer in X minutes</p>
               </td>
             </tr>
           </tbody>
