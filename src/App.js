@@ -28,9 +28,26 @@ const App = () => {
     "Bahawalpur"
   ];
 
-  const schools = ["0", "1"]
+  const schools = ["Shafi", "Hanafi"]
 
-  const methods = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17"]
+  const methods = ["Shia Ithna-Ansari",
+    "University of Islamic Sciences, Karachi",
+    "Islamic Society of North America",
+    "Muslim World League",
+    "Umm al-Qura University, Makkah",
+    "Egyptian General Authority of Survey",
+    "Institute of Geophysics, University of Tehran",
+    "Gulf Region",
+    "Kuwait",
+    "Qatar",
+    "Majlis Ugama Islam Singapura, Singapore",
+    "Union Organization islamic de France",
+    "Diyanet İşleri Başkanlığı, Turkey",
+    "Spiritual Administration of Muslims of Russia",
+    "Ministry of Awqaf and Islamic Affairs, Kuwait",
+    "Ministry of Religious Affairs and Wakfs, Algeria",
+    "Ministry of Religious Affairs, Tunisia",
+    "Ministry of Endowments and Islamic Affairs, Qatar"]
 
   useEffect(() => {
     (
@@ -40,9 +57,12 @@ const App = () => {
           const year = date.getFullYear();
           const month = date.getMonth() + 1;
           const country = "Pakistan";
-          const city = selectedCity === null ? "Quetta" : selectedCity;
+          /* const city = selectedCity === null ? "Quetta" : selectedCity;
           const method = selectedMethod === null ? "1" : selectedMethod;
-          const school = selectedSchool === null ? "0" : selectedSchool;
+          const school = selectedSchool === null ? "0" : selectedSchool; */
+          const city = !localStorage.getItem("city") ? "Quetta" : selectedCity;
+          const method = !localStorage.getItem("method") ? "1" : selectedMethod;
+          const school = !localStorage.getItem("school") ? "0" : selectedSchool;
           const response = await fetch(
             `https://api.aladhan.com/v1/calendarByCity/${year}/${month}?city=${city}&country=${country}&method=${method}&school=${school}`
           );
@@ -210,90 +230,16 @@ const App = () => {
           <label htmlFor="school" style={{ fontSize: "14px", color: "#fff", margin: "2px 5px 2px 0px", display: "inline-block", width: "60px", textAlign: "right" }}>School:</label>
           <select id="school" onChange={onSchoolChange} style={{ fontSize: "14px" }} value={selectedSchool}>
             {schools.map((school, index) => (
-              <option value={school} key={index}>{school === "0" ? "Shafi" : "Hanafi"}</option>
+              <option value={index} key={index}>{school}</option>
             ))}
           </select>
         </div>
         <div>
           <label htmlFor="method" style={{ fontSize: "14px", color: "#fff", margin: "2px 5px 2px 0px", display: "inline-block", width: "60px", textAlign: "right" }} className="font-sm">Method:</label>
           <select id="method" onChange={onMethodChange} style={{ fontSize: "14px" }} value={selectedMethod}>
-            {methods.map((method, index) => {
-              if (method === "0") {
-                return (
-                  <option value={method} key={index}>Shia Ithna-Ansari</option>
-                )
-              } else if (method === "1") {
-                return (
-                  <option value={method} key={index}>University of Islamic Sciences, Karachi</option>
-                )
-              } else if (method === "2") {
-                return (
-                  <option value={method} key={index}>Islamic Society of North America</option>
-                )
-              } else if (method === "3") {
-                return (
-                  <option value={method} key={index}>Muslim World League</option>
-                )
-              } else if (method === "4") {
-                return (
-                  <option value={method} key={index}>Umm al-Qura University, Makkah</option>
-                )
-              } else if (method === "5") {
-                return (
-                  <option value={method} key={index}>Egyptian General Authority of Survey</option>
-                )
-              } else if (method === "6") {
-                return (
-                  <option value={method} key={index}>Institute of Geophysics, University of Tehran</option>
-                )
-              } else if (method === "7") {
-                return (
-                  <option value={method} key={index}>Gulf Region</option>
-                )
-              } else if (method === "8") {
-                return (
-                  <option value={method} key={index}>Kuwait</option>
-                )
-              } else if (method === "9") {
-                return (
-                  <option value={method} key={index}>Qatar</option>
-                )
-              } else if (method === "10") {
-                return (
-                  <option value={method} key={index}>Majlis Ugama Islam Singapura, Singapore</option>
-                )
-              } else if (method === "11") {
-                return (
-                  <option value={method} key={index}>Union Organization islamic de France</option>
-                )
-              } else if (method === "12") {
-                return (
-                  <option value={method} key={index}>Diyanet İşleri Başkanlığı, Turkey</option>
-                )
-              } else if (method === "13") {
-                return (
-                  <option value={method} key={index}>Spiritual Administration of Muslims of Russia</option>
-                )
-              } else if (method === "14") {
-                return (
-                  <option value={method} key={index}>Ministry of Awqaf and Islamic Affairs, Kuwait</option>
-                )
-              } else if (method === "15") {
-                return (
-                  <option value={method} key={index}>Ministry of Religious Affairs and Wakfs, Algeria</option>
-                )
-              } else if (method === "16") {
-                return (
-                  <option value={method} key={index}>Ministry of Religious Affairs, Tunisia</option>
-                )
-              } else if (method === "17") {
-                return (
-                  <option value={method} key={index}>Ministry of Endowments and Islamic Affairs, Qatar</option>
-                )
-              } else {
-                return null;
-              }
-            })}
+            {methods.map((method, index) => (
+              <option value={index} key={index}>{method}</option>
+            ))}
           </select>
         </div>
       </div>
