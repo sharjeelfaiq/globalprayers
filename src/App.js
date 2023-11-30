@@ -57,9 +57,6 @@ const App = () => {
           const year = date.getFullYear();
           const month = date.getMonth() + 1;
           const country = "Pakistan";
-          /* const city = selectedCity === null ? "Quetta" : selectedCity;
-          const method = selectedMethod === null ? "1" : selectedMethod;
-          const school = selectedSchool === null ? "0" : selectedSchool; */
           const city = !localStorage.getItem("city") ? "Quetta" : selectedCity;
           const method = !localStorage.getItem("method") ? "1" : selectedMethod;
           const school = !localStorage.getItem("school") ? "0" : selectedSchool;
@@ -104,6 +101,9 @@ const App = () => {
         return ![4, 7, 8, 9, 10].includes(index);
       });
       setTimesArr(copiedEntries);
+      return () => {
+        console.log(copiedEntries)
+      }
     }
   }, [data]);
 
@@ -210,7 +210,6 @@ const App = () => {
               })}
             <tr className="table-active">
               <td colSpan="2">
-                {/* <p className={windowWidth < 550 ? `h5 slide-in m-1` : `h4 slide-in m-1`}>{slidingTimeArr[index]}</p> */}
                 <p className={windowWidth < 550 ? `h5 slide-in m-1` : `h4 slide-in m-1`}>Next prayer in X minutes</p>
               </td>
             </tr>
