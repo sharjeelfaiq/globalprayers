@@ -132,97 +132,130 @@ const App = () => {
     let nextPrayerTime = null;
     let minDiff = Infinity;
 
-    timesArr.forEach(([_, time]) => {
-      const [hours, minutes] = time.split(":");
-      const prayerTime = new Date(
-        now.getFullYear(),
-        now.getMonth(),
-        now.getDate(),
-        parseInt(hours),
-        parseInt(minutes)
-      );
+    if (timesArr && timesArr.length > 0) {
+      timesArr.forEach(([_, time]) => {
+        const [hours, minutes] = time.split(":");
+        const prayerTime = new Date(
+          now.getFullYear(),
+          now.getMonth(),
+          now.getDate(),
+          parseInt(hours),
+          parseInt(minutes)
+        );
 
-      if (prayerTime > now) {
-        const diff = (prayerTime - now) / (1000 * 60); // in minutes
-        if (diff < minDiff) {
-          minDiff = diff;
-          nextPrayerTime = prayerTime;
+        if (prayerTime > now) {
+          const diff = (prayerTime - now) / (1000 * 60); // in minutes
+          if (diff < minDiff) {
+            minDiff = diff;
+            nextPrayerTime = prayerTime;
+          }
         }
+      });
+
+      if (!nextPrayerTime) {
+        const [, time] = timesArr[0];
+        const [hours, minutes] = time.split(":");
+        nextPrayerTime = new Date(
+          now.getFullYear(),
+          now.getMonth(),
+          now.getDate() + 1,
+          parseInt(hours),
+          parseInt(minutes)
+        );
+        minDiff = (nextPrayerTime - now) / (1000 * 60);
       }
-    });
 
-    if (!nextPrayerTime) {
-      // If no prayer time is found for today, check the first prayer of tomorrow
-      const [, time] = timesArr[0];
-      const [hours, minutes] = time.split(":");
-      nextPrayerTime = new Date(
-        now.getFullYear(),
-        now.getMonth(),
-        now.getDate() + 1,
-        parseInt(hours),
-        parseInt(minutes)
-      );
-      minDiff = (nextPrayerTime - now) / (1000 * 60);
+      const hoursUntilNextPrayer = Math.floor(minDiff / 60);
+      const minutesUntilNextPrayer = Math.round(minDiff % 60);
+
+      setNextPrayerMinutes({
+        hours: hoursUntilNextPrayer,
+        minutes: minutesUntilNextPrayer,
+      });
     }
-
-    // Calculate hours and minutes for display
-    const hoursUntilNextPrayer = Math.floor(minDiff / 60);
-    const minutesUntilNextPrayer = Math.round(minDiff % 60);
-
-    setNextPrayerMinutes({
-      hours: hoursUntilNextPrayer,
-      minutes: minutesUntilNextPrayer,
-    });
   };
 
   return (
     <>
-      <div className="container w-100 table-responsive text-center clock-container">
-        <h2 className="my-1 text-white text-xs">
-          {islamicDate} - {today}
+      <div className="position-relative container w-100 table-responsive text-center clock-container">
+        <h2
+          className="my-1 text-white mt-3 px-3 position-absolute top-0 start-0"
+          style={{ fontFamily: "Roboto Mono, monospace" }}
+        >
+          {today}
         </h2>
-        <h3 className="my-1 text-white text-xs">{formattedTime}</h3>
+        <h2 className="my-3 text-white">{islamicDate}</h2>
+        <h3 className="my-1 text-white">{formattedTime}</h3>
         {nextPrayerMinutes && (
-          <h5 className="my-1 text-white text-xs">
+          <h5 className="my-1 text-white">
             Next prayer in {nextPrayerMinutes.hours}h{" "}
             {nextPrayerMinutes.minutes}m
           </h5>
         )}
-        <div className="dropdown-container flex flex-wrap justify-center gap-2 my-2">
-          <select
-            className="form-select text-white"
-            value={settings.city}
-            onChange={handleSettingChange("city")}
-          >
-            {CITY_NAMES.map((city, index) => (
-              <option key={index} value={city} className="text-black">
-                {city}
-              </option>
-            ))}
-          </select>
-          <select
-            className="form-select text-white"
-            value={settings.method}
-            onChange={handleSettingChange("method")}
-          >
-            {METHODS.map((method, index) => (
-              <option key={index} value={index + 1} className="text-black">
-                {method}
-              </option>
-            ))}
-          </select>
-          <select
-            className="form-select text-white"
-            value={settings.school}
-            onChange={handleSettingChange("school")}
-          >
-            {SCHOOLS.map((school, index) => (
-              <option key={index} value={index} className="text-black">
-                {school}
-              </option>
-            ))}
-          </select>
+        <div className="d-flex justify-content-end position-absolute top-0 end-0 mt-3">
+          <div className="dropdown">
+            <button
+              className="btn dropdown-toggle text-white"
+              type="button"
+              id="dropdownMenuButton"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            >
+              <i className="fas fa-cog"></i>
+            </button>
+            <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton">
+              <li>
+                <div className="dropdown-item">
+                  City:
+                  <select
+                    className="form-select mt-2 text-black"
+                    value={settings.city}
+                    onChange={handleSettingChange("city")}
+                  >
+                    {CITY_NAMES.map((city, index) => (
+                      <option key={index} value={city}>
+                        {city}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </li>
+              <li>
+                <div className="dropdown-item">
+                  Method:
+                  <select
+                    className="form-select mt-2 text-black"
+                    value={settings.method}
+                    onChange={handleSettingChange("method")}
+                  >
+                    {METHODS.map((method, index) => (
+                      <option key={index} value={index + 1}>
+                        {method}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </li>
+              <li>
+                <div className="dropdown-item">
+                  School:
+                  <select
+                    className="form-select mt-2 text-black"
+                    value={settings.school}
+                    onChange={handleSettingChange("school")}
+                  >
+                    {SCHOOLS.map((school, index) => (
+                      <option key={index} value={index}>
+                        {school}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </li>
+            </ul>
+          </div>
         </div>
+
         <table className="table table-hover table-dark table-shadow">
           <thead>
             <tr>
@@ -232,21 +265,20 @@ const App = () => {
           </thead>
           <tbody>
             {timesArr.map(([prayer, time], index) => {
-              // Remove '(PKT)' and split the time into hour and minute
               const cleanTime = time.replace(/ \(PKT\)/, "").trim();
               const [hour, minute] = cleanTime.split(":");
 
-              const hourIn12 = hour % 12 || 12; // Convert to 12-hour format
-              const amPm = hour < 12 ? "AM" : "PM"; // Determine AM or PM
+              const hourIn12 = hour % 12 || 12;
+              const amPm = hour < 12 ? "AM" : "PM";
 
               const formattedTime = `${hourIn12}:${String(minute).padStart(
                 2,
                 "0"
-              )} ${amPm}`; // Format to hh:mm AM/PM
+              )} ${amPm}`;
 
               return (
                 <tr key={index}>
-                  <td>{prayer.replace(/_/g, " ")}</td>
+                  <td>{prayer}</td>
                   <td>{formattedTime}</td>
                 </tr>
               );

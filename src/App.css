@@ -51,9 +51,8 @@ body::before {
 
 /* Specific styles for different heading levels */
 h2 {
-  font-family: "Roboto Mono", monospace;
   font-weight: 500; /* Medium weight for distinction */
-  font-size: 1.2rem; /* Adjust size as needed */
+  font-size: 1.5rem; /* Adjust size as needed */
 }
 
 h3 {
@@ -85,7 +84,7 @@ h5:hover {
 }
 
 .form-select {
-  width: auto; /* Use auto width for better fitting */
+  width: 150px; /* Use auto width for better fitting */
   max-width: 200px; /* Set a maximum width for dropdowns */
   margin: 0; /* Remove margin */
   padding: 0.5rem; /* Smaller padding */
