@@ -1,246 +1,262 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback, useMemo } from "react";
 import "./App.css";
 
+const API_BASE_URL = "https://api.aladhan.com/v1/calendarByCity";
+const DEFAULT_SETTINGS = {
+  country: "Pakistan",
+  city: "Quetta",
+  method: "1",
+  school: "0",
+};
+
+const CITY_NAMES = [
+  "Quetta",
+  "Karachi",
+  "Lahore",
+  "Islamabad",
+  "Multan",
+  "Faisalabad",
+  "Gujarat",
+  "Rawalpindi",
+  "Peshawar",
+  "Bahawalpur",
+];
+
+const SCHOOLS = ["Shafi", "Hanafi"];
+const METHODS = [
+  "Shia Ithna-Ansari",
+  "University of Islamic Sciences, Karachi",
+  "Islamic Society of North America",
+  "Muslim World League",
+  "Umm al-Qura University, Makkah",
+  "Egyptian General Authority of Survey",
+  "Institute of Geophysics, University of Tehran",
+  "Gulf Region",
+  "Kuwait",
+  "Qatar",
+  "Majlis Ugama Islam Singapura, Singapore",
+  "Union Organization islamic de France",
+  "Diyanet İşleri Başkanlığı, Turkey",
+  "Spiritual Administration of Muslims of Russia",
+  "Ministry of Awqaf and Islamic Affairs, Kuwait",
+  "Ministry of Religious Affairs and Wakfs, Algeria",
+  "Ministry of Religious Affairs, Tunisia",
+  "Ministry of Endowments and Islamic Affairs, Qatar",
+];
+
 const App = () => {
-  const [data, setData] = useState([]);
+  const [data, setData] = useState(null);
   const [timesArr, setTimesArr] = useState([]);
   const [today, setToday] = useState("");
   const [islamicDate, setIslamicDate] = useState("");
-  const [hour, setHour] = useState("");
-  const [minute, setMinute] = useState("");
-  const [second, setSecond] = useState("");
-  const [meridian, setMeridian] = useState("");
-  const [selectedCity, setSelectedCity] = useState(null);
-  const [selectedSchool, setSelectedSchool] = useState(null);
-  const [selectedMethod, setSelectedMethod] = useState(null);
-  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  const [currentTime, setCurrentTime] = useState(new Date());
+  const [nextPrayerMinutes, setNextPrayerMinutes] = useState(null);
 
-  const city_names = [
-    "Quetta",
-    "Karachi",
-    "Lahore",
-    "Islamabad",
-    "Multan",
-    "Faisalabad",
-    "Gujarat",
-    "Rawalpindi",
-    "Peshawar",
-    "Bahawalpur"
-  ];
+  const [settings, setSettings] = useState(() => ({
+    city: localStorage.getItem("city") || DEFAULT_SETTINGS.city,
+    school: localStorage.getItem("school") || DEFAULT_SETTINGS.school,
+    method: localStorage.getItem("method") || DEFAULT_SETTINGS.method,
+  }));
 
-  const schools = ["Shafi", "Hanafi"]
+  const fetchPrayerTimes = useCallback(async () => {
+    const date = new Date();
+    const { city, method, school } = settings;
+    const url = `${API_BASE_URL}/${date.getFullYear()}/${
+      date.getMonth() + 1
+    }?city=${city}&country=${
+      DEFAULT_SETTINGS.country
+    }&method=${method}&school=${school}`;
 
-  const methods = ["Shia Ithna-Ansari",
-    "University of Islamic Sciences, Karachi",
-    "Islamic Society of North America",
-    "Muslim World League",
-    "Umm al-Qura University, Makkah",
-    "Egyptian General Authority of Survey",
-    "Institute of Geophysics, University of Tehran",
-    "Gulf Region",
-    "Kuwait",
-    "Qatar",
-    "Majlis Ugama Islam Singapura, Singapore",
-    "Union Organization islamic de France",
-    "Diyanet İşleri Başkanlığı, Turkey",
-    "Spiritual Administration of Muslims of Russia",
-    "Ministry of Awqaf and Islamic Affairs, Kuwait",
-    "Ministry of Religious Affairs and Wakfs, Algeria",
-    "Ministry of Religious Affairs, Tunisia",
-    "Ministry of Endowments and Islamic Affairs, Qatar"]
+    try {
+      const response = await fetch(url);
+      if (!response.ok)
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      const json = await response.json();
+      setData(json);
+    } catch (error) {
+      console.error("Failed to fetch prayer times:", error);
+    }
+  }, [settings]);
 
   useEffect(() => {
-    (
-      async () => {
-        try {
-          const date = new Date();
-          const year = date.getFullYear();
-          const month = date.getMonth() + 1;
-          const country = "Pakistan";
-          const city = !localStorage.getItem("city") ? "Quetta" : selectedCity;
-          const method = !localStorage.getItem("method") ? "1" : selectedMethod;
-          const school = !localStorage.getItem("school") ? "0" : selectedSchool;
-          const response = await fetch(
-            `https://api.aladhan.com/v1/calendarByCity/${year}/${month}?city=${city}&country=${country}&method=${method}&school=${school}`
-          );
-          if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-          }
-          const json = await response.json();
-          setData(json);
-          setSelectedCity(localStorage.getItem("city"))
-          setSelectedSchool(localStorage.getItem("school"))
-          setSelectedMethod(localStorage.getItem("method"))
-        } catch (error) {
-          console.error(error);
-        }
-      })();
-  }, [selectedCity, selectedMethod, selectedSchool]);
+    fetchPrayerTimes();
+  }, [fetchPrayerTimes]);
 
   useEffect(() => {
-    if (data.data) {
-      const date = new Date();
-      const currentDate = date.getDate() - 1; //get the current date
+    if (data?.data) {
+      const currentDate = new Date().getDate() - 1;
+      const currentDayData = data.data[currentDate];
 
-      const timingsObj = data.data.map((item) => {
-        return item.timings;
-      });
+      setIslamicDate(
+        `${currentDayData.date.hijri.month.en} ${currentDayData.date.hijri.day}, ${currentDayData.date.hijri.year}`
+      );
+      setToday(currentDayData.date.readable);
 
-      const datesObj = data.data.map((item) => {
-        return item.date;
-      });
+      const relevantTimes = Object.entries(currentDayData.timings).filter(
+        (_, index) => ![4, 7, 8, 9, 10].includes(index)
+      );
 
-      const dateInIslam = `${datesObj[currentDate].hijri.month.en} ${datesObj[currentDate].hijri.day} ,${datesObj[currentDate].hijri.year}`;
-
-      setIslamicDate(dateInIslam);
-
-      setToday(datesObj[currentDate].readable);
-
-      const entries = Object.entries(timingsObj[currentDate]);
-      const copiedEntries = entries.filter((element, index) => {
-        return ![4, 7, 8, 9, 10].includes(index);
-      });
-      setTimesArr(copiedEntries);
-      return () => {
-        console.log(copiedEntries)
-      }
+      setTimesArr(relevantTimes);
     }
   }, [data]);
 
-  const getTime = () => {
-    const date = new Date();
-    const h = setHour((date.getHours() % 12).toString().padStart(2, "0") === "00" ? "12" : (date.getHours() % 12).toString().padStart(2, "0"));
-    setMinute(date.getMinutes().toString().padStart(2, "0"));
-    setSecond(date.getSeconds().toString().padStart(2, "0"));
-    setMeridian(h >= 12 ? "PM" : "AM");
-  };
-
   useEffect(() => {
-    const interval = setInterval(() => {
-      getTime();
+    const timer = setInterval(() => {
+      setCurrentTime(new Date());
+      updateNextPrayerTime();
     }, 1000);
+    return () => clearInterval(timer);
+  }, [timesArr]);
 
-    return () => clearInterval(interval);
-  }, []);
+  const handleSettingChange = useCallback(
+    (key) => (event) => {
+      const value = event.target.value;
+      setSettings((prev) => ({ ...prev, [key]: value }));
+      localStorage.setItem(key, value);
+    },
+    []
+  );
 
-  useEffect(() => {
-    const handleResize = () => {
-      setWindowWidth(window.innerWidth);
-    };
+  const formattedTime = useMemo(() => {
+    return currentTime.toLocaleTimeString("en-US", {
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: true,
+    });
+  }, [currentTime]);
 
-    window.addEventListener('resize', handleResize);
+  const updateNextPrayerTime = () => {
+    const now = new Date();
+    let nextPrayerTime = null;
+    let minDiff = Infinity;
 
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
-  }, []);
+    timesArr.forEach(([_, time]) => {
+      const [hours, minutes] = time.split(":");
+      const prayerTime = new Date(
+        now.getFullYear(),
+        now.getMonth(),
+        now.getDate(),
+        parseInt(hours),
+        parseInt(minutes)
+      );
 
-  const onCityChange = (e) => {
-    setSelectedCity(e.target.value);
-    localStorage.setItem("city", e.target.value);
-  }
+      if (prayerTime > now) {
+        const diff = (prayerTime - now) / (1000 * 60); // in minutes
+        if (diff < minDiff) {
+          minDiff = diff;
+          nextPrayerTime = prayerTime;
+        }
+      }
+    });
 
-  const onSchoolChange = (e) => {
-    setSelectedSchool(e.target.value);
-    localStorage.setItem("school", e.target.value);
-  }
+    if (!nextPrayerTime) {
+      // If no prayer time is found for today, check the first prayer of tomorrow
+      const [, time] = timesArr[0];
+      const [hours, minutes] = time.split(":");
+      nextPrayerTime = new Date(
+        now.getFullYear(),
+        now.getMonth(),
+        now.getDate() + 1,
+        parseInt(hours),
+        parseInt(minutes)
+      );
+      minDiff = (nextPrayerTime - now) / (1000 * 60);
+    }
 
-  const onMethodChange = (e) => {
-    setSelectedMethod(e.target.value);
-    localStorage.setItem("method", e.target.value);
-  }
+    // Calculate hours and minutes for display
+    const hoursUntilNextPrayer = Math.floor(minDiff / 60);
+    const minutesUntilNextPrayer = Math.round(minDiff % 60);
+
+    setNextPrayerMinutes({
+      hours: hoursUntilNextPrayer,
+      minutes: minutesUntilNextPrayer,
+    });
+  };
 
   return (
     <>
-      <div className="container w-75 table-responsive{-sm|-md|-lg|-xl} text-center clock-container">
-        <h1 className="my-4 date-shadow" style={{ color: "white" }} title={selectedSchool === "0" ? `Shafi Prayer Timings` : `Hanafi Prayer Timings`}>
-          {selectedCity ? selectedCity : "Quetta"} Prayer Timings {selectedSchool === "0" ? <span style={{ fontStyle: "italic", fontSize: "20px" }}>(Shafi)</span> : <span style={{ fontStyle: "italic", fontSize: "20px" }}>(Hanafi)</span>}
+      <div className="container w-100 table-responsive text-center clock-container">
+        <h1 className="my-2 text-white">
+          {settings.city.charAt(0).toUpperCase() + settings.city.slice(1)}{" "}
+          Prayer Timings&nbsp;
+          <span style={{ fontStyle: "italic", fontSize: "20px" }}>
+            ({today})
+          </span>
         </h1>
-        <table className="table table-bordered rounded table-dark my-4 table-shadow">
+        <h2 className="my-2 text-white">{islamicDate}</h2>
+        <h3 className="my-2 text-white">{formattedTime}</h3>
+        {nextPrayerMinutes && (
+          <h5 className="my-2">
+            Next prayer in {nextPrayerMinutes.hours} hours and{" "}
+            {nextPrayerMinutes.minutes} minutes
+          </h5>
+        )}
+        <div className="dropdown-container">
+          <select
+            className="form-select"
+            value={settings.city}
+            onChange={handleSettingChange("city")}
+          >
+            {CITY_NAMES.map((city, index) => (
+              <option key={index} value={city} className="text-black">
+                {city}
+              </option>
+            ))}
+          </select>
+          <select
+            className="form-select"
+            value={settings.method}
+            onChange={handleSettingChange("method")}
+          >
+            {METHODS.map((method, index) => (
+              <option key={index} value={index + 1} className="text-black">
+                {method}
+              </option>
+            ))}
+          </select>
+          <select
+            className="form-select"
+            value={settings.school}
+            onChange={handleSettingChange("school")}
+          >
+            {SCHOOLS.map((school, index) => (
+              <option key={index} value={index} className="text-black">
+                {school}
+              </option>
+            ))}
+          </select>
+        </div>
+        <table className="table table-hover table-dark table-shadow">
           <thead>
             <tr>
-              <th colSpan="3">
-                <p className={windowWidth < 550 ? `m-1 h6` : `m-1 h3`}>{islamicDate}</p>
-              </th>
-            </tr>
-            <tr>
-              <th className="table-secondary">
-                <p className={windowWidth < 550 ? `m-1 h6` : `m-1 h5`}>{today}</p>
-              </th>
-              <th className="table-secondary" colSpan={2} style={{ width: "50%" }}>
-                <p className={windowWidth < 550 ? `m-1 h6` : `m-1 h5`}>{hour}<span className="beat-effect time-element">:</span>{minute}<span className="beat-effect time-element">:</span>{second} {meridian}</p>
-              </th>
-            </tr>
-            <tr>
-              <th scope="col">
-                <p className={windowWidth < 550 ? `h5` : `h4`}>
-                  <b>Namaz</b>
-                </p>
-              </th>
-              <th scope="col" colSpan={2}>
-                <p className={windowWidth < 550 ? `h5` : `h4`}>
-                  <b>Time</b>
-                </p>
-              </th>
+              <th>Prayer</th>
+              <th>Time</th>
             </tr>
           </thead>
           <tbody>
-            {data.data &&
-              timesArr.map(([key, value]) => {
-                const date = new Date();
-                const timeParts = value.split(":");
-                date.setHours(parseInt(timeParts[0]));
-                date.setMinutes(parseInt(timeParts[1]));
+            {timesArr.map(([prayer, time], index) => {
+              // Remove '(PKT)' and split the time into hour and minute
+              const cleanTime = time.replace(/ \(PKT\)/, "").trim();
+              const [hour, minute] = cleanTime.split(":");
 
-                const formattedTime = date.toLocaleString("en-US", {
-                  hour: "numeric",
-                  minute: "numeric",
-                  hour12: true,
-                });
-                return (
-                  <tr>
-                    <td>
-                      <p className={windowWidth < 550 ? `h6` : `h5`}>{key}</p>
-                    </td>
-                    <td>
-                      <p className={windowWidth < 550 ? `h6` : `h5`}>{formattedTime}</p>
-                    </td>
-                  </tr>
-                );
-              })}
-            <tr className="table-active">
-              <td colSpan="2">
-                <p className={windowWidth < 550 ? `h5 slide-in m-1` : `h4 slide-in m-1`}>Next prayer in X minutes</p>
-              </td>
-            </tr>
+              const hourIn12 = hour % 12 || 12; // Convert to 12-hour format
+              const amPm = hour < 12 ? "AM" : "PM"; // Determine AM or PM
+
+              const formattedTime = `${hourIn12}:${String(minute).padStart(
+                2,
+                "0"
+              )} ${amPm}`; // Format to hh:mm AM/PM
+
+              return (
+                <tr key={index}>
+                  <td>{prayer.replace(/_/g, " ")}</td>
+                  <td>{formattedTime}</td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
-      </div>
-      <div style={{ margin: "0px 0px 0px 50px" }}>
-        <div>
-          <label htmlFor="city" style={{ fontSize: "14px", color: "#fff", margin: "2px 5px 2px 0px", display: "inline-block", width: "60px", textAlign: "right" }}>City:</label>
-          <select id="city" onChange={onCityChange} style={{ fontSize: "14px" }} value={selectedCity}>
-            {city_names.map((city, index) => (
-              <option value={city} key={index}>{city}</option>
-            ))}
-          </select>
-        </div>
-        <div>
-          <label htmlFor="school" style={{ fontSize: "14px", color: "#fff", margin: "2px 5px 2px 0px", display: "inline-block", width: "60px", textAlign: "right" }}>School:</label>
-          <select id="school" onChange={onSchoolChange} style={{ fontSize: "14px" }} value={selectedSchool}>
-            {schools.map((school, index) => (
-              <option value={index} key={index}>{school}</option>
-            ))}
-          </select>
-        </div>
-        <div>
-          <label htmlFor="method" style={{ fontSize: "14px", color: "#fff", margin: "2px 5px 2px 0px", display: "inline-block", width: "60px", textAlign: "right" }} className="font-sm">Method:</label>
-          <select id="method" onChange={onMethodChange} style={{ fontSize: "14px" }} value={selectedMethod}>
-            {methods.map((method, index) => (
-              <option value={index} key={index}>{method}</option>
-            ))}
-          </select>
-        </div>
       </div>
     </>
   );
