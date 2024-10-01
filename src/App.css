@@ -50,16 +50,10 @@ body::before {
 }
 
 /* Specific styles for different heading levels */
-h1 {
-  font-family: "Poppins", sans-serif;
-  font-weight: 700; /* Slightly bolder for emphasis */
-  font-size: 2rem; /* Increased size for better visibility */
-}
-
 h2 {
   font-family: "Roboto Mono", monospace;
   font-weight: 500; /* Medium weight for distinction */
-  font-size: 1.5rem; /* Adjust size as needed */
+  font-size: 1.2rem; /* Adjust size as needed */
 }
 
 h3 {

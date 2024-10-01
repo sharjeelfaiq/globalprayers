@@ -178,24 +178,19 @@ const App = () => {
   return (
     <>
       <div className="container w-100 table-responsive text-center clock-container">
-        <h1 className="my-2 text-white">
-          {settings.city.charAt(0).toUpperCase() + settings.city.slice(1)}{" "}
-          Prayer Timings&nbsp;
-          <span style={{ fontStyle: "italic", fontSize: "20px" }}>
-            ({today})
-          </span>
-        </h1>
-        <h2 className="my-2 text-white">{islamicDate}</h2>
-        <h3 className="my-2 text-white">{formattedTime}</h3>
+        <h2 className="my-1 text-white text-xs">
+          {islamicDate} - {today}
+        </h2>
+        <h3 className="my-1 text-white text-xs">{formattedTime}</h3>
         {nextPrayerMinutes && (
-          <h5 className="my-2">
-            Next prayer in {nextPrayerMinutes.hours} hours and{" "}
-            {nextPrayerMinutes.minutes} minutes
+          <h5 className="my-1 text-white text-xs">
+            Next prayer in {nextPrayerMinutes.hours}h{" "}
+            {nextPrayerMinutes.minutes}m
           </h5>
         )}
-        <div className="dropdown-container">
+        <div className="dropdown-container flex flex-wrap justify-center gap-2 my-2">
           <select
-            className="form-select"
+            className="form-select text-white"
             value={settings.city}
             onChange={handleSettingChange("city")}
           >
@@ -206,7 +201,7 @@ const App = () => {
             ))}
           </select>
           <select
-            className="form-select"
+            className="form-select text-white"
             value={settings.method}
             onChange={handleSettingChange("method")}
           >
@@ -217,7 +212,7 @@ const App = () => {
             ))}
           </select>
           <select
-            className="form-select"
+            className="form-select text-white"
             value={settings.school}
             onChange={handleSettingChange("school")}
           >
