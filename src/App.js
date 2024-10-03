@@ -2,7 +2,7 @@ import React, { useEffect, useState, useCallback, useMemo } from "react";
 import "./App.css";
 
 const PRAYER_TIMES_URL = "https://api.aladhan.com/v1/calendarByCity";
-const ASMA_UL_HUSNA_URL = "http://api.aladhan.com/v1/asmaAlHusna/:number";
+const ASMA_UL_HUSNA_URL = "https://api.aladhan.com/v1/asmaAlHusna/:number";
 
 const DEFAULT_SETTINGS = {
   country: "Pakistan",
