@@ -106,7 +106,6 @@ const App = () => {
       updateNextPrayerTime();
     }, 1000);
     return () => clearInterval(timer);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [timesArr]);
 
   const handleSettingChange = useCallback(
@@ -173,6 +172,11 @@ const App = () => {
         minutes: minutesUntilNextPrayer,
       });
     }
+  };
+
+  const isCurrentPrayer = (prayerTime, nextPrayerTime) => {
+    const now = currentTime;
+    return now >= prayerTime && now < nextPrayerTime;
   };
 
   return (
@@ -259,27 +263,49 @@ const App = () => {
         <table className="table table-hover table-dark table-shadow">
           <thead>
             <tr>
-              <th>Prayer</th>
-              <th>Time</th>
+              <th scope="col">Prayer</th>
+              <th scope="col">Time</th>
             </tr>
           </thead>
           <tbody>
-            {timesArr.map(([prayer, time], index) => {
-              const cleanTime = time.replace(/ \(PKT\)/, "").trim();
-              const [hour, minute] = cleanTime.split(":");
+            {timesArr.map(([prayerName, time], index) => {
+              const [hours, minutes] = time.split(":");
+              const prayerTime = new Date(
+                currentTime.getFullYear(),
+                currentTime.getMonth(),
+                currentTime.getDate(),
+                parseInt(hours),
+                parseInt(minutes)
+              );
 
-              const hourIn12 = hour % 12 || 12;
-              const amPm = hour < 12 ? "AM" : "PM";
-
-              const formattedTime = `${hourIn12}:${String(minute).padStart(
-                2,
-                "0"
-              )} ${amPm}`;
+              const nextPrayerTime =
+                index < timesArr.length - 1
+                  ? new Date(
+                      currentTime.getFullYear(),
+                      currentTime.getMonth(),
+                      currentTime.getDate(),
+                      parseInt(timesArr[index + 1][1].split(":")[0]),
+                      parseInt(timesArr[index + 1][1].split(":")[1])
+                    )
+                  : new Date(
+                      currentTime.getFullYear(),
+                      currentTime.getMonth(),
+                      currentTime.getDate() + 1,
+                      parseInt(timesArr[0][1].split(":")[0]),
+                      parseInt(timesArr[0][1].split(":")[1])
+                    );
 
               return (
-                <tr key={index}>
-                  <td>{prayer}</td>
-                  <td>{formattedTime}</td>
+                <tr
+                  key={index}
+                  className={
+                    isCurrentPrayer(prayerTime, nextPrayerTime)
+                      ? "current-prayer-row"
+                      : ""
+                  }
+                >
+                  <td>{prayerName}</td>
+                  <td>{time}</td>
                 </tr>
               );
             })}

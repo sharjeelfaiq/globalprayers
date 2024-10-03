@@ -123,3 +123,24 @@ h5:hover {
 .table-shadow {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
 }
+
+.current-prayer-row {
+  background-color: #f0f9f0;  /* Soft, calming green background */
+  color: #1a3d1a;             /* Dark green for text */
+  font-weight: 600;           /* Slightly bolder font for better visibility */
+  border-left: 5px solid #28a745; /* Green left border for emphasis */
+  border-radius: 4px;         /* Slightly rounded corners */
+  box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1); /* Soft shadow for a raised effect */
+  transition: background-color 0.3s ease, transform 0.3s ease; /* Smooth transitions */
+}
+
+.current-prayer-row:hover {
+  background-color: #e4ffe4;  /* Slightly brighter green on hover */
+  transform: scale(1.01);     /* Very slight zoom on hover */
+}
+
+.current-prayer-row td {
+  padding: 12px 16px;         /* Consistent padding for spacing */
+  font-size: 1rem;            /* Balanced font size */
+  letter-spacing: 0.5px;      /* Small letter spacing for clarity */
+}
