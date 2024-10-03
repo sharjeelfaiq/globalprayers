@@ -267,7 +267,7 @@ const App = () => {
       <div className="d-flex justify-content-end position-absolute top-0 end-0">
         <div className="dropdown">
           <button
-            className="btn dropdown-toggle text-white"
+            className="btn dropdown-toggle text-white mt-2"
             type="button"
             id="dropdownMenuButton"
             data-bs-toggle="dropdown"
