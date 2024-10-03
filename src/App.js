@@ -148,7 +148,7 @@ const App = () => {
     let nextPrayerTime = null;
     let minDiff = Infinity;
 
-    timesArr.forEach(([_, time]) => {
+    timesArr?.forEach(([_, time]) => {
       const [hours, minutes] = time.split(":");
       const prayerTime = new Date(
         now.getFullYear(),
@@ -202,14 +202,14 @@ const App = () => {
         parseInt(hours),
         parseInt(minutes)
       );
-  
+
       // Format time to 12-hour clock format
       const formattedPrayerTime = prayerTime.toLocaleTimeString("en-US", {
         hour: "2-digit",
         minute: "2-digit",
         hour12: true,
       });
-  
+
       const nextPrayerTime =
         index < timesArr.length - 1
           ? new Date(
@@ -226,7 +226,7 @@ const App = () => {
               parseInt(timesArr[0][1].split(":")[0]),
               parseInt(timesArr[0][1].split(":")[1])
             );
-  
+
       return (
         <tr
           key={index}
@@ -237,28 +237,14 @@ const App = () => {
           }
         >
           <td>{prayerName}</td>
-          <td>{formattedPrayerTime}</td> {/* Use the formatted time here */}
+          <td>{formattedPrayerTime}</td>
         </tr>
       );
     });
   };
-  
 
   return (
     <div className="position-relative container w-100 table-responsive text-center clock-container">
-      <h2
-        className="my-1 text-white mt-3 px-3 position-absolute top-0 start-0"
-        style={{ fontFamily: "Roboto Mono, monospace" }}
-      >
-        {today}
-      </h2>
-      <h2 className="my-3 text-white">{islamicDate}</h2>
-      <h3 className="my-1 text-white">{formattedTime}</h3>
-      {nextPrayerMinutes && (
-        <h5 className="mt-3 text-white next-prayer-time">
-          Next prayer in {nextPrayerMinutes.hours}h {nextPrayerMinutes.minutes}m
-        </h5>
-      )}
       <div className="d-flex justify-content-end position-absolute top-0 end-0">
         <div className="dropdown">
           <button
@@ -362,7 +348,28 @@ const App = () => {
           </ul>
         </div>
       </div>
-      <table className="table table-borderless table-hover text-white mt-5 mb-4">
+      <h2
+        className="my-1 text-white mt-3 px-3 position-absolute top-0 start-0"
+        style={{ fontFamily: "Roboto Mono, monospace" }}
+      >
+        {today}
+      </h2>
+      <h2 className="my-3 text-white">{islamicDate}</h2>
+      <h3 className="my-1 text-white">{formattedTime}</h3>
+      {nextPrayerMinutes && (
+        <h5 className="mt-1 text-white next-prayer-time">
+          Next prayer in{" "}
+          <span
+            style={{
+              display: nextPrayerMinutes.hours === 0 && "none",
+            }}
+          >
+            {nextPrayerMinutes.hours}h
+          </span>{" "}
+          {nextPrayerMinutes.minutes}m
+        </h5>
+      )}
+      <table className="table table-borderless table-hover text-white">
         <thead>
           <tr>
             <th scope="col">Prayer</th>

@@ -141,7 +141,7 @@ h5:hover {
     background-color: rgba(255, 255, 255, 0.1); /* Light blue */
   }
   50% {
-    background-color: rgba(255, 255, 204, 0.2); /* Darker blue */
+    background-color: rgba(204, 213, 255, 0.2); /* Darker blue */
   }
   100% {
     background-color: rgba(255, 255, 255, 0.1); /* Back to light blue */
