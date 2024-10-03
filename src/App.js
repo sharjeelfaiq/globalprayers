@@ -4,14 +4,13 @@ import "./App.css";
 const API_BASE_URL = "https://api.aladhan.com/v1/calendarByCity";
 const DEFAULT_SETTINGS = {
   country: "Pakistan",
-  city: "Quetta",
+  city: "Rawalpindi",
   method: "1",
   school: "0",
-  latitudeAdjustment: "0", // New Default Setting
-  midnightCalculation: "0", // New Default Setting
+  latitudeAdjustment: "Middle of the Night Method",
+  midnightCalculation: "Standard (Mid Sunset to Sunrise)",
 };
 
-// Existing Schools and Methods arrays
 const SCHOOLS = ["Shafi", "Hanafi"];
 const METHODS = [
   "Shia Ithna-Ansari",
@@ -34,7 +33,6 @@ const METHODS = [
   "Ministry of Endowments and Islamic Affairs, Qatar",
 ];
 
-// New options for Higher Latitude Adjustment and Midnight Calculation
 const LATITUDE_ADJUSTMENT_OPTIONS = [
   "Middle of the Night Method",
   "One Seventh Rule",
@@ -53,7 +51,6 @@ const App = () => {
   const [islamicDate, setIslamicDate] = useState("");
   const [currentTime, setCurrentTime] = useState(new Date());
   const [nextPrayerMinutes, setNextPrayerMinutes] = useState(null);
-
   const [settings, setSettings] = useState(() => ({
     city: localStorage.getItem("city") || DEFAULT_SETTINGS.city,
     country: localStorage.getItem("country") || DEFAULT_SETTINGS.country,
