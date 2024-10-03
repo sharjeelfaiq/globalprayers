@@ -7,21 +7,11 @@ const DEFAULT_SETTINGS = {
   city: "Quetta",
   method: "1",
   school: "0",
+  latitudeAdjustment: "0", // New Default Setting
+  midnightCalculation: "0", // New Default Setting
 };
 
-const CITY_NAMES = [
-  "Quetta",
-  "Karachi",
-  "Lahore",
-  "Islamabad",
-  "Multan",
-  "Faisalabad",
-  "Gujarat",
-  "Rawalpindi",
-  "Peshawar",
-  "Bahawalpur",
-];
-
+// Existing Schools and Methods arrays
 const SCHOOLS = ["Shafi", "Hanafi"];
 const METHODS = [
   "Shia Ithna-Ansari",
@@ -44,6 +34,18 @@ const METHODS = [
   "Ministry of Endowments and Islamic Affairs, Qatar",
 ];
 
+// New options for Higher Latitude Adjustment and Midnight Calculation
+const LATITUDE_ADJUSTMENT_OPTIONS = [
+  "Middle of the Night Method",
+  "One Seventh Rule",
+  "Angle Based Method",
+];
+
+const MIDNIGHT_CALCULATION_OPTIONS = [
+  "Standard (Mid Sunset to Sunrise)",
+  "Jafari (Mid Sunset to Fajr)",
+];
+
 const App = () => {
   const [data, setData] = useState(null);
   const [timesArr, setTimesArr] = useState([]);
@@ -54,18 +56,30 @@ const App = () => {
 
   const [settings, setSettings] = useState(() => ({
     city: localStorage.getItem("city") || DEFAULT_SETTINGS.city,
+    country: localStorage.getItem("country") || DEFAULT_SETTINGS.country,
     school: localStorage.getItem("school") || DEFAULT_SETTINGS.school,
     method: localStorage.getItem("method") || DEFAULT_SETTINGS.method,
+    latitudeAdjustment:
+      localStorage.getItem("latitudeAdjustment") ||
+      DEFAULT_SETTINGS.latitudeAdjustment,
+    midnightCalculation:
+      localStorage.getItem("midnightCalculation") ||
+      DEFAULT_SETTINGS.midnightCalculation,
   }));
 
   const fetchPrayerTimes = useCallback(async () => {
     const date = new Date();
-    const { city, method, school } = settings;
+    const {
+      city,
+      country,
+      method,
+      school,
+      latitudeAdjustment,
+      midnightCalculation,
+    } = settings;
     const url = `${API_BASE_URL}/${date.getFullYear()}/${
       date.getMonth() + 1
-    }?city=${city}&country=${
-      DEFAULT_SETTINGS.country
-    }&method=${method}&school=${school}`;
+    }?city=${city}&country=${country}&method=${method}&school=${school}&latitudeAdjustment=${latitudeAdjustment}&midnightCalculation=${midnightCalculation}`;
 
     try {
       const response = await fetch(url);
@@ -106,7 +120,7 @@ const App = () => {
       updateNextPrayerTime();
     }, 1000);
     return () => clearInterval(timer);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [timesArr]);
 
   const handleSettingChange = useCallback(
@@ -118,202 +132,238 @@ const App = () => {
     []
   );
 
-  const formattedTime = useMemo(() => {
-    return currentTime.toLocaleTimeString("en-US", {
-      hour: "2-digit",
-      minute: "2-digit",
-      second: "2-digit",
-      hour12: true,
-    });
-  }, [currentTime]);
+  const formattedTime = useMemo(
+    () =>
+      currentTime.toLocaleTimeString("en-US", {
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: true,
+      }),
+    [currentTime]
+  );
 
   const updateNextPrayerTime = () => {
     const now = new Date();
     let nextPrayerTime = null;
     let minDiff = Infinity;
 
-    if (timesArr && timesArr.length > 0) {
-      timesArr.forEach(([_, time]) => {
-        const [hours, minutes] = time.split(":");
-        const prayerTime = new Date(
-          now.getFullYear(),
-          now.getMonth(),
-          now.getDate(),
-          parseInt(hours),
-          parseInt(minutes)
-        );
+    timesArr.forEach(([_, time]) => {
+      const [hours, minutes] = time.split(":");
+      const prayerTime = new Date(
+        now.getFullYear(),
+        now.getMonth(),
+        now.getDate(),
+        parseInt(hours),
+        parseInt(minutes)
+      );
 
-        if (prayerTime > now) {
-          const diff = (prayerTime - now) / (1000 * 60); // in minutes
-          if (diff < minDiff) {
-            minDiff = diff;
-            nextPrayerTime = prayerTime;
-          }
+      if (prayerTime > now) {
+        const diff = (prayerTime - now) / (1000 * 60); // in minutes
+        if (diff < minDiff) {
+          minDiff = diff;
+          nextPrayerTime = prayerTime;
         }
-      });
-
-      if (!nextPrayerTime) {
-        const [, time] = timesArr[0];
-        const [hours, minutes] = time.split(":");
-        nextPrayerTime = new Date(
-          now.getFullYear(),
-          now.getMonth(),
-          now.getDate() + 1,
-          parseInt(hours),
-          parseInt(minutes)
-        );
-        minDiff = (nextPrayerTime - now) / (1000 * 60);
       }
+    });
 
-      const hoursUntilNextPrayer = Math.floor(minDiff / 60);
-      const minutesUntilNextPrayer = Math.round(minDiff % 60);
-
-      setNextPrayerMinutes({
-        hours: hoursUntilNextPrayer,
-        minutes: minutesUntilNextPrayer,
-      });
+    if (!nextPrayerTime) {
+      const [, time] = timesArr[0];
+      const [hours, minutes] = time.split(":");
+      nextPrayerTime = new Date(
+        now.getFullYear(),
+        now.getMonth(),
+        now.getDate() + 1,
+        parseInt(hours),
+        parseInt(minutes)
+      );
+      minDiff = (nextPrayerTime - now) / (1000 * 60);
     }
+
+    const hoursUntilNextPrayer = Math.floor(minDiff / 60);
+    const minutesUntilNextPrayer = Math.round(minDiff % 60);
+    setNextPrayerMinutes({
+      hours: hoursUntilNextPrayer,
+      minutes: minutesUntilNextPrayer,
+    });
   };
 
   const isCurrentPrayer = (prayerTime, nextPrayerTime) => {
-    const now = currentTime;
-    return now >= prayerTime && now < nextPrayerTime;
+    return currentTime >= prayerTime && currentTime < nextPrayerTime;
+  };
+
+  const renderPrayerRows = () => {
+    return timesArr.map(([prayerName, time], index) => {
+      const [hours, minutes] = time.split(":");
+      const prayerTime = new Date(
+        currentTime.getFullYear(),
+        currentTime.getMonth(),
+        currentTime.getDate(),
+        parseInt(hours),
+        parseInt(minutes)
+      );
+
+      const nextPrayerTime =
+        index < timesArr.length - 1
+          ? new Date(
+              currentTime.getFullYear(),
+              currentTime.getMonth(),
+              currentTime.getDate(),
+              parseInt(timesArr[index + 1][1].split(":")[0]),
+              parseInt(timesArr[index + 1][1].split(":")[1])
+            )
+          : new Date(
+              currentTime.getFullYear(),
+              currentTime.getMonth(),
+              currentTime.getDate() + 1,
+              parseInt(timesArr[0][1].split(":")[0]),
+              parseInt(timesArr[0][1].split(":")[1])
+            );
+
+      return (
+        <tr
+          key={index}
+          className={
+            isCurrentPrayer(prayerTime, nextPrayerTime)
+              ? "current-prayer-row"
+              : ""
+          }
+        >
+          <td>{prayerName}</td>
+          <td>{time}</td>
+        </tr>
+      );
+    });
   };
 
   return (
-    <>
-      <div className="position-relative container w-100 table-responsive text-center clock-container">
-        <h2
-          className="my-1 text-white mt-3 px-3 position-absolute top-0 start-0"
-          style={{ fontFamily: "Roboto Mono, monospace" }}
-        >
-          {today}
-        </h2>
-        <h2 className="my-3 text-white">{islamicDate}</h2>
-        <h3 className="my-1 text-white">{formattedTime}</h3>
-        {nextPrayerMinutes && (
-          <h5 className="my-1 text-white">
-            Next prayer in {nextPrayerMinutes.hours}h{" "}
-            {nextPrayerMinutes.minutes}m
-          </h5>
-        )}
-        <div className="d-flex justify-content-end position-absolute top-0 end-0 mt-3">
-          <div className="dropdown">
-            <button
-              className="btn dropdown-toggle text-white"
-              type="button"
-              id="dropdownMenuButton"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
-            >
-              <i className="fas fa-cog"></i>
-            </button>
-            <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-              <li>
-                <div className="dropdown-item">
-                  City:
-                  <select
-                    className="form-select mt-2 text-black"
-                    value={settings.city}
-                    onChange={handleSettingChange("city")}
-                  >
-                    {CITY_NAMES.map((city, index) => (
-                      <option key={index} value={city}>
-                        {city}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </li>
-              <li>
-                <div className="dropdown-item">
-                  Method:
-                  <select
-                    className="form-select mt-2 text-black"
-                    value={settings.method}
-                    onChange={handleSettingChange("method")}
-                  >
-                    {METHODS.map((method, index) => (
-                      <option key={index} value={index + 1}>
-                        {method}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </li>
-              <li>
-                <div className="dropdown-item">
-                  School:
-                  <select
-                    className="form-select mt-2 text-black"
-                    value={settings.school}
-                    onChange={handleSettingChange("school")}
-                  >
-                    {SCHOOLS.map((school, index) => (
-                      <option key={index} value={index}>
-                        {school}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </li>
-            </ul>
-          </div>
-        </div>
-
-        <table className="table table-hover table-dark table-shadow">
-          <thead>
-            <tr>
-              <th scope="col">Prayer</th>
-              <th scope="col">Time</th>
-            </tr>
-          </thead>
-          <tbody>
-            {timesArr.map(([prayerName, time], index) => {
-              const [hours, minutes] = time.split(":");
-              const prayerTime = new Date(
-                currentTime.getFullYear(),
-                currentTime.getMonth(),
-                currentTime.getDate(),
-                parseInt(hours),
-                parseInt(minutes)
-              );
-
-              const nextPrayerTime =
-                index < timesArr.length - 1
-                  ? new Date(
-                      currentTime.getFullYear(),
-                      currentTime.getMonth(),
-                      currentTime.getDate(),
-                      parseInt(timesArr[index + 1][1].split(":")[0]),
-                      parseInt(timesArr[index + 1][1].split(":")[1])
-                    )
-                  : new Date(
-                      currentTime.getFullYear(),
-                      currentTime.getMonth(),
-                      currentTime.getDate() + 1,
-                      parseInt(timesArr[0][1].split(":")[0]),
-                      parseInt(timesArr[0][1].split(":")[1])
-                    );
-
-              return (
-                <tr
-                  key={index}
-                  className={
-                    isCurrentPrayer(prayerTime, nextPrayerTime)
-                      ? "current-prayer-row"
-                      : ""
-                  }
+    <div className="position-relative container w-100 table-responsive text-center clock-container">
+      <h2
+        className="my-1 text-white mt-3 px-3 position-absolute top-0 start-0"
+        style={{ fontFamily: "Roboto Mono, monospace" }}
+      >
+        {today}
+      </h2>
+      <h2 className="my-3 text-white">{islamicDate}</h2>
+      <h3 className="my-1 text-white">{formattedTime}</h3>
+      {nextPrayerMinutes && (
+        <h5 className="mt-3 text-white">
+          Next prayer in {nextPrayerMinutes.hours}h {nextPrayerMinutes.minutes}m
+        </h5>
+      )}
+      <div className="d-flex justify-content-end position-absolute top-0 end-0">
+        <div className="dropdown">
+          <button
+            className="btn dropdown-toggle text-white"
+            type="button"
+            id="dropdownMenuButton"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+          >
+            <i className="fas fa-cog"></i>
+          </button>
+          <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton">
+            <li>
+              <div className="dropdown-item">
+                Method
+                <select
+                  className="form-select mt-2 text-black"
+                  value={settings.method}
+                  onChange={handleSettingChange("method")}
                 >
-                  <td>{prayerName}</td>
-                  <td>{time}</td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+                  {METHODS.map((method, index) => (
+                    <option key={index} value={index}>
+                      {method}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </li>
+            <li>
+              <div className="dropdown-item">
+                City
+                <input
+                  type="text"
+                  className="form-control mt-2"
+                  placeholder="Enter city name"
+                  value={settings.city}
+                  onChange={handleSettingChange("city")}
+                />
+              </div>
+            </li>
+            <li>
+              <div className="dropdown-item">
+                Country
+                <input
+                  type="text"
+                  className="form-control mt-2"
+                  placeholder="Enter country name"
+                  value={settings.country}
+                  onChange={handleSettingChange("country")}
+                />
+              </div>
+            </li>
+            <li>
+              <div className="dropdown-item">
+                Juristic School (only affects Asr calculation)
+                <select
+                  className="form-select mt-2 text-black"
+                  value={settings.school}
+                  onChange={handleSettingChange("school")}
+                >
+                  {SCHOOLS.map((school, index) => (
+                    <option key={index} value={index}>
+                      {school}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </li>
+            <li>
+              <div className="dropdown-item">
+                Higher Latitude Adjustment:
+                <select
+                  className="form-select mt-2 text-black"
+                  value={settings.latitudeAdjustment}
+                  onChange={handleSettingChange("latitudeAdjustment")}
+                >
+                  {LATITUDE_ADJUSTMENT_OPTIONS.map((option, index) => (
+                    <option key={index} value={index}>
+                      {option}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </li>
+            <li>
+              <div className="dropdown-item">
+                Midnight Calculation Mode:
+                <select
+                  className="form-select mt-2 text-black"
+                  value={settings.midnightCalculation}
+                  onChange={handleSettingChange("midnightCalculation")}
+                >
+                  {MIDNIGHT_CALCULATION_OPTIONS.map((option, index) => (
+                    <option key={index} value={index}>
+                      {option}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </li>
+          </ul>
+        </div>
       </div>
-    </>
+      <table className="table table-borderless table-hover text-white mt-5 mb-4">
+        <thead>
+          <tr>
+            <th scope="col">Prayer</th>
+            <th scope="col">Time</th>
+          </tr>
+        </thead>
+        <tbody>{renderPrayerRows()}</tbody>
+      </table>
+    </div>
   );
 };
 
