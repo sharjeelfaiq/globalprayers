@@ -1,7 +1,9 @@
 import React, { useEffect, useState, useCallback, useMemo } from "react";
 import "./App.css";
 
-const API_BASE_URL = "https://api.aladhan.com/v1/calendarByCity";
+const PRAYER_TIMES_URL = "https://api.aladhan.com/v1/calendarByCity";
+const ASMA_UL_HUSNA_URL = "http://api.aladhan.com/v1/asmaAlHusna/:number";
+
 const DEFAULT_SETTINGS = {
   country: "Pakistan",
   city: "Rawalpindi",
@@ -51,6 +53,7 @@ const App = () => {
   const [islamicDate, setIslamicDate] = useState("");
   const [currentTime, setCurrentTime] = useState(new Date());
   const [nextPrayerMinutes, setNextPrayerMinutes] = useState(null);
+  const [asmaUlHusna, setAsmaUlHusna] = useState([]);
   const [settings, setSettings] = useState(() => ({
     city: localStorage.getItem("city") || DEFAULT_SETTINGS.city,
     country: localStorage.getItem("country") || DEFAULT_SETTINGS.country,
@@ -64,6 +67,26 @@ const App = () => {
       DEFAULT_SETTINGS.midnightCalculation,
   }));
 
+  const fetchAsmaUlHusna = useCallback(async () => {
+    const randomNumber = Math.floor(Math.random() * 99) + 1; // Generate a random number between 1 and 99
+    try {
+      const response = await fetch(
+        ASMA_UL_HUSNA_URL.replace(":number", randomNumber)
+      );
+      if (!response.ok)
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      const json = await response.json();
+      setAsmaUlHusna(json.data);
+      console.log(json.data);
+    } catch (error) {
+      console.error("Failed to fetch Asma-ul-Husna:", error);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchAsmaUlHusna();
+  }, [fetchAsmaUlHusna]);
+
   const fetchPrayerTimes = useCallback(async () => {
     const date = new Date();
     const {
@@ -74,7 +97,7 @@ const App = () => {
       latitudeAdjustment,
       midnightCalculation,
     } = settings;
-    const url = `${API_BASE_URL}/${date.getFullYear()}/${
+    const url = `${PRAYER_TIMES_URL}/${date.getFullYear()}/${
       date.getMonth() + 1
     }?city=${city}&country=${country}&method=${method}&school=${school}&latitudeAdjustment=${latitudeAdjustment}&midnightCalculation=${midnightCalculation}`;
 
@@ -200,7 +223,6 @@ const App = () => {
         parseInt(minutes)
       );
 
-      // Format time to 12-hour clock format
       const formattedPrayerTime = prayerTime.toLocaleTimeString("en-US", {
         hour: "2-digit",
         minute: "2-digit",
@@ -351,7 +373,7 @@ const App = () => {
       >
         {today}
       </h2>
-      <h2 className="my-3 text-white">{islamicDate}</h2>
+      <h2 className="mt-5 mb-4 text-white">{islamicDate}</h2>
       <h3 className="my-1 text-white">{formattedTime}</h3>
       {nextPrayerMinutes && (
         <h5 className="mt-1 text-white next-prayer-time">
@@ -366,7 +388,7 @@ const App = () => {
           {nextPrayerMinutes.minutes}m
         </h5>
       )}
-      <table className="table table-borderless table-hover text-white">
+      <table className="table table-borderless table-hover text-white mt-2">
         <thead>
           <tr>
             <th scope="col">Prayer</th>
