@@ -202,7 +202,14 @@ const App = () => {
         parseInt(hours),
         parseInt(minutes)
       );
-
+  
+      // Format time to 12-hour clock format
+      const formattedPrayerTime = prayerTime.toLocaleTimeString("en-US", {
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: true,
+      });
+  
       const nextPrayerTime =
         index < timesArr.length - 1
           ? new Date(
@@ -219,7 +226,7 @@ const App = () => {
               parseInt(timesArr[0][1].split(":")[0]),
               parseInt(timesArr[0][1].split(":")[1])
             );
-
+  
       return (
         <tr
           key={index}
@@ -230,11 +237,12 @@ const App = () => {
           }
         >
           <td>{prayerName}</td>
-          <td>{time}</td>
+          <td>{formattedPrayerTime}</td> {/* Use the formatted time here */}
         </tr>
       );
     });
   };
+  
 
   return (
     <div className="position-relative container w-100 table-responsive text-center clock-container">
@@ -247,7 +255,7 @@ const App = () => {
       <h2 className="my-3 text-white">{islamicDate}</h2>
       <h3 className="my-1 text-white">{formattedTime}</h3>
       {nextPrayerMinutes && (
-        <h5 className="mt-3 text-white">
+        <h5 className="mt-3 text-white next-prayer-time">
           Next prayer in {nextPrayerMinutes.hours}h {nextPrayerMinutes.minutes}m
         </h5>
       )}
