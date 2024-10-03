@@ -1,50 +1,15 @@
 import React, { useEffect, useState, useCallback, useMemo } from "react";
+import { config } from "./config";
+import { getData } from "./api.js";
 import "./App.css";
 
-const PRAYER_TIMES_URL = "https://api.aladhan.com/v1/calendarByCity";
-const ASMA_UL_HUSNA_URL = "https://api.aladhan.com/v1/asmaAlHusna/:number";
-
-const DEFAULT_SETTINGS = {
-  country: "Pakistan",
-  city: "Rawalpindi",
-  method: "1",
-  school: "0",
-  latitudeAdjustment: "Middle of the Night Method",
-  midnightCalculation: "Standard (Mid Sunset to Sunrise)",
-};
-
-const SCHOOLS = ["Shafi", "Hanafi"];
-const METHODS = [
-  "Shia Ithna-Ansari",
-  "University of Islamic Sciences, Karachi",
-  "Islamic Society of North America",
-  "Muslim World League",
-  "Umm al-Qura University, Makkah",
-  "Egyptian General Authority of Survey",
-  "Institute of Geophysics, University of Tehran",
-  "Gulf Region",
-  "Kuwait",
-  "Qatar",
-  "Majlis Ugama Islam Singapura, Singapore",
-  "Union Organization islamic de France",
-  "Diyanet İşleri Başkanlığı, Turkey",
-  "Spiritual Administration of Muslims of Russia",
-  "Ministry of Awqaf and Islamic Affairs, Kuwait",
-  "Ministry of Religious Affairs and Wakfs, Algeria",
-  "Ministry of Religious Affairs, Tunisia",
-  "Ministry of Endowments and Islamic Affairs, Qatar",
-];
-
-const LATITUDE_ADJUSTMENT_OPTIONS = [
-  "Middle of the Night Method",
-  "One Seventh Rule",
-  "Angle Based Method",
-];
-
-const MIDNIGHT_CALCULATION_OPTIONS = [
-  "Standard (Mid Sunset to Sunrise)",
-  "Jafari (Mid Sunset to Fajr)",
-];
+const {
+  default: DEFAULT_SETTINGS,
+  schools,
+  methods,
+  lattitude_adjustment_options,
+  mindnight_calculation_options,
+} = config;
 
 const App = () => {
   const [data, setData] = useState(null);
@@ -67,48 +32,20 @@ const App = () => {
       DEFAULT_SETTINGS.midnightCalculation,
   }));
 
-  const fetchAsmaUlHusna = useCallback(async () => {
-    const randomNumber = Math.floor(Math.random() * 99) + 1; // Generate a random number between 1 and 99
-    try {
-      const response = await fetch(
-        ASMA_UL_HUSNA_URL.replace(":number", randomNumber)
-      );
-      if (!response.ok)
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      const json = await response.json();
-      setAsmaUlHusna(json.data);
-    } catch (error) {
-      console.error("Failed to fetch Asma-ul-Husna:", error);
-    }
+  const fetchAsmaUlHusna = useCallback(() => {
+    getData.asmaUlHusma().then((data) => {
+      setAsmaUlHusna(data);
+    });
   }, []);
 
   useEffect(() => {
     fetchAsmaUlHusna();
   }, [fetchAsmaUlHusna]);
 
-  const fetchPrayerTimes = useCallback(async () => {
-    const date = new Date();
-    const {
-      city,
-      country,
-      method,
-      school,
-      latitudeAdjustment,
-      midnightCalculation,
-    } = settings;
-    const url = `${PRAYER_TIMES_URL}/${date.getFullYear()}/${
-      date.getMonth() + 1
-    }?city=${city}&country=${country}&method=${method}&school=${school}&latitudeAdjustment=${latitudeAdjustment}&midnightCalculation=${midnightCalculation}`;
-
-    try {
-      const response = await fetch(url);
-      if (!response.ok)
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      const json = await response.json();
-      setData(json);
-    } catch (error) {
-      console.error("Failed to fetch prayer times:", error);
-    }
+  const fetchPrayerTimes = useCallback(() => {
+    getData.prayerTimes(settings).then((data) => {
+      setData(data);
+    });
   }, [settings]);
 
   useEffect(() => {
@@ -116,9 +53,9 @@ const App = () => {
   }, [fetchPrayerTimes]);
 
   useEffect(() => {
-    if (data?.data) {
+    if (data) {
       const currentDate = new Date().getDate() - 1;
-      const currentDayData = data.data[currentDate];
+      const currentDayData = data[currentDate];
 
       setIslamicDate(
         `${currentDayData.date.hijri.month.en} ${currentDayData.date.hijri.day}, ${currentDayData.date.hijri.year}`
@@ -284,7 +221,7 @@ const App = () => {
                   value={settings.method}
                   onChange={handleSettingChange("method")}
                 >
-                  {METHODS.map((method, index) => (
+                  {methods.map((method, index) => (
                     <option key={index} value={index}>
                       {method}
                     </option>
@@ -324,7 +261,7 @@ const App = () => {
                   value={settings.school}
                   onChange={handleSettingChange("school")}
                 >
-                  {SCHOOLS.map((school, index) => (
+                  {schools.map((school, index) => (
                     <option key={index} value={index}>
                       {school}
                     </option>
@@ -340,7 +277,7 @@ const App = () => {
                   value={settings.latitudeAdjustment}
                   onChange={handleSettingChange("latitudeAdjustment")}
                 >
-                  {LATITUDE_ADJUSTMENT_OPTIONS.map((option, index) => (
+                  {lattitude_adjustment_options.map((option, index) => (
                     <option key={index} value={index}>
                       {option}
                     </option>
@@ -356,7 +293,7 @@ const App = () => {
                   value={settings.midnightCalculation}
                   onChange={handleSettingChange("midnightCalculation")}
                 >
-                  {MIDNIGHT_CALCULATION_OPTIONS.map((option, index) => (
+                  {mindnight_calculation_options.map((option, index) => (
                     <option key={index} value={index}>
                       {option}
                     </option>
