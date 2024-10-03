@@ -167,24 +167,25 @@ const App = () => {
     let nextPrayerTime = null;
     let minDiff = Infinity;
 
-    timesArr?.forEach(([_, time]) => {
-      const [hours, minutes] = time.split(":");
-      const prayerTime = new Date(
-        now.getFullYear(),
-        now.getMonth(),
-        now.getDate(),
-        parseInt(hours),
-        parseInt(minutes)
-      );
+    if (timesArr)
+      timesArr.forEach(([_, time]) => {
+        const [hours, minutes] = time.split(":");
+        const prayerTime = new Date(
+          now.getFullYear(),
+          now.getMonth(),
+          now.getDate(),
+          parseInt(hours),
+          parseInt(minutes)
+        );
 
-      if (prayerTime > now) {
-        const diff = (prayerTime - now) / (1000 * 60); // in minutes
-        if (diff < minDiff) {
-          minDiff = diff;
-          nextPrayerTime = prayerTime;
+        if (prayerTime > now) {
+          const diff = (prayerTime - now) / (1000 * 60); // in minutes
+          if (diff < minDiff) {
+            minDiff = diff;
+            nextPrayerTime = prayerTime;
+          }
         }
-      }
-    });
+      });
 
     if (!nextPrayerTime) {
       const [, time] = timesArr[0];
