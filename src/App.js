@@ -375,7 +375,7 @@ const App = () => {
         <br />
         {islamicDate}
       </h5>
-      <p className="mt-5 text-white text-center">
+      <p className="mt-3 text-white text-center">
         {asmaUlHusna.map((item) => (
           <span key={item.name}>
             <strong>{item.name}:</strong> <small>{item.en.meaning}</small>
