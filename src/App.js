@@ -77,7 +77,6 @@ const App = () => {
         throw new Error(`HTTP error! Status: ${response.status}`);
       const json = await response.json();
       setAsmaUlHusna(json.data);
-      console.log(json.data);
     } catch (error) {
       console.error("Failed to fetch Asma-ul-Husna:", error);
     }
@@ -367,14 +366,23 @@ const App = () => {
           </ul>
         </div>
       </div>
-      <h2
-        className="my-1 text-white mt-3 px-3 position-absolute top-0 start-0"
+      <h5
+        className="my-1 text-white mt-3 px-3 text-sm position-absolute top-0 start-0 text-start"
         style={{ fontFamily: "Roboto Mono, monospace" }}
       >
         {today}
-      </h2>
-      <h2 className="mt-5 mb-4 text-white">{islamicDate}</h2>
-      <h3 className="my-1 text-white">{formattedTime}</h3>
+        <br />
+        {islamicDate}
+      </h5>
+      <p className="mt-5 text-white text-center">
+        {asmaUlHusna.map((item) => (
+          <span key={item.name}>
+            <strong>{item.name}:</strong> <small>{item.en.meaning}</small>
+          </span>
+        ))}
+      </p>
+
+      <h3 className="text-white">{formattedTime}</h3>
       {nextPrayerMinutes && (
         <h5 className="mt-1 text-white next-prayer-time">
           Next prayer in{" "}
@@ -388,7 +396,7 @@ const App = () => {
           {nextPrayerMinutes.minutes}m
         </h5>
       )}
-      <table className="table table-borderless table-hover text-white mt-2">
+      <table className="table table-borderless table-hover text-white mt-3">
         <thead>
           <tr>
             <th scope="col">Prayer</th>
