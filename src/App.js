@@ -12,7 +12,7 @@ const {
 } = config;
 
 const App = () => {
-  const [data, setData] = useState(null);
+  const [prayerTimes, setPrayerTimes] = useState(null);
   const [timesArr, setTimesArr] = useState([]);
   const [today, setToday] = useState("");
   const [islamicDate, setIslamicDate] = useState("");
@@ -44,7 +44,7 @@ const App = () => {
 
   const fetchPrayerTimes = useCallback(() => {
     getData.prayerTimes(settings).then((data) => {
-      setData(data);
+      setPrayerTimes(data);
     });
   }, [settings]);
 
@@ -53,9 +53,9 @@ const App = () => {
   }, [fetchPrayerTimes]);
 
   useEffect(() => {
-    if (data) {
+    if (prayerTimes) {
       const currentDate = new Date().getDate() - 1;
-      const currentDayData = data[currentDate];
+      const currentDayData = prayerTimes[currentDate];
 
       setIslamicDate(
         `${currentDayData.date.hijri.month.en} ${currentDayData.date.hijri.day}, ${currentDayData.date.hijri.year}`
@@ -68,7 +68,7 @@ const App = () => {
 
       setTimesArr(relevantTimes);
     }
-  }, [data]);
+  }, [prayerTimes]);
 
   useEffect(() => {
     const timer = setInterval(() => {
