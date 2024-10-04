@@ -124,7 +124,7 @@ const App = () => {
         }
       });
 
-    if (!nextPrayerTime) {
+    if (!nextPrayerTime && timesArr?.length > 0) {
       const [, time] = timesArr[0];
       const [hours, minutes] = time.split(":");
       nextPrayerTime = new Date(
@@ -322,7 +322,7 @@ const App = () => {
 
       <h3 className="text-white">{formattedTime}</h3>
       {nextPrayerMinutes && (
-        <h5 className="mt-1 text-white next-prayer-time">
+        <h6 className="mt-1 text-white next-prayer-time">
           Next prayer in{" "}
           <span
             style={{
@@ -332,7 +332,7 @@ const App = () => {
             {nextPrayerMinutes.hours}h
           </span>{" "}
           {nextPrayerMinutes.minutes}m
-        </h5>
+        </h6>
       )}
       <table className="table table-borderless table-hover text-white mt-3">
         <thead>
