@@ -1,6 +1,5 @@
 import axios from "axios";
 
-// Define URLs as constants (could also use environment variables)
 const PRAYER_TIMES_URL = "https://api.aladhan.com/v1/calendarByCity";
 const ASMA_UL_HUSNA_URL = "https://api.aladhan.com/v1/asmaAlHusna/:number";
 
