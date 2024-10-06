@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { getData } from "../api";
+import { getData } from "../../api/api";
 
 const AsmaUlHusna = () => {
   const [asmaUlHusna, setAsmaUlHusna] = useState([]);

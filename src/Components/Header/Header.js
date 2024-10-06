@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { PrayersContext } from "./context/prayersContext.js";
+import { PrayersContext } from "../../context/prayersContext.js";
 
 const Header = () => {
   const { today, islamicDate, handleSettingChange } = useContext(PrayersContext);

@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { PrayersContext } from "../context/prayersContext";
+import { PrayersContext } from "../../context/prayersContext";
 
 const NextPrayer = () => {
   const { prayerTimes } = useContext(PrayersContext);

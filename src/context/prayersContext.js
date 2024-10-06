@@ -1,6 +1,6 @@
 import { useState, createContext, useCallback, useEffect, useMemo } from "react";
-import { config } from "../config";
-import { getData } from "../api";
+import { config } from "../Components/config";
+import { getData } from "../api/api";
 
 const {
   default: DEFAULT_SETTINGS,

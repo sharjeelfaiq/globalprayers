@@ -1,5 +1,5 @@
 import { useContext, useEffect, useMemo, useState } from "react";
-import { PrayersContext } from "../context/prayersContext";
+import { PrayersContext } from "../../context/prayersContext";
 
 const PrayersTable = () => {
   const [timesArr, setTimesArr] = useState([]);
