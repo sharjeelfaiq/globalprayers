@@ -6,25 +6,50 @@ const PrayersTable = () => {
   const [currentTime, setCurrentTime] = useState(new Date());
   const { prayerTimes } = useContext(PrayersContext);
 
+  // Update current time every second
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentTime(new Date());
     }, 1000);
     return () => clearInterval(timer);
   }, []);
+
+  // Fetch prayer times for the current day and filter the required times
   useEffect(() => {
     if (prayerTimes) {
       const currentDate = new Date().getDate() - 1;
       const currentDayData = prayerTimes[currentDate];
-      const relevantTimes = Object.entries(currentDayData.timings).filter(
-        (_, index) => ![4, 7, 8, 9, 10].includes(index)
-      );
-      setTimesArr(relevantTimes);
+      if (currentDayData && currentDayData.timings) {
+        const relevantTimes = Object.entries(currentDayData.timings).filter(
+          (_, index) => ![4, 7, 8, 9, 10].includes(index) // Filter unnecessary timings
+        );
+        setTimesArr(relevantTimes);
+      }
     }
   }, [prayerTimes]);
 
+  // Helper function to format prayer time
+  const formatTime = (time) => {
+    const [hours, minutes] = time.split(":");
+    const prayerTime = new Date(
+      currentTime.getFullYear(),
+      currentTime.getMonth(),
+      currentTime.getDate(),
+      parseInt(hours),
+      parseInt(minutes)
+    );
+    return prayerTime.toLocaleTimeString("en-US", {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true,
+    });
+  };
+
+  // Helper function to check if it's the current prayer time
   const isCurrentPrayer = (prayerTime, nextPrayerTime) =>
     currentTime >= prayerTime && currentTime < nextPrayerTime;
+
+  // Memoized prayer rows for rendering
   const prayerRows = useMemo(() => {
     return timesArr.map(([prayerName, time], index) => {
       const [hours, minutes] = time.split(":");
@@ -36,12 +61,7 @@ const PrayersTable = () => {
         parseInt(minutes)
       );
 
-      const formattedPrayerTime = prayerTime.toLocaleTimeString("en-US", {
-        hour: "2-digit",
-        minute: "2-digit",
-        hour12: true,
-      });
-
+      // Determine next prayer time
       const nextPrayerTime =
         index < timesArr.length - 1
           ? new Date(
@@ -61,12 +81,13 @@ const PrayersTable = () => {
 
       return {
         prayerName,
-        formattedPrayerTime,
+        formattedPrayerTime: formatTime(time),
         isCurrent: isCurrentPrayer(prayerTime, nextPrayerTime),
       };
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [timesArr, currentTime]);
+
   return (
     <table className="table table-borderless table-hover text-white mt-3">
       <thead>

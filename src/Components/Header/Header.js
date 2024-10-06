@@ -2,15 +2,26 @@ import React, { useContext } from "react";
 import { PrayersContext } from "../../context/prayersContext.js";
 
 const Header = () => {
-  const { today, islamicDate, handleSettingChange } = useContext(PrayersContext);
-  const prayersTimeConfig = useContext(PrayersContext);
   const {
-    settings,
-    schools,
+    today,
+    islamicDate,
+    handleSettingChange,
+    settings: {
+      method,
+      city,
+      country,
+      school,
+      latitudeAdjustment,
+      midnightCalculation,
+    },
     methods,
+    schools,
     latitude_adjustment_options,
     mindnight_calculation_options,
-  } = prayersTimeConfig;
+  } = useContext(PrayersContext);
+
+  // Define a consistent className for form elements
+  const formClass = "form-select mt-2 text-black";
 
   return (
     <div className="d-flex justify-content-between container-fluid">
@@ -34,12 +45,13 @@ const Header = () => {
           <i className="fas fa-cog"></i>
         </button>
         <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton">
+          {/* Method */}
           <li>
             <div className="dropdown-item">
               Method
               <select
-                className="form-select mt-2 text-black"
-                value={settings.method}
+                className={formClass}
+                value={method}
                 onChange={handleSettingChange("method")}
               >
                 {methods.map((method, index) => (
@@ -50,6 +62,8 @@ const Header = () => {
               </select>
             </div>
           </li>
+
+          {/* City */}
           <li>
             <div className="dropdown-item">
               City
@@ -57,11 +71,13 @@ const Header = () => {
                 type="text"
                 className="form-control mt-2"
                 placeholder="Enter city name"
-                value={settings.city}
+                value={city}
                 onChange={handleSettingChange("city")}
               />
             </div>
           </li>
+
+          {/* Country */}
           <li>
             <div className="dropdown-item">
               Country
@@ -69,17 +85,19 @@ const Header = () => {
                 type="text"
                 className="form-control mt-2"
                 placeholder="Enter country name"
-                value={settings.country}
+                value={country}
                 onChange={handleSettingChange("country")}
               />
             </div>
           </li>
+
+          {/* Juristic School */}
           <li>
             <div className="dropdown-item">
               Juristic School (only affects Asr calculation)
               <select
-                className="form-select mt-2 text-black"
-                value={settings.school}
+                className={formClass}
+                value={school}
                 onChange={handleSettingChange("school")}
               >
                 {schools.map((school, index) => (
@@ -90,12 +108,14 @@ const Header = () => {
               </select>
             </div>
           </li>
+
+          {/* Latitude Adjustment */}
           <li>
             <div className="dropdown-item">
-              Higher Latitude Adjustment:
+              Higher Latitude Adjustment
               <select
-                className="form-select mt-2 text-black"
-                value={settings.latitudeAdjustment}
+                className={formClass}
+                value={latitudeAdjustment}
                 onChange={handleSettingChange("latitudeAdjustment")}
               >
                 {latitude_adjustment_options.map((option, index) => (
@@ -106,12 +126,14 @@ const Header = () => {
               </select>
             </div>
           </li>
+
+          {/* Midnight Calculation */}
           <li>
             <div className="dropdown-item">
-              Midnight Calculation Mode:
+              Midnight Calculation Mode
               <select
-                className="form-select mt-2 text-black"
-                value={settings.midnightCalculation}
+                className={formClass}
+                value={midnightCalculation}
                 onChange={handleSettingChange("midnightCalculation")}
               >
                 {mindnight_calculation_options.map((option, index) => (

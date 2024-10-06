@@ -1,24 +1,23 @@
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { getData } from "../../api/api";
 
 const AsmaUlHusna = () => {
   const [asmaUlHusna, setAsmaUlHusna] = useState([]);
 
-  const fetchAsmaUlHusna = useCallback(async () => {
-    const data = await getData.asmaUlHusma();
-    setAsmaUlHusna(data);
-  }, []);
-
   useEffect(() => {
-    fetchAsmaUlHusna();
-  }, [fetchAsmaUlHusna]);
+    const fetchAsmaUlHusna = async () => {
+      const data = await getData.asmaUlHusma();
+      setAsmaUlHusna(data);
+    };
 
+    fetchAsmaUlHusna();
+  }, []); // Empty dependency array ensures this runs only once
 
   return (
     <p className="text-white text-center">
-      {asmaUlHusna.map((item) => (
-        <span key={item.name}>
-          <strong>{item.name}:</strong> <small>{item.en.meaning}</small>
+      {asmaUlHusna.map(({ name, en: { meaning } }) => (
+        <span key={name}>
+          <strong>{name}:</strong> <small>{meaning}</small>
         </span>
       ))}
     </p>
