@@ -28,7 +28,7 @@ export const config = {
     "Ministry of Religious Affairs, Tunisia",
     "Ministry of Endowments and Islamic Affairs, Qatar",
   ],
-  lattitude_adjustment_options: [
+  latitude_adjustment_options: [
     "Middle of the Night Method",
     "One Seventh Rule",
     "Angle Based Method",

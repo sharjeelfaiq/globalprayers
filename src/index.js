@@ -1,11 +1,14 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import App from './App';
-import '@fortawesome/fontawesome-free/css/all.min.css';
+import React from "react";
+import ReactDOM from "react-dom/client";
+import App from "./App";
+import "@fortawesome/fontawesome-free/css/all.min.css";
+import { PrayersProvider } from "./context/prayersContext";
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
+const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
+  <PrayersProvider>
+    <React.StrictMode>
+      <App />
+    </React.StrictMode>
+  </PrayersProvider>
 );
