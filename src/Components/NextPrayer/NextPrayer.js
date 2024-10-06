@@ -6,7 +6,6 @@ const NextPrayer = () => {
   const [nextPrayerTime, setNextPrayerTime] = useState(null);
   const [nextPrayerMinutes, setNextPrayerMinutes] = useState({ hours: 0, minutes: 0 });
 
-  // Calculate the next prayer time when prayerTimes are available
   useEffect(() => {
     if (prayerTimes) {
       const currentDate = new Date().getDate() - 1;
@@ -16,15 +15,15 @@ const NextPrayer = () => {
       );
       calculateNextPrayerTime(relevantTimes);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [prayerTimes]);
 
-  // Calculate and update the next prayer time
   const calculateNextPrayerTime = (times) => {
     const now = new Date();
     let nextPrayer = null;
     let minDiff = Infinity;
 
+    // Iterate over today's prayer times
     times.forEach(([_, time]) => {
       const [hours, minutes] = time.split(":");
       const prayerTime = new Date(
@@ -35,8 +34,9 @@ const NextPrayer = () => {
         parseInt(minutes)
       );
 
+      // Check if the prayer time is in the future
       if (prayerTime > now) {
-        const diff = (prayerTime - now) / (1000 * 60); // Get time difference in minutes
+        const diff = (prayerTime - now) / (1000 * 60); // Difference in minutes
         if (diff < minDiff) {
           minDiff = diff;
           nextPrayer = prayerTime;
@@ -44,14 +44,14 @@ const NextPrayer = () => {
       }
     });
 
-    // Handle case when the next prayer is the first one of the next day
+    // If no prayer is left for today, get the first prayer time for the next day
     if (!nextPrayer && times.length > 0) {
       const [, time] = times[0];
       const [hours, minutes] = time.split(":");
       nextPrayer = new Date(
         now.getFullYear(),
         now.getMonth(),
-        now.getDate() + 1,
+        now.getDate() + 1, // Next day
         parseInt(hours),
         parseInt(minutes)
       );
@@ -62,7 +62,6 @@ const NextPrayer = () => {
     updateNextPrayerMinutes(minDiff);
   };
 
-  // Update the hours and minutes until the next prayer
   const updateNextPrayerMinutes = (minDiff) => {
     const hoursUntilNextPrayer = Math.floor(minDiff / 60);
     const minutesUntilNextPrayer = Math.round(minDiff % 60);
@@ -73,7 +72,6 @@ const NextPrayer = () => {
     });
   };
 
-  // Re-run the next prayer time calculation every minute to keep it accurate
   useEffect(() => {
     if (nextPrayerTime) {
       const timer = setInterval(() => {
