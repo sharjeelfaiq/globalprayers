@@ -15,7 +15,7 @@ export const getData = {
     latitudeAdjustment,
     midnightCalculation,
   }) => {
-    const date = new Date(); // Memoize date to avoid multiple instantiations
+    const date = new Date();
     const url = `${PRAYER_TIMES_URL}/${date.getFullYear()}/${
       date.getMonth() + 1
     }?city=${city}&country=${country}&method=${method}&school=${school}&latitudeAdjustment=${latitudeAdjustment}&midnightCalculation=${midnightCalculation}`;
@@ -32,6 +32,6 @@ async function fetchData(url) {
     return json.data;
   } catch (error) {
     console.error("Failed to fetch data:", error);
-    return null; // Return null or handle fallback
+    return null;
   }
 }

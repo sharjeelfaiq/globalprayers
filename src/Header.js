@@ -1,8 +1,8 @@
-// Header.js
 import React, { useContext } from "react";
 import { PrayersContext } from "./context/prayersContext.js";
 
-const Header = ({ today, islamicDate, handleSettingChange }) => {
+const Header = () => {
+  const { today, islamicDate, handleSettingChange } = useContext(PrayersContext);
   const prayersTimeConfig = useContext(PrayersContext);
   const {
     settings,
