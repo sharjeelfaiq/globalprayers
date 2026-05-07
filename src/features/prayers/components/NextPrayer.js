@@ -1,11 +1,19 @@
 import { usePrayerData } from "../context/hooks";
-import { useNextPrayer } from "../hooks/useNextPrayer";
+import { usePrayerTimeline } from "../hooks/usePrayerTimeline";
 import { useTodayPrayerData } from "../hooks/useTodayPrayerData";
+
+const formatDuration = (duration) => {
+  if (!duration) {
+    return "";
+  }
+
+  return `${duration.hours}h ${duration.minutes}m`;
+};
 
 const NextPrayer = ({ currentTime }) => {
   const { isLoading, error } = usePrayerData();
   const { relevantPrayerTimes } = useTodayPrayerData(currentTime);
-  const { nextPrayerCountdown } = useNextPrayer(relevantPrayerTimes, currentTime);
+  const timeline = usePrayerTimeline(relevantPrayerTimes, currentTime);
 
   if (isLoading) {
     return <h6 className="mt-1 text-white status-text">Loading prayer times...</h6>;
@@ -19,22 +27,41 @@ const NextPrayer = ({ currentTime }) => {
     );
   }
 
-  if (!nextPrayerCountdown) {
+  if (!timeline) {
     return null;
   }
 
   return (
-    <h6 className="mt-1 text-white next-prayer-time">
-      Next prayer in{" "}
-      <span
-        style={{
-          display: nextPrayerCountdown.hours === 0 ? "none" : "inline",
-        }}
+    <section
+      className="prayer-timeline-card text-white"
+      aria-label="Prayer timeline"
+      aria-live="polite"
+      style={{ "--prayer-progress": `${timeline.progressPercent}%` }}
+    >
+      <div className="prayer-timeline-row">
+        <strong className="prayer-timeline-name">{timeline.previousPrayerName}</strong>
+        <div className="prayer-timeline-countdown">
+          Next prayer is in {formatDuration(timeline.remaining)}
+        </div>
+        <div className="prayer-timeline-next">
+          <span>Next Prayer</span>
+          <strong className="prayer-timeline-name prayer-timeline-name-next">
+            {timeline.nextPrayerName}
+          </strong>
+        </div>
+      </div>
+
+      <div
+        className="prayer-progress"
+        role="progressbar"
+        aria-label={`Progress from ${timeline.previousPrayerName} to ${timeline.nextPrayerName}`}
+        aria-valuemin="0"
+        aria-valuemax="100"
+        aria-valuenow={timeline.progressPercent}
       >
-        {nextPrayerCountdown.hours}h
-      </span>{" "}
-      {nextPrayerCountdown.minutes}m
-    </h6>
+        <span className="prayer-progress-fill" />
+      </div>
+    </section>
   );
 };
 

@@ -32,8 +32,8 @@ const PrayersTable = ({ currentTime }) => {
         </tr>
       </thead>
       <tbody>
-        {prayerRows.map(({ prayerName, formattedPrayerTime, isCurrent }) => (
-          <tr key={prayerName} className={isCurrent ? "current-prayer-row" : ""}>
+        {prayerRows.map(({ prayerName, formattedPrayerTime }) => (
+          <tr key={prayerName}>
             <td>{prayerName}</td>
             <td>{formattedPrayerTime}</td>
           </tr>

@@ -1,14 +1,13 @@
 import { useMemo } from "react";
-import { getNextPrayer, getTimeUntilPrayer } from "../utils/prayerTimes";
+import { getPrayerTimelineState } from "../utils/prayerTimes";
 
 export const useNextPrayer = (times = [], now = new Date()) =>
   useMemo(() => {
-    const nextPrayer = getNextPrayer(times, now);
-    const countdown = getTimeUntilPrayer(nextPrayer?.prayerTime, now);
+    const timeline = getPrayerTimelineState(times, now);
 
     return {
-      nextPrayerName: nextPrayer?.prayerName ?? "",
-      nextPrayerTime: nextPrayer?.prayerTime ?? null,
-      nextPrayerCountdown: countdown,
+      nextPrayerName: timeline?.nextPrayerName ?? "",
+      nextPrayerTime: timeline?.nextPrayerTime ?? null,
+      nextPrayerCountdown: timeline?.remaining ?? null,
     };
   }, [now, times]);

@@ -45,6 +45,15 @@ export const formatPrayerTime = (time, now = new Date(), locale = "en-US") => {
   });
 };
 
+const formatDurationFromMinutes = (differenceInMinutes) => {
+  const roundedMinutes = Math.max(0, Math.round(differenceInMinutes));
+
+  return {
+    hours: Math.floor(roundedMinutes / 60),
+    minutes: roundedMinutes % 60,
+  };
+};
+
 export const getNextPrayer = (times = [], now = new Date()) => {
   if (!times.length) {
     return null;
@@ -72,9 +81,60 @@ export const getTimeUntilPrayer = (prayerTime, now = new Date()) => {
 
   const differenceInMinutes = Math.max(0, (prayerTime - now) / (1000 * 60));
 
+  return formatDurationFromMinutes(differenceInMinutes);
+};
+
+export const getDurationBetween = (startTime, endTime) => {
+  if (!startTime || !endTime) {
+    return null;
+  }
+
+  const differenceInMinutes = Math.max(0, (endTime - startTime) / (1000 * 60));
+
+  return formatDurationFromMinutes(differenceInMinutes);
+};
+
+const buildPrayerTimelineCandidates = (times = [], now = new Date()) =>
+  [-1, 0, 1]
+    .flatMap((dayOffset) =>
+      times.map(([prayerName, time]) => ({
+        prayerName,
+        prayerTime: createPrayerDate(time, now, dayOffset),
+      }))
+    )
+    .filter(({ prayerTime }) => Boolean(prayerTime))
+    .sort((first, second) => first.prayerTime - second.prayerTime);
+
+export const getPrayerTimelineState = (times = [], now = new Date()) => {
+  if (!times.length) {
+    return null;
+  }
+
+  const candidates = buildPrayerTimelineCandidates(times, now);
+  const previousPrayer = [...candidates]
+    .reverse()
+    .find(({ prayerTime }) => prayerTime <= now);
+  const nextPrayer = candidates.find(({ prayerTime }) => prayerTime > now);
+
+  if (!previousPrayer || !nextPrayer) {
+    return null;
+  }
+
+  const elapsedMs = Math.max(0, now - previousPrayer.prayerTime);
+  const windowMs = Math.max(1, nextPrayer.prayerTime - previousPrayer.prayerTime);
+
   return {
-    hours: Math.floor(differenceInMinutes / 60),
-    minutes: Math.round(differenceInMinutes % 60),
+    previousPrayerName: previousPrayer.prayerName,
+    previousPrayerTime: previousPrayer.prayerTime,
+    currentPrayerName: previousPrayer.prayerName,
+    nextPrayerName: nextPrayer.prayerName,
+    nextPrayerTime: nextPrayer.prayerTime,
+    elapsed: getDurationBetween(previousPrayer.prayerTime, now),
+    remaining: getDurationBetween(now, nextPrayer.prayerTime),
+    progressPercent: Math.min(
+      100,
+      Math.max(0, Math.round((elapsedMs / windowMs) * 100))
+    ),
   };
 };
 

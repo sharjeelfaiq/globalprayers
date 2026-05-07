@@ -23,10 +23,7 @@ const Header = () => {
 
   return (
     <div className="d-flex justify-content-between container-fluid">
-      <h6
-        className="text-white text-start"
-        style={{ fontFamily: "Roboto Mono, monospace" }}
-      >
+      <h6 className="text-white text-start">
         {error ? "Date unavailable" : today || "Loading date..."}
         <br />
         {error ? "Unable to load Hijri date" : islamicDate || "Loading Hijri date..."}

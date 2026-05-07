@@ -3,6 +3,7 @@ import {
   formatPrayerTime,
   getCurrentDayData,
   getNextPrayer,
+  getPrayerTimelineState,
   getRelevantPrayerTimes,
   getTimeUntilPrayer,
   isCurrentPrayerWindow,
@@ -123,5 +124,87 @@ describe("prayerTimes utilities", () => {
       hours: 3,
       minutes: 16,
     });
+  });
+
+  it("normalizes rounded countdown minutes into the hour value", () => {
+    const prayerTime = new Date(2026, 3, 7, 16, 30, 0);
+    const now = new Date(2026, 3, 7, 12, 30, 29);
+
+    expect(getTimeUntilPrayer(prayerTime, now)).toEqual({
+      hours: 4,
+      minutes: 0,
+    });
+  });
+
+  it("builds timeline state with elapsed and remaining time for the active prayer window", () => {
+    const now = new Date(2026, 3, 7, 12, 30);
+    const result = getPrayerTimelineState(
+      getRelevantPrayerTimes(prayerTimes[1].timings),
+      now
+    );
+
+    expect(result).toMatchObject({
+      previousPrayerName: "Dhuhr",
+      currentPrayerName: "Dhuhr",
+      nextPrayerName: "Asr",
+      elapsed: {
+        hours: 0,
+        minutes: 9,
+      },
+      remaining: {
+        hours: 3,
+        minutes: 16,
+      },
+      progressPercent: 4,
+    });
+    expect(result.previousPrayerTime).toEqual(new Date(2026, 3, 7, 12, 21));
+    expect(result.nextPrayerTime).toEqual(new Date(2026, 3, 7, 15, 46));
+  });
+
+  it("starts a new prayer window at the exact prayer transition timestamp", () => {
+    const now = new Date(2026, 3, 7, 15, 46);
+    const result = getPrayerTimelineState(
+      getRelevantPrayerTimes(prayerTimes[1].timings),
+      now
+    );
+
+    expect(result).toMatchObject({
+      previousPrayerName: "Asr",
+      currentPrayerName: "Asr",
+      nextPrayerName: "Maghrib",
+      elapsed: {
+        hours: 0,
+        minutes: 0,
+      },
+      remaining: {
+        hours: 2,
+        minutes: 46,
+      },
+      progressPercent: 0,
+    });
+  });
+
+  it("rolls timeline state from Isha to next-day Fajr after midnight", () => {
+    const now = new Date(2026, 3, 8, 0, 30);
+    const result = getPrayerTimelineState(
+      getRelevantPrayerTimes(prayerTimes[1].timings),
+      now
+    );
+
+    expect(result).toMatchObject({
+      previousPrayerName: "Isha",
+      currentPrayerName: "Isha",
+      nextPrayerName: "Fajr",
+      elapsed: {
+        hours: 4,
+        minutes: 44,
+      },
+      remaining: {
+        hours: 4,
+        minutes: 31,
+      },
+    });
+    expect(result.previousPrayerTime).toEqual(new Date(2026, 3, 7, 19, 46));
+    expect(result.nextPrayerTime).toEqual(new Date(2026, 3, 8, 5, 1));
   });
 });
