@@ -40,7 +40,7 @@ const PrayersTable = ({ currentTime }) => {
   }
 
   return (
-    <div className="prayer-table-shell prayer-table-relaxed">
+    <div className="prayer-table-shell prayer-table-relaxed prayer-table-full-height">
       <table
         className="table table-borderless prayer-table text-white"
         aria-label={t("table.ariaLabel")}

@@ -16,9 +16,11 @@ jest.mock("./NextPrayer", () => () => <div data-testid="next-prayer-card" />);
 
 describe("PrayerDashboard", () => {
   it("renders the prayer table without the standalone next prayer card", () => {
-    render(<PrayerDashboard />);
+    const { container } = render(<PrayerDashboard />);
 
     expect(screen.getByTestId("prayers-table")).toBeInTheDocument();
     expect(screen.queryByTestId("next-prayer-card")).not.toBeInTheDocument();
+    expect(container.firstElementChild).toHaveClass("prayer-dashboard");
+    expect(container.firstElementChild).toHaveClass("prayer-dashboard-full-height");
   });
 });

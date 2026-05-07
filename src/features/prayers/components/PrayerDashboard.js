@@ -8,12 +8,12 @@ const PrayerDashboard = () => {
   const currentMinute = useCurrentTime(60000);
 
   return (
-    <>
+    <main className="prayer-dashboard prayer-dashboard-full-height">
       <Header />
       <AsmaUlHusna />
       <Clock />
       <PrayersTable currentTime={currentMinute} />
-    </>
+    </main>
   );
 };
 

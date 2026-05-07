@@ -42,6 +42,7 @@ body {
   min-height: 100vh;
   min-height: 100dvh;
   overflow-x: hidden;
+  overflow-y: hidden;
 }
 
 #root {
@@ -69,10 +70,30 @@ textarea,
 
 .app-shell {
   width: min(100%, 48rem);
+  height: 100vh;
+  height: 100dvh;
   min-height: 100vh;
   min-height: 100dvh;
+  max-height: 100vh;
+  max-height: 100dvh;
   gap: clamp(0.35rem, 1.6vw, 0.8rem);
+  overflow: hidden;
   padding: clamp(0.75rem, 2.5vw, 1.5rem);
+}
+
+.prayer-dashboard {
+  display: flex;
+  width: 100%;
+  min-height: 0;
+  flex: 1 1 auto;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(0.35rem, 1.6vh, 0.7rem);
+}
+
+.prayer-dashboard-full-height {
+  height: 100%;
 }
 
 .dashboard-header {
@@ -293,10 +314,10 @@ h5:hover {
 .prayer-table-shell {
   width: min(100%, 35rem);
   margin: 0.65rem auto 0;
-  max-height: min(48vh, 24rem);
-  max-height: min(48dvh, 24rem);
+  min-height: 0;
+  flex: 1 1 auto;
   overflow-x: auto;
-  overflow-y: auto;
+  overflow-y: visible;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
   background: var(--color-surface);
@@ -307,6 +328,7 @@ h5:hover {
 .prayer-table {
   width: 100%;
   min-width: 18.5rem;
+  height: 100%;
   margin: 0;
   table-layout: fixed;
   border-radius: inherit;
@@ -382,6 +404,10 @@ h5:hover {
   font-size: 0.92rem;
   font-weight: 500;
   line-height: 1.35;
+}
+
+.prayer-table tbody tr {
+  height: clamp(2.4rem, 7.5vh, 3.35rem);
 }
 
 .prayer-table th:first-child,
@@ -558,6 +584,15 @@ h5:hover {
     padding: var(--space-3) var(--space-2);
   }
 
+  .prayer-dashboard {
+    justify-content: flex-start;
+    gap: 0.42rem;
+  }
+
+  .prayer-dashboard-full-height {
+    height: 100%;
+  }
+
   .dashboard-header {
     gap: var(--space-2);
   }
@@ -605,8 +640,6 @@ h5:hover {
 
   .prayer-table-shell {
     width: min(100%, 27.5rem);
-    max-height: min(48vh, 19rem);
-    max-height: min(48dvh, 19rem);
     margin-top: 0.5rem;
   }
 
@@ -636,6 +669,10 @@ h5:hover {
     font-size: 0.82rem;
   }
 
+  .prayer-table tbody tr {
+    height: clamp(2.1rem, 8vh, 2.75rem);
+  }
+
   .prayer-timeline-card {
     padding: 0.38rem 0.45rem;
   }
@@ -662,6 +699,41 @@ h5:hover {
   .prayer-progress-labels strong,
   .prayer-progress-main strong {
     font-size: 0.76rem;
+  }
+}
+
+@media (max-height: 680px) {
+  .prayer-dashboard {
+    gap: 0.28rem;
+  }
+
+  .daily-name {
+    line-height: 1.25;
+  }
+
+  .dashboard-clock {
+    line-height: 1;
+  }
+
+  .prayer-table-shell {
+    margin-top: 0.25rem;
+  }
+
+  .prayer-table-progress-header {
+    padding-block: 0.46rem !important;
+  }
+
+  .prayer-table-progress-summary {
+    gap: 0.32rem;
+  }
+
+  .prayer-table th,
+  .prayer-table td {
+    padding-block: 0.42rem;
+  }
+
+  .prayer-table tbody tr {
+    height: clamp(1.9rem, 7vh, 2.45rem);
   }
 }
 
