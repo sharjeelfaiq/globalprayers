@@ -87,6 +87,7 @@ h5:hover {
 .table td {
   text-align: center;
   padding: 1rem;
+  vertical-align: middle;
 }
 
 .table th {
@@ -98,12 +99,13 @@ h5:hover {
   background-color: var(--color-surface);
 }
 
-.table-hover tbody tr:hover {
-  background-color: var(--color-surface-hover);
-}
-
 .table-shadow {
   box-shadow: 0 4px 8px var(--color-shadow);
+}
+
+.prayer-row-name {
+  display: inline-block;
+  vertical-align: middle;
 }
 
 .status-text {
@@ -123,30 +125,8 @@ h5:hover {
   backdrop-filter: blur(10px);
 }
 
-.prayer-timeline-row {
-  display: grid;
-  grid-template-columns: minmax(3.5rem, 0.8fr) minmax(8rem, 1.4fr) minmax(3.5rem, 0.8fr);
-  align-items: center;
-  gap: 0.4rem;
-  min-width: 0;
-}
-
-.prayer-timeline-name {
-  min-width: 0;
-  overflow: hidden;
-  color: var(--color-text-strong);
-  font-size: 0.95rem;
-  line-height: 1.2;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.prayer-timeline-name-next {
-  color: var(--color-accent);
-  text-align: right;
-}
-
 .prayer-timeline-countdown {
+  margin: 0;
   min-width: 0;
   color: var(--color-text-strong);
   font-size: 0.8rem;
@@ -156,25 +136,48 @@ h5:hover {
   white-space: nowrap;
 }
 
-.prayer-timeline-next {
+.prayer-progress-labels {
+  display: grid;
+  grid-template-columns: minmax(4rem, 1fr) minmax(8rem, 1.4fr) minmax(4rem, 1fr);
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.prayer-progress-labels span {
   display: flex;
   min-width: 0;
   flex-direction: column;
-  align-items: flex-end;
   line-height: 1.1;
 }
 
-.prayer-timeline-next span {
+.prayer-progress-labels span:last-child {
+  align-items: flex-end;
+  text-align: right;
+}
+
+.prayer-progress-labels small {
   color: var(--color-text-muted);
-  font-size: 0.6rem;
+  font-size: 0.58rem;
+  font-weight: 600;
   text-transform: uppercase;
+}
+
+.prayer-progress-labels strong {
+  overflow: hidden;
+  color: var(--color-text-strong);
+  font-size: 0.82rem;
+  text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.prayer-progress-labels span:last-child strong {
+  color: var(--color-accent);
 }
 
 .prayer-progress {
   width: 100%;
-  height: 0.2rem;
-  margin-top: 0.32rem;
+  height: 0.24rem;
+  margin-top: 0.28rem;
   overflow: hidden;
   border-radius: 999px;
   background: var(--color-surface-hover);
@@ -219,17 +222,17 @@ h5:hover {
     font-size: 0.66rem;
   }
 
-  .prayer-timeline-row {
-    grid-template-columns: minmax(2.8rem, 0.7fr) minmax(7.2rem, 1.6fr) minmax(2.8rem, 0.7fr);
-    gap: 0.25rem;
+  .prayer-progress-labels {
+    grid-template-columns: minmax(3.2rem, 0.8fr) minmax(7.4rem, 1.6fr) minmax(3.2rem, 0.8fr);
+    gap: 0.35rem;
   }
 
-  .prayer-timeline-name {
-    font-size: 0.78rem;
-  }
-
-  .prayer-timeline-next span {
+  .prayer-progress-labels small {
     font-size: 0.5rem;
+  }
+
+  .prayer-progress-labels strong {
+    font-size: 0.72rem;
   }
 }
 

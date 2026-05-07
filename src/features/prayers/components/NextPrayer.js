@@ -38,23 +38,23 @@ const NextPrayer = ({ currentTime }) => {
       aria-live="polite"
       style={{ "--prayer-progress": `${timeline.progressPercent}%` }}
     >
-      <div className="prayer-timeline-row">
-        <strong className="prayer-timeline-name">{timeline.previousPrayerName}</strong>
-        <div className="prayer-timeline-countdown">
-          Next prayer is in {formatDuration(timeline.remaining)}
-        </div>
-        <div className="prayer-timeline-next">
-          <span>Next Prayer</span>
-          <strong className="prayer-timeline-name prayer-timeline-name-next">
-            {timeline.nextPrayerName}
-          </strong>
-        </div>
+      <div className="prayer-progress-labels">
+        <span>
+          <small>Current Prayer</small>
+          <strong>{timeline.currentPrayerName}</strong>
+        </span>
+        <p className="prayer-timeline-countdown">
+          Next prayer in {formatDuration(timeline.remaining)}
+        </p>
+        <span>
+          <small>Next Prayer</small>
+          <strong>{timeline.nextPrayerName}</strong>
+        </span>
       </div>
-
       <div
         className="prayer-progress"
         role="progressbar"
-        aria-label={`Progress from ${timeline.previousPrayerName} to ${timeline.nextPrayerName}`}
+        aria-label="Progress to next prayer"
         aria-valuemin="0"
         aria-valuemax="100"
         aria-valuenow={timeline.progressPercent}

@@ -110,6 +110,14 @@ describe("prayerTimes utilities", () => {
     expect(result.find((row) => row.prayerName === "Asr")?.isCurrent).toBe(false);
   });
 
+  it("builds display rows with next prayer state", () => {
+    const now = new Date(2026, 3, 7, 12, 30);
+    const result = buildPrayerRows(getRelevantPrayerTimes(prayerTimes[1].timings), now);
+
+    expect(result.find((row) => row.prayerName === "Dhuhr")?.isNext).toBe(false);
+    expect(result.find((row) => row.prayerName === "Asr")?.isNext).toBe(true);
+  });
+
   it("formats prayer times for display", () => {
     const now = new Date(2026, 3, 7, 12, 30);
 

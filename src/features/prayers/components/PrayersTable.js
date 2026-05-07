@@ -24,7 +24,7 @@ const PrayersTable = ({ currentTime }) => {
   }
 
   return (
-    <table className="table table-borderless table-hover text-white mt-3">
+    <table className="table table-borderless text-white mt-3">
       <thead>
         <tr>
           <th scope="col">Prayer</th>
@@ -34,7 +34,9 @@ const PrayersTable = ({ currentTime }) => {
       <tbody>
         {prayerRows.map(({ prayerName, formattedPrayerTime }) => (
           <tr key={prayerName}>
-            <td>{prayerName}</td>
+            <td>
+              <span className="prayer-row-name">{prayerName}</span>
+            </td>
             <td>{formattedPrayerTime}</td>
           </tr>
         ))}

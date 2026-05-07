@@ -148,11 +148,13 @@ export const buildPrayerRows = (times = [], now = new Date()) =>
     const nextPrayerTime = nextTime
       ? createPrayerDate(nextTime, now)
       : createPrayerDate(times[0]?.[1], now, 1);
+    const nextPrayer = getNextPrayer(times, now);
 
     return {
       prayerName,
       formattedPrayerTime: formatPrayerTime(time, now),
       isCurrent: isCurrentPrayerWindow(prayerTime, nextPrayerTime, now),
+      isNext: nextPrayer?.prayerName === prayerName,
     };
   });
 

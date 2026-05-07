@@ -25,7 +25,7 @@ const renderWithPrayerData = (ui, prayerTimes) =>
   );
 
 describe("PrayersTable", () => {
-  it("does not visually highlight the current prayer row", () => {
+  it("renders prayer rows without a separate status column or highlight styling", () => {
     const { container } = renderWithPrayerData(
       <PrayersTable currentTime={new Date(2026, 3, 1, 12, 30)} />,
       [
@@ -43,6 +43,10 @@ describe("PrayersTable", () => {
     );
 
     expect(screen.getByText("Dhuhr")).toBeInTheDocument();
+    expect(screen.getByText("Asr")).toBeInTheDocument();
+    expect(screen.queryByRole("columnheader", { name: "Status" })).not.toBeInTheDocument();
+    expect(screen.queryByText("Current Prayer")).not.toBeInTheDocument();
+    expect(screen.queryByText("Next Prayer")).not.toBeInTheDocument();
     expect(container.querySelector(".current-prayer-row")).not.toBeInTheDocument();
   });
 });

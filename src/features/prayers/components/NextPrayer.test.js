@@ -25,7 +25,7 @@ const renderWithPrayerData = (ui, prayerTimes) =>
   );
 
 describe("NextPrayer", () => {
-  it("renders elapsed and remaining prayer timeline details", () => {
+  it("renders a single-line countdown in the prayer status card", () => {
     renderWithPrayerData(
       <NextPrayer currentTime={new Date(2026, 3, 1, 12, 30)} />,
       [
@@ -42,14 +42,18 @@ describe("NextPrayer", () => {
       ]
     );
 
-    expect(screen.queryByText("Current prayer window")).not.toBeInTheDocument();
-    expect(screen.getByText("Next Prayer")).toBeInTheDocument();
+    expect(screen.getByText("Next prayer in 3h 16m")).toBeInTheDocument();
+    expect(screen.getByText("Current Prayer")).toBeInTheDocument();
     expect(screen.getByText("Dhuhr")).toBeInTheDocument();
+    expect(screen.getByText("Next Prayer")).toBeInTheDocument();
     expect(screen.getByText("Asr")).toBeInTheDocument();
-    expect(screen.getByText("Next prayer is in 3h 16m")).toBeInTheDocument();
+    expect(screen.queryByText("Next prayer is in 3h 16m")).not.toBeInTheDocument();
     expect(screen.queryByText("Elapsed 0h 9m")).not.toBeInTheDocument();
     expect(screen.queryByText("Remaining 3h 16m")).not.toBeInTheDocument();
-    const progressBar = screen.getByRole("progressbar");
+
+    const progressBar = screen.getByRole("progressbar", {
+      name: "Progress to next prayer",
+    });
 
     expect(progressBar).toHaveAttribute("aria-valuenow", "4");
     expect(progressBar.querySelector(".prayer-progress-fill")).toBeInTheDocument();
