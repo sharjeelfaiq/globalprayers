@@ -1,5 +1,5 @@
 import "@testing-library/jest-dom";
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import PrayersTable from "./PrayersTable";
 import { PrayersContext } from "../context/PrayersContext";
 
@@ -25,7 +25,7 @@ const renderWithPrayerData = (ui, prayerTimes) =>
   );
 
 describe("PrayersTable", () => {
-  it("renders prayer rows without a separate status column or highlight styling", () => {
+  it("highlights the current prayer row without adding a status column", () => {
     const { container } = renderWithPrayerData(
       <PrayersTable currentTime={new Date(2026, 3, 1, 12, 30)} />,
       [
@@ -45,7 +45,14 @@ describe("PrayersTable", () => {
     expect(screen.getAllByText("Dhuhr")).not.toHaveLength(0);
     expect(screen.getAllByText("Asr")).not.toHaveLength(0);
     expect(screen.queryByRole("columnheader", { name: "Status" })).not.toBeInTheDocument();
-    expect(container.querySelector(".current-prayer-row")).not.toBeInTheDocument();
+
+    const currentRow = container.querySelector(".current-prayer-row");
+
+    expect(currentRow).toHaveAttribute("aria-current", "true");
+    expect(currentRow).toContainElement(screen.getByText("12:21 PM"));
+    expect(currentRow?.querySelector(".prayer-row-name")).toHaveClass("current-prayer-cell");
+    expect(currentRow?.querySelector(".prayer-time-cell")).toHaveClass("current-prayer-cell");
+    expect(screen.getByTitle("Asr")).not.toHaveClass("current-prayer-cell");
   });
 
   it("renders the next prayer progress summary inside the table header", () => {
@@ -67,8 +74,6 @@ describe("PrayersTable", () => {
 
     expect(screen.getByRole("columnheader", { name: "Prayer progress" })).toBeInTheDocument();
     expect(screen.getByText("Next prayer in 3h 16m")).toBeInTheDocument();
-    expect(screen.getByText("Elapsed 0h 9m")).toBeInTheDocument();
-    expect(screen.getByText("Remaining 3h 16m")).toBeInTheDocument();
     expect(screen.getAllByText("Dhuhr")).not.toHaveLength(0);
     expect(screen.getAllByText("Asr")).not.toHaveLength(0);
 
@@ -87,6 +92,41 @@ describe("PrayersTable", () => {
     expect(summary).toContainElement(metaRow);
     expect(mainRow).not.toContainElement(metaRow);
     expect(mainRow?.children).toHaveLength(3);
+  });
+
+  it("toggles the single progress timing value between remaining and elapsed", () => {
+    renderWithPrayerData(
+      <PrayersTable currentTime={new Date(2026, 3, 1, 12, 30)} />,
+      [
+        {
+          timings: {
+            Fajr: "05:01",
+            Sunrise: "06:16",
+            Dhuhr: "12:21",
+            Asr: "15:46",
+            Maghrib: "18:32",
+            Isha: "19:46",
+          },
+        },
+      ]
+    );
+
+    const toggle = screen.getByRole("button", { name: "Show elapsed prayer time" });
+
+    expect(toggle).toHaveTextContent("Remaining 3h 16m");
+    expect(toggle).toHaveAttribute("aria-pressed", "false");
+    expect(screen.queryByText("Elapsed 0h 9m")).not.toBeInTheDocument();
+
+    fireEvent.click(toggle);
+
+    expect(screen.getByRole("button", { name: "Show remaining prayer time" })).toHaveTextContent(
+      "Elapsed 0h 9m"
+    );
+    expect(screen.getByRole("button", { name: "Show remaining prayer time" })).toHaveAttribute(
+      "aria-pressed",
+      "true"
+    );
+    expect(screen.queryByText("Remaining 3h 16m")).not.toBeInTheDocument();
   });
 
   it("does not render visible Prayer and Time column headers", () => {

@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { usePrayerData } from "../context/hooks";
 import { usePrayerRows } from "../hooks/usePrayerRows";
@@ -17,11 +18,18 @@ const formatDuration = (duration, t) => {
 
 const PrayersTable = ({ currentTime }) => {
   const { i18n, t } = useTranslation("prayers");
+  const [timeView, setTimeView] = useState("remaining");
   const { isLoading, error, locale } = usePrayerData();
   const { relevantPrayerTimes } = useTodayPrayerData(currentTime);
   const activeLocale = locale || i18n.resolvedLanguage || i18n.language;
   const prayerRows = usePrayerRows(relevantPrayerTimes, currentTime, activeLocale);
   const timeline = usePrayerTimeline(relevantPrayerTimes, currentTime);
+  const showingElapsed = timeView === "elapsed";
+  const toggleTimeView = () => {
+    setTimeView((currentView) =>
+      currentView === "remaining" ? "elapsed" : "remaining"
+    );
+  };
 
   if (isLoading) {
     return <p className="text-white status-text mt-3">{t("status.loadingSchedule")}</p>;
@@ -79,16 +87,25 @@ const PrayersTable = ({ currentTime }) => {
                     className="prayer-progress-meta"
                     aria-label={t("timeline.progressMetaLabel")}
                   >
-                    <span>
-                      {t("timeline.elapsed", {
-                        duration: formatDuration(timeline.elapsed, t),
-                      })}
-                    </span>
-                    <span>
-                      {t("timeline.remaining", {
-                        duration: formatDuration(timeline.remaining, t),
-                      })}
-                    </span>
+                    <button
+                      type="button"
+                      className="prayer-progress-toggle"
+                      aria-label={
+                        showingElapsed
+                          ? t("timeline.showRemaining")
+                          : t("timeline.showElapsed")
+                      }
+                      aria-pressed={showingElapsed}
+                      onClick={toggleTimeView}
+                    >
+                      {showingElapsed
+                        ? t("timeline.elapsed", {
+                            duration: formatDuration(timeline.elapsed, t),
+                          })
+                        : t("timeline.remaining", {
+                            duration: formatDuration(timeline.remaining, t),
+                          })}
+                    </button>
                   </div>
                   <div
                     className="prayer-progress"
@@ -106,17 +123,27 @@ const PrayersTable = ({ currentTime }) => {
           ) : null}
         </thead>
         <tbody>
-          {prayerRows.map(({ prayerName, formattedPrayerTime }) => {
+          {prayerRows.map(({ prayerName, formattedPrayerTime, isCurrent }) => {
             const translatedPrayerName = t(`names.${prayerName}`);
+            const currentPrayerClass = isCurrent ? " current-prayer-cell" : "";
 
             return (
-              <tr key={prayerName}>
+              <tr
+                key={prayerName}
+                className={isCurrent ? "current-prayer-row" : undefined}
+                aria-current={isCurrent ? "true" : undefined}
+              >
                 <td>
-                  <span className="prayer-row-name" title={translatedPrayerName}>
+                  <span
+                    className={`prayer-row-name${currentPrayerClass}`}
+                    title={translatedPrayerName}
+                  >
                     {translatedPrayerName}
                   </span>
                 </td>
-                <td className="prayer-time-cell">{formattedPrayerTime}</td>
+                <td className={`prayer-time-cell${currentPrayerClass}`}>
+                  {formattedPrayerTime}
+                </td>
               </tr>
             );
           })}
