@@ -378,23 +378,12 @@ h5:hover {
   min-width: 0;
 }
 
-.prayer-progress-main {
+.prayer-progress-status-row {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: minmax(0, 1fr) minmax(9.5rem, 1.15fr) minmax(0, 1fr);
   align-items: center;
   gap: 0.9rem;
   min-width: 0;
-}
-
-.prayer-progress-meta {
-  display: flex;
-  min-width: 0;
-  justify-content: center;
-  color: var(--color-text-muted);
-  font-size: 0.62rem;
-  font-weight: 600;
-  line-height: 1;
-  white-space: nowrap;
 }
 
 .prayer-progress-toggle {
@@ -543,7 +532,7 @@ h5:hover {
   line-height: 1.1;
 }
 
-.prayer-progress-main span {
+.prayer-progress-status-row span {
   display: flex;
   min-width: 0;
   flex-direction: column;
@@ -551,13 +540,13 @@ h5:hover {
 }
 
 .prayer-progress-labels span:last-child,
-.prayer-progress-main span:last-child {
+.prayer-progress-status-row span:last-child {
   align-items: flex-end;
   text-align: right;
 }
 
 .prayer-progress-labels small,
-.prayer-progress-main small {
+.prayer-progress-status-row small {
   color: var(--color-text-muted);
   font-size: 0.62rem;
   font-weight: 600;
@@ -565,7 +554,7 @@ h5:hover {
 }
 
 .prayer-progress-labels strong,
-.prayer-progress-main strong {
+.prayer-progress-status-row strong {
   overflow: hidden;
   color: var(--color-text-strong);
   font-size: clamp(0.78rem, 2vw, 0.92rem);
@@ -574,7 +563,7 @@ h5:hover {
 }
 
 .prayer-progress-labels span:last-child strong,
-.prayer-progress-main span:last-child strong {
+.prayer-progress-status-row span:last-child strong {
   color: var(--color-accent);
 }
 
@@ -716,10 +705,6 @@ h5:hover {
     padding: 0.56rem 0.55rem 0.58rem !important;
   }
 
-  .prayer-progress-meta {
-    font-size: 0.54rem;
-  }
-
   .prayer-progress-toggle {
     min-height: 1.9rem;
     padding-inline: 0.55rem;
@@ -746,18 +731,18 @@ h5:hover {
     gap: 0.45rem;
   }
 
-  .prayer-progress-main {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+  .prayer-progress-status-row {
+    grid-template-columns: minmax(0, 0.8fr) minmax(7.2rem, 1.4fr) minmax(0, 0.8fr);
     gap: 0.45rem;
   }
 
   .prayer-progress-labels small,
-  .prayer-progress-main small {
+  .prayer-progress-status-row small {
     font-size: 0.52rem;
   }
 
   .prayer-progress-labels strong,
-  .prayer-progress-main strong {
+  .prayer-progress-status-row strong {
     font-size: 0.76rem;
   }
 }
@@ -825,22 +810,18 @@ h5:hover {
     gap: 0.3rem;
   }
 
-  .prayer-progress-main {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+  .prayer-progress-status-row {
+    grid-template-columns: minmax(0, 1fr);
     gap: 0.3rem;
   }
 
   .prayer-progress-labels small,
-  .prayer-progress-main small {
+  .prayer-progress-status-row small {
     font-size: 0.46rem;
   }
 
-  .prayer-progress-meta {
-    font-size: 0.48rem;
-  }
-
   .prayer-progress-labels strong,
-  .prayer-progress-main strong,
+  .prayer-progress-status-row strong,
   .prayer-table td {
     font-size: 0.72rem;
   }

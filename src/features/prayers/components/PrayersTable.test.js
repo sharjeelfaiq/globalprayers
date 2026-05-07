@@ -88,13 +88,15 @@ describe("PrayersTable", () => {
     expect(progressBar.querySelector(".prayer-progress-fill")).toBeInTheDocument();
 
     const summary = container.querySelector(".prayer-table-progress-summary");
-    const mainRow = container.querySelector(".prayer-progress-main");
-    const metaRow = container.querySelector(".prayer-progress-meta");
+    const statusRow = container.querySelector(".prayer-progress-status-row");
+    const toggle = screen.getByRole("button", { name: "Show elapsed prayer time" });
 
-    expect(summary).toContainElement(mainRow);
-    expect(summary).toContainElement(metaRow);
-    expect(mainRow).not.toContainElement(metaRow);
-    expect(mainRow?.children).toHaveLength(2);
+    expect(summary).toContainElement(statusRow);
+    expect(statusRow?.children).toHaveLength(3);
+    expect(statusRow?.children[0]).toHaveTextContent("Current PrayerDhuhr");
+    expect(statusRow?.children[1]).toBe(toggle);
+    expect(statusRow?.children[2]).toHaveTextContent("Next PrayerAsr");
+    expect(container.querySelector(".prayer-progress-meta")).not.toBeInTheDocument();
   });
 
   it("toggles the single progress timing badge between next prayer and elapsed", () => {

@@ -69,20 +69,11 @@ const PrayersTable = ({ currentTime }) => {
                   aria-live="polite"
                   style={{ "--prayer-progress": `${timeline.progressPercent}%` }}
                 >
-                  <div className="prayer-progress-main">
+                  <div className="prayer-progress-status-row">
                     <span>
                       <small>{t("timeline.currentPrayer")}</small>
                       <strong>{t(`names.${timeline.currentPrayerName}`)}</strong>
                     </span>
-                    <span>
-                      <small>{t("timeline.nextPrayer")}</small>
-                      <strong>{t(`names.${timeline.nextPrayerName}`)}</strong>
-                    </span>
-                  </div>
-                  <div
-                    className="prayer-progress-meta"
-                    aria-label={t("timeline.progressMetaLabel")}
-                  >
                     <button
                       type="button"
                       className="prayer-progress-toggle"
@@ -102,6 +93,10 @@ const PrayersTable = ({ currentTime }) => {
                             duration: formatDuration(timeline.remaining, t),
                           })}
                     </button>
+                    <span>
+                      <small>{t("timeline.nextPrayer")}</small>
+                      <strong>{t(`names.${timeline.nextPrayerName}`)}</strong>
+                    </span>
                   </div>
                   <div
                     className="prayer-progress"
