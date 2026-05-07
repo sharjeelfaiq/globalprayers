@@ -49,7 +49,7 @@ const PrayersTable = ({ currentTime }) => {
   }
 
   return (
-    <div className="prayer-table-shell prayer-table-relaxed prayer-table-full-height prayer-table-content-tight">
+    <div className="prayer-table-shell prayer-table-fluid prayer-table-relaxed prayer-table-full-height prayer-table-content-tight">
       <table
         className="table table-borderless prayer-table prayer-table-content-tight text-white"
         aria-label={t("table.ariaLabel")}
@@ -69,14 +69,14 @@ const PrayersTable = ({ currentTime }) => {
                   aria-live="polite"
                   style={{ "--prayer-progress": `${timeline.progressPercent}%` }}
                 >
-                  <div className="prayer-progress-status-row">
+                  <div className="prayer-progress-status-row prayer-progress-status-fluid prayer-progress-status-compact">
                     <span>
                       <small>{t("timeline.currentPrayer")}</small>
                       <strong>{t(`names.${timeline.currentPrayerName}`)}</strong>
                     </span>
                     <button
                       type="button"
-                      className="prayer-progress-toggle"
+                      className="prayer-progress-toggle prayer-progress-toggle-fluid"
                       aria-label={
                         showingElapsed
                           ? t("timeline.showRemaining")

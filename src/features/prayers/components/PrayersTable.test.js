@@ -179,6 +179,35 @@ describe("PrayersTable", () => {
     expect(container.querySelector(".prayer-table-shell")).toContainElement(table);
   });
 
+  it("uses fluid layout hooks without horizontal scrolling fallbacks", () => {
+    const { container } = renderWithPrayerData(
+      <PrayersTable currentTime={new Date(2026, 3, 1, 12, 30)} />,
+      [
+        {
+          timings: {
+            Fajr: "05:01",
+            Sunrise: "06:16",
+            Dhuhr: "12:21",
+            Asr: "15:46",
+            Maghrib: "18:32",
+            Isha: "19:46",
+          },
+        },
+      ]
+    );
+
+    const shell = container.querySelector(".prayer-table-shell");
+    const statusRow = container.querySelector(".prayer-progress-status-row");
+
+    expect(shell).toHaveClass("prayer-table-fluid");
+    expect(shell).not.toHaveClass("prayer-table-horizontal-scroll");
+    expect(statusRow).toHaveClass("prayer-progress-status-fluid");
+    expect(statusRow).toHaveClass("prayer-progress-status-compact");
+    expect(screen.getByRole("button", { name: "Show elapsed prayer time" })).toHaveClass(
+      "prayer-progress-toggle-fluid"
+    );
+  });
+
   it("uses the relaxed table density styling hook", () => {
     const { container } = renderWithPrayerData(
       <PrayersTable currentTime={new Date(2026, 3, 1, 12, 30)} />,

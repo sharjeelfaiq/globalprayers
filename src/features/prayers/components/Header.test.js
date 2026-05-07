@@ -42,12 +42,18 @@ describe("Header", () => {
   });
 
   it("renders a language switcher beside prayer settings and persists RTL language selection", () => {
-    render(
+    const { container } = render(
       <PrayersContext.Provider value={contextValue}>
         <Header />
       </PrayersContext.Provider>
     );
 
+    const header = container.querySelector(".dashboard-header");
+
+    expect(header).toHaveClass("dashboard-header-fluid");
+    expect(header).toHaveClass("dashboard-header-compact");
+    expect(header).not.toHaveClass("container-fluid");
+    expect(container.querySelector(".header-actions")).toHaveClass("header-actions-fluid");
     expect(screen.getByRole("button", { name: "Prayer settings" })).toBeInTheDocument();
 
     fireEvent.change(screen.getByLabelText("Language"), {

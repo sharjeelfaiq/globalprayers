@@ -81,14 +81,14 @@ const Header = () => {
   }, [handleSettingsKeyDown, isSettingsOpen]);
 
   return (
-    <div className="dashboard-header d-flex justify-content-between container-fluid">
+    <div className="dashboard-header dashboard-header-fluid dashboard-header-compact d-flex justify-content-between">
       <h6 className="dashboard-date text-white text-start">
         {error ? t("dateUnavailable") : today || t("loadingDate")}
         <br />
         {error ? t("hijriDateUnavailable") : islamicDate || t("loadingHijriDate")}
       </h6>
 
-      <div className="header-actions">
+      <div className="header-actions header-actions-fluid">
         <LanguageSwitcher />
         <button
           ref={settingsButtonRef}

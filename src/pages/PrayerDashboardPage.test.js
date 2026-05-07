@@ -7,12 +7,12 @@ jest.mock("../features/prayers/components/PrayerDashboard", () => () => (
 ));
 
 describe("PrayerDashboardPage", () => {
-  it("uses the responsive app shell instead of a fixed viewport-height inline style", () => {
+  it("uses the fluid app shell instead of Bootstrap container sizing or fixed viewport height", () => {
     const { container } = render(<PrayerDashboardPage />);
     const shell = container.firstElementChild;
 
     expect(shell).toHaveClass("app-shell");
-    expect(shell).toHaveClass("container");
+    expect(shell).not.toHaveClass("container");
     expect(shell).not.toHaveStyle({ height: "100vh" });
   });
 });
