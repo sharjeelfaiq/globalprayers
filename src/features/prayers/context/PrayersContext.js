@@ -5,6 +5,7 @@ import {
   useMemo,
   useState,
 } from "react";
+import { useTranslation } from "react-i18next";
 import { getData } from "../api/api";
 import { config } from "../config/config";
 import {
@@ -41,6 +42,7 @@ const getStoredSettings = () => {
 export const PrayersContext = createContext(null);
 
 export const PrayersProvider = ({ children }) => {
+  const { i18n, t } = useTranslation("prayers");
   const [prayerTimes, setPrayerTimes] = useState(null);
   const [settings, setSettings] = useState(getStoredSettings);
   const [isLoading, setIsLoading] = useState(true);
@@ -80,15 +82,24 @@ export const PrayersProvider = ({ children }) => {
     fetchPrayerTimes();
   }, [fetchPrayerTimes]);
 
+  const locale = i18n.resolvedLanguage || i18n.language;
   const currentDayData = useMemo(() => getCurrentDayData(prayerTimes), [prayerTimes]);
-  const today = useMemo(() => formatReadableDate(currentDayData), [currentDayData]);
+  const today = useMemo(
+    () => formatReadableDate(currentDayData, locale),
+    [currentDayData, locale]
+  );
   const islamicDate = useMemo(
-    () => formatIslamicDate(currentDayData),
-    [currentDayData]
+    () =>
+      formatIslamicDate(currentDayData, (monthName) =>
+        t(`dates.hijriMonths.${monthName}`, { defaultValue: monthName })
+      ),
+    [currentDayData, t]
   );
 
   const values = useMemo(
     () => ({
+      currentDayData,
+      locale,
       settings,
       setSettings,
       schools,
@@ -105,12 +116,14 @@ export const PrayersProvider = ({ children }) => {
       handleSettingChange,
     }),
     [
+      currentDayData,
       error,
       fetchPrayerTimes,
       handleSettingChange,
       islamicDate,
       isLoading,
       lastUpdated,
+      locale,
       prayerTimes,
       settings,
       today,

@@ -1,28 +1,33 @@
+import { useTranslation } from "react-i18next";
 import { usePrayerData } from "../context/hooks";
 import { usePrayerTimeline } from "../hooks/usePrayerTimeline";
 import { useTodayPrayerData } from "../hooks/useTodayPrayerData";
 
-const formatDuration = (duration) => {
+const formatDuration = (duration, t) => {
   if (!duration) {
     return "";
   }
 
-  return `${duration.hours}h ${duration.minutes}m`;
+  return t("duration.hoursMinutes", {
+    hours: duration.hours,
+    minutes: duration.minutes,
+  });
 };
 
 const NextPrayer = ({ currentTime }) => {
+  const { t } = useTranslation("prayers");
   const { isLoading, error } = usePrayerData();
   const { relevantPrayerTimes } = useTodayPrayerData(currentTime);
   const timeline = usePrayerTimeline(relevantPrayerTimes, currentTime);
 
   if (isLoading) {
-    return <h6 className="mt-1 text-white status-text">Loading prayer times...</h6>;
+    return <h6 className="mt-1 text-white status-text">{t("status.loadingPrayerTimes")}</h6>;
   }
 
   if (error) {
     return (
       <h6 className="mt-1 text-white status-text">
-        Prayer times are unavailable right now.
+        {t("status.prayerTimesUnavailable")}
       </h6>
     );
   }
@@ -34,27 +39,29 @@ const NextPrayer = ({ currentTime }) => {
   return (
     <section
       className="prayer-timeline-card text-white"
-      aria-label="Prayer timeline"
+      aria-label={t("timeline.ariaLabel")}
       aria-live="polite"
       style={{ "--prayer-progress": `${timeline.progressPercent}%` }}
     >
       <div className="prayer-progress-labels">
         <span>
-          <small>Current Prayer</small>
-          <strong>{timeline.currentPrayerName}</strong>
+          <small>{t("timeline.currentPrayer")}</small>
+          <strong>{t(`names.${timeline.currentPrayerName}`)}</strong>
         </span>
         <p className="prayer-timeline-countdown">
-          Next prayer in {formatDuration(timeline.remaining)}
+          {t("timeline.nextPrayerIn", {
+            duration: formatDuration(timeline.remaining, t),
+          })}
         </p>
         <span>
-          <small>Next Prayer</small>
-          <strong>{timeline.nextPrayerName}</strong>
+          <small>{t("timeline.nextPrayer")}</small>
+          <strong>{t(`names.${timeline.nextPrayerName}`)}</strong>
         </span>
       </div>
       <div
         className="prayer-progress"
         role="progressbar"
-        aria-label="Progress to next prayer"
+        aria-label={t("timeline.progressAriaLabel")}
         aria-valuemin="0"
         aria-valuemax="100"
         aria-valuenow={timeline.progressPercent}

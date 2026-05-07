@@ -1,22 +1,24 @@
+import { useTranslation } from "react-i18next";
 import { useAsmaUlHusna } from "../hooks/useAsmaUlHusna";
 
 const AsmaUlHusna = () => {
+  const { t } = useTranslation("prayers");
   const { asmaUlHusna, isLoading, error } = useAsmaUlHusna();
 
   if (isLoading) {
-    return <p className="text-white text-center status-text">Loading Asma ul Husna...</p>;
+    return <p className="daily-name text-white text-center status-text">{t("status.loadingAsma")}</p>;
   }
 
   if (error) {
     return (
-      <p className="text-white text-center status-text">
-        Unable to load Asma ul Husna right now.
+      <p className="daily-name text-white text-center status-text">
+        {t("status.asmaUnavailable")}
       </p>
     );
   }
 
   return (
-    <p className="text-white text-center">
+    <p className="daily-name text-white text-center">
       {asmaUlHusna.map(({ name, en: { meaning } }) => (
         <span key={name}>
           <strong>{name}:</strong> <small>{meaning}</small>

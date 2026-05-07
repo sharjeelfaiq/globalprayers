@@ -34,9 +34,12 @@ export const usePrayerSettings = () => {
 };
 
 export const usePrayerData = () => {
-  const { prayerTimes, isLoading, error, refreshPrayerTimes } = usePrayersContext();
+  const { currentDayData, locale, prayerTimes, isLoading, error, refreshPrayerTimes } =
+    usePrayersContext();
 
   return {
+    currentDayData,
+    locale,
     prayerTimes,
     isLoading,
     error,

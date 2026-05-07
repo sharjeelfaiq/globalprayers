@@ -141,7 +141,7 @@ export const getPrayerTimelineState = (times = [], now = new Date()) => {
 export const isCurrentPrayerWindow = (prayerTime, nextPrayerTime, now = new Date()) =>
   Boolean(prayerTime && nextPrayerTime && now >= prayerTime && now < nextPrayerTime);
 
-export const buildPrayerRows = (times = [], now = new Date()) =>
+export const buildPrayerRows = (times = [], now = new Date(), locale = "en-US") =>
   times.map(([prayerName, time], index) => {
     const prayerTime = createPrayerDate(time, now);
     const nextTime = times[index + 1]?.[1];
@@ -152,20 +152,37 @@ export const buildPrayerRows = (times = [], now = new Date()) =>
 
     return {
       prayerName,
-      formattedPrayerTime: formatPrayerTime(time, now),
+      formattedPrayerTime: formatPrayerTime(time, now, locale),
       isCurrent: isCurrentPrayerWindow(prayerTime, nextPrayerTime, now),
       isNext: nextPrayer?.prayerName === prayerName,
     };
   });
 
-export const formatIslamicDate = (currentDayData) => {
+export const formatIslamicDate = (currentDayData, translateMonth = (month) => month) => {
   if (!currentDayData?.date?.hijri) {
     return "";
   }
 
   const { month, day, year } = currentDayData.date.hijri;
-  return `${month.en} ${day}, ${year}`;
+  return `${translateMonth(month.en)} ${day}, ${year}`;
 };
 
-export const formatReadableDate = (currentDayData) =>
-  currentDayData?.date?.readable ?? "";
+export const formatReadableDate = (currentDayData, locale = "en-US") => {
+  const readableDate = currentDayData?.date?.readable;
+
+  if (!readableDate) {
+    return "";
+  }
+
+  const parsedDate = new Date(readableDate);
+
+  if (Number.isNaN(parsedDate.getTime())) {
+    return readableDate;
+  }
+
+  return parsedDate.toLocaleDateString(locale, {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  });
+};

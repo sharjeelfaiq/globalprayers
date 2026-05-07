@@ -16,7 +16,17 @@
   --color-border: rgba(255, 255, 255, 0.22);
   --color-accent: #9ce6ad;
   --color-accent-start: #79d6ff;
+  --color-accent-focus: rgba(156, 230, 173, 0.3);
+  --color-control-option-text: #111827;
   --color-shadow: rgba(0, 0, 0, 0.24);
+  --radius-sm: 5px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
 }
 
 html {
@@ -30,6 +40,13 @@ body {
   background-position: center center;
   font-family: "Poppins", Arial, sans-serif;
   min-height: 100vh;
+  min-height: 100dvh;
+  overflow-x: hidden;
+}
+
+#root {
+  min-height: 100vh;
+  min-height: 100dvh;
 }
 
 button,
@@ -50,6 +67,43 @@ textarea,
   text-shadow: 2px 2px 5px var(--color-shadow);
 }
 
+.app-shell {
+  width: min(100%, 48rem);
+  min-height: 100vh;
+  min-height: 100dvh;
+  gap: clamp(0.35rem, 1.6vw, 0.8rem);
+  padding: clamp(0.75rem, 2.5vw, 1.5rem);
+}
+
+.dashboard-header {
+  width: 100%;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: 0;
+}
+
+.dashboard-date {
+  min-width: 0;
+  margin: 0;
+  overflow-wrap: anywhere;
+  font-size: clamp(0.78rem, 1.8vw, 1rem);
+  line-height: 1.35;
+}
+
+.daily-name {
+  width: min(100%, 36rem);
+  margin: 0;
+  overflow-wrap: anywhere;
+  font-size: clamp(0.86rem, 2.1vw, 1rem);
+  line-height: 1.45;
+}
+
+.dashboard-clock {
+  margin: 0;
+  font-size: clamp(1.35rem, 5vw, 1.75rem);
+  line-height: 1.2;
+}
+
 h1:hover,
 h2:hover,
 h3:hover,
@@ -66,37 +120,236 @@ h5:hover {
   margin: 1rem 0;
 }
 
+.header-actions {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.25rem;
+  flex: 0 0 auto;
+}
+
+.language-switcher {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  min-height: 2.35rem;
+  padding: 0.25rem 0.45rem;
+  color: var(--color-text);
+}
+
+.language-switcher-select {
+  width: clamp(4.8rem, 18vw, 5.8rem);
+  max-width: 100%;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font: inherit;
+  font-size: 0.78rem;
+}
+
+.settings-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1050;
+  display: grid;
+  align-items: start;
+  justify-items: center;
+  padding: clamp(3.5rem, 10dvh, 5.5rem) var(--space-4) var(--space-4);
+  background: rgba(0, 0, 0, 0.38);
+  backdrop-filter: blur(4px);
+}
+
+.settings-modal {
+  width: min(100%, 29rem);
+  max-height: min(78vh, 42rem);
+  max-height: min(78dvh, 42rem);
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  box-shadow: 0 18px 42px var(--color-shadow);
+  color: var(--color-text);
+  backdrop-filter: blur(18px);
+  animation: settingsPanelIn 0.18s ease-out;
+}
+
+.settings-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-4) var(--space-3);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.settings-modal-header h2 {
+  margin: 0;
+  color: var(--color-text-strong);
+  font-size: 1.05rem;
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+.settings-modal-close {
+  display: inline-grid;
+  width: 2rem;
+  height: 2rem;
+  flex: 0 0 auto;
+  place-items: center;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-soft);
+  color: var(--color-text);
+  cursor: pointer;
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.settings-modal-close:hover,
+.settings-modal-close:focus {
+  border-color: var(--color-accent);
+  background-color: var(--color-surface-hover);
+  box-shadow: 0 0 0 0.16rem var(--color-accent-focus);
+  outline: none;
+}
+
+.settings-modal-body {
+  display: grid;
+  gap: var(--space-3);
+  max-height: calc(min(78vh, 42rem) - 4rem);
+  max-height: calc(min(78dvh, 42rem) - 4rem);
+  overflow-y: auto;
+  padding: var(--space-4);
+}
+
+.settings-field {
+  display: grid;
+  gap: var(--space-1);
+}
+
+.settings-label {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: 0.74rem;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.settings-control {
+  width: 100%;
+  min-height: 2.45rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background-color: var(--color-surface-soft);
+  color: var(--color-text);
+  font: inherit;
+  font-size: 0.88rem;
+  outline: none;
+  padding: var(--space-2) var(--space-3);
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.settings-control:focus {
+  border-color: var(--color-accent);
+  background-color: var(--color-surface-hover);
+  box-shadow: 0 0 0 0.16rem var(--color-accent-focus);
+}
+
+.settings-control::placeholder {
+  color: var(--color-text-muted);
+}
+
+.settings-control option {
+  color: var(--color-control-option-text);
+}
+
+[dir="rtl"] .text-start {
+  text-align: right !important;
+}
+
+[dir="rtl"] .dropdown-menu {
+  text-align: right;
+}
+
+[dir="rtl"] .settings-modal {
+  text-align: right;
+}
+
 .form-select {
-  width: 300px;
+  width: min(100%, 18.75rem);
   padding: 0.5rem;
   font-size: 0.9rem;
-  border-radius: 5px;
+  border-radius: var(--radius-sm);
   background-color: var(--color-surface-soft);
   color: var(--color-text);
 }
 
-.table {
+.prayer-table-shell {
+  width: min(100%, 32rem);
+  margin: 0.45rem auto 0;
+  max-height: min(42vh, 20rem);
+  max-height: min(42dvh, 20rem);
+  overflow-x: auto;
+  overflow-y: auto;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.18);
+  scrollbar-width: thin;
+}
+
+.prayer-table {
   width: 100%;
-  max-width: 600px;
-  margin: 0 auto;
-  border-radius: 8px;
+  min-width: 17.5rem;
+  margin: 0;
+  table-layout: fixed;
+  border-radius: inherit;
   overflow: hidden;
 }
 
-.table th,
-.table td {
+.prayer-table th,
+.prayer-table td {
   text-align: center;
-  padding: 1rem;
+  padding: 0.42rem 0.7rem;
   vertical-align: middle;
+  overflow-wrap: anywhere;
 }
 
-.table th {
+.prayer-table th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
   background-color: var(--color-surface-soft);
-  font-weight: 600;
+  color: var(--color-text-muted);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
 }
 
-.table td {
+.prayer-table td {
   background-color: var(--color-surface);
+  font-size: 0.84rem;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+.prayer-table th:first-child,
+.prayer-table td:first-child {
+  width: 48%;
+  text-align: left;
+}
+
+.prayer-table th:last-child,
+.prayer-table td:last-child {
+  width: 52%;
+  text-align: right;
 }
 
 .table-shadow {
@@ -105,7 +358,26 @@ h5:hover {
 
 .prayer-row-name {
   display: inline-block;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
   vertical-align: middle;
+  white-space: nowrap;
+}
+
+.prayer-time-cell {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+[dir="rtl"] .prayer-table th:first-child,
+[dir="rtl"] .prayer-table td:first-child {
+  text-align: right;
+}
+
+[dir="rtl"] .prayer-table th:last-child,
+[dir="rtl"] .prayer-table td:last-child {
+  text-align: left;
 }
 
 .status-text {
@@ -115,7 +387,7 @@ h5:hover {
 }
 
 .prayer-timeline-card {
-  width: min(100%, 600px);
+  width: min(100%, 37.5rem);
   margin: 0.3rem auto 0;
   padding: 0.4rem 0.5rem;
   border: 1px solid var(--color-border);
@@ -129,7 +401,7 @@ h5:hover {
   margin: 0;
   min-width: 0;
   color: var(--color-text-strong);
-  font-size: 0.8rem;
+  font-size: clamp(0.68rem, 2vw, 0.8rem);
   font-weight: 600;
   line-height: 1.2;
   text-align: center;
@@ -138,7 +410,7 @@ h5:hover {
 
 .prayer-progress-labels {
   display: grid;
-  grid-template-columns: minmax(4rem, 1fr) minmax(8rem, 1.4fr) minmax(4rem, 1fr);
+  grid-template-columns: minmax(0, 1fr) minmax(7.5rem, 1.35fr) minmax(0, 1fr);
   align-items: center;
   gap: 0.75rem;
 }
@@ -165,7 +437,7 @@ h5:hover {
 .prayer-progress-labels strong {
   overflow: hidden;
   color: var(--color-text-strong);
-  font-size: 0.82rem;
+  font-size: clamp(0.7rem, 2vw, 0.82rem);
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -213,7 +485,93 @@ h5:hover {
   }
 }
 
+@keyframes settingsPanelIn {
+  from {
+    opacity: 0;
+    transform: translateY(calc(var(--space-2) * -1));
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 @media (max-width: 480px) {
+  .app-shell {
+    justify-content: flex-start !important;
+    padding: var(--space-3) var(--space-2);
+  }
+
+  .dashboard-header {
+    gap: var(--space-2);
+  }
+
+  .header-actions {
+    gap: 0.1rem;
+  }
+
+  .language-switcher {
+    gap: 0.2rem;
+    min-height: 2.25rem;
+    padding: 0.15rem;
+  }
+
+  .language-switcher-select {
+    width: 4.7rem;
+    font-size: 0.68rem;
+  }
+
+  .btn {
+    min-width: 2.25rem;
+    min-height: 2.25rem;
+    padding: 0.25rem 0.4rem;
+  }
+
+  .settings-modal-backdrop {
+    align-items: end;
+    padding: var(--space-4) var(--space-2);
+  }
+
+  .settings-modal {
+    width: 100%;
+    max-height: 86vh;
+    max-height: 86dvh;
+  }
+
+  .settings-modal-header,
+  .settings-modal-body {
+    padding: var(--space-3);
+  }
+
+  .settings-field {
+    gap: var(--space-1);
+  }
+
+  .prayer-table-shell {
+    width: min(100%, 26rem);
+    max-height: min(45vh, 18rem);
+    max-height: min(45dvh, 18rem);
+    margin-top: 0.35rem;
+  }
+
+  .prayer-table {
+    min-width: 16rem;
+  }
+
+  .prayer-table th,
+  .prayer-table td {
+    padding: 0.38rem 0.52rem;
+  }
+
+  .prayer-table th {
+    font-size: 0.6rem;
+  }
+
+  .prayer-table td {
+    font-size: 0.76rem;
+  }
+
   .prayer-timeline-card {
     padding: 0.38rem 0.45rem;
   }
@@ -223,7 +581,7 @@ h5:hover {
   }
 
   .prayer-progress-labels {
-    grid-template-columns: minmax(3.2rem, 0.8fr) minmax(7.4rem, 1.6fr) minmax(3.2rem, 0.8fr);
+    grid-template-columns: minmax(0, 0.8fr) minmax(6.7rem, 1.55fr) minmax(0, 0.8fr);
     gap: 0.35rem;
   }
 
@@ -236,12 +594,55 @@ h5:hover {
   }
 }
 
+@media (max-width: 360px) {
+  .dashboard-date {
+    font-size: 0.7rem;
+  }
+
+  .daily-name {
+    font-size: 0.8rem;
+  }
+
+  .prayer-timeline-countdown {
+    font-size: 0.6rem;
+  }
+
+  .prayer-progress-labels {
+    grid-template-columns: minmax(0, 0.7fr) minmax(5.9rem, 1.7fr) minmax(0, 0.7fr);
+    gap: 0.25rem;
+  }
+
+  .prayer-progress-labels small {
+    font-size: 0.46rem;
+  }
+
+  .prayer-progress-labels strong,
+  .prayer-table td {
+    font-size: 0.68rem;
+  }
+
+  .prayer-table th,
+  .prayer-table td {
+    padding-inline: 0.42rem;
+  }
+}
+
+@media (min-width: 992px) {
+  .app-shell {
+    width: min(100%, 52rem);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .prayer-progress-fill {
     transition: none;
   }
 
   .prayer-progress-fill::after {
+    animation: none;
+  }
+
+  .settings-modal {
     animation: none;
   }
 }

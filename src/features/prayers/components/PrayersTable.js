@@ -1,47 +1,58 @@
+import { useTranslation } from "react-i18next";
 import { usePrayerData } from "../context/hooks";
 import { usePrayerRows } from "../hooks/usePrayerRows";
 import { useTodayPrayerData } from "../hooks/useTodayPrayerData";
 
 const PrayersTable = ({ currentTime }) => {
-  const { isLoading, error } = usePrayerData();
+  const { i18n, t } = useTranslation("prayers");
+  const { isLoading, error, locale } = usePrayerData();
   const { relevantPrayerTimes } = useTodayPrayerData(currentTime);
-  const prayerRows = usePrayerRows(relevantPrayerTimes, currentTime);
+  const activeLocale = locale || i18n.resolvedLanguage || i18n.language;
+  const prayerRows = usePrayerRows(relevantPrayerTimes, currentTime, activeLocale);
 
   if (isLoading) {
-    return <p className="text-white status-text mt-3">Loading prayer schedule...</p>;
+    return <p className="text-white status-text mt-3">{t("status.loadingSchedule")}</p>;
   }
 
   if (error) {
     return (
       <p className="text-white status-text mt-3">
-        Unable to load prayer times for the selected location.
+        {t("status.scheduleUnavailable")}
       </p>
     );
   }
 
   if (!prayerRows.length) {
-    return <p className="text-white status-text mt-3">No prayer times available.</p>;
+    return <p className="text-white status-text mt-3">{t("status.noSchedule")}</p>;
   }
 
   return (
-    <table className="table table-borderless text-white mt-3">
-      <thead>
-        <tr>
-          <th scope="col">Prayer</th>
-          <th scope="col">Time</th>
-        </tr>
-      </thead>
-      <tbody>
-        {prayerRows.map(({ prayerName, formattedPrayerTime }) => (
-          <tr key={prayerName}>
-            <td>
-              <span className="prayer-row-name">{prayerName}</span>
-            </td>
-            <td>{formattedPrayerTime}</td>
+    <div className="prayer-table-shell">
+      <table className="table table-borderless prayer-table text-white">
+        <thead>
+          <tr>
+            <th scope="col">{t("table.prayer")}</th>
+            <th scope="col">{t("table.time")}</th>
           </tr>
-        ))}
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+          {prayerRows.map(({ prayerName, formattedPrayerTime }) => {
+            const translatedPrayerName = t(`names.${prayerName}`);
+
+            return (
+              <tr key={prayerName}>
+                <td>
+                  <span className="prayer-row-name" title={translatedPrayerName}>
+                    {translatedPrayerName}
+                  </span>
+                </td>
+                <td className="prayer-time-cell">{formattedPrayerTime}</td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+    </div>
   );
 };
 
