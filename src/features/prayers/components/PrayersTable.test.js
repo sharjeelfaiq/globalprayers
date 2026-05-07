@@ -217,6 +217,30 @@ describe("PrayersTable", () => {
     expect(shell).not.toHaveClass("prayer-table-scrollable");
   });
 
+  it("keeps the table body content-tight without forcing row stretch to the shell bottom", () => {
+    const { container } = renderWithPrayerData(
+      <PrayersTable currentTime={new Date(2026, 3, 1, 12, 30)} />,
+      [
+        {
+          timings: {
+            Fajr: "05:01",
+            Sunrise: "06:16",
+            Dhuhr: "12:21",
+            Asr: "15:46",
+            Maghrib: "18:32",
+            Isha: "19:46",
+          },
+        },
+      ]
+    );
+
+    const shell = container.querySelector(".prayer-table-shell");
+    const table = screen.getByRole("table");
+
+    expect(shell).toHaveClass("prayer-table-content-tight");
+    expect(table).toHaveClass("prayer-table-content-tight");
+  });
+
   it("keeps compact cells readable when names are visually truncated", () => {
     renderWithPrayerData(
       <PrayersTable currentTime={new Date(2026, 3, 1, 12, 30)} />,
