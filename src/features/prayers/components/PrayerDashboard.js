@@ -2,7 +2,6 @@ import { useCurrentTime } from "../../../shared/hooks/useCurrentTime";
 import AsmaUlHusna from "./AsmaUlHusna";
 import Clock from "./Clock";
 import Header from "./Header";
-import NextPrayer from "./NextPrayer";
 import PrayersTable from "./PrayersTable";
 
 const PrayerDashboard = () => {
@@ -13,7 +12,6 @@ const PrayerDashboard = () => {
       <Header />
       <AsmaUlHusna />
       <Clock />
-      <NextPrayer currentTime={currentMinute} />
       <PrayersTable currentTime={currentMinute} />
     </>
   );

@@ -31,14 +31,19 @@ export const resources = {
         asmaUnavailable: "Unable to load Asma ul Husna right now.",
       },
       table: {
+        ariaLabel: "Prayer schedule",
         prayer: "Prayer",
         time: "Time",
       },
       timeline: {
         ariaLabel: "Prayer timeline",
+        progressHeaderLabel: "Prayer progress",
         progressAriaLabel: "Progress to next prayer",
+        progressMetaLabel: "Prayer progress timing",
         currentPrayer: "Current Prayer",
         nextPrayer: "Next Prayer",
+        elapsed: "Elapsed {{duration}}",
+        remaining: "Remaining {{duration}}",
         nextPrayerIn: "Next prayer in {{duration}}",
       },
       duration: {
@@ -102,14 +107,19 @@ export const resources = {
         asmaUnavailable: "تعذر تحميل أسماء الله الحسنى حاليا.",
       },
       table: {
+        ariaLabel: "جدول الصلاة",
         prayer: "الصلاة",
         time: "الوقت",
       },
       timeline: {
         ariaLabel: "خط الصلاة الزمني",
+        progressHeaderLabel: "تقدم الصلاة",
         progressAriaLabel: "التقدم نحو الصلاة التالية",
+        progressMetaLabel: "توقيت تقدم الصلاة",
         currentPrayer: "الصلاة الحالية",
         nextPrayer: "الصلاة التالية",
+        elapsed: "مضى {{duration}}",
+        remaining: "متبقٍ {{duration}}",
         nextPrayerIn: "الصلاة التالية بعد {{duration}}",
       },
       duration: {
@@ -173,14 +183,19 @@ export const resources = {
         asmaUnavailable: "اسماء الحسنی اس وقت لوڈ نہیں ہو سکے.",
       },
       table: {
+        ariaLabel: "نماز کا شیڈول",
         prayer: "نماز",
         time: "وقت",
       },
       timeline: {
         ariaLabel: "نماز کا ٹائم لائن",
+        progressHeaderLabel: "نماز کی پیش رفت",
         progressAriaLabel: "اگلی نماز تک پیش رفت",
+        progressMetaLabel: "نماز کی پیش رفت کا وقت",
         currentPrayer: "موجودہ نماز",
         nextPrayer: "اگلی نماز",
+        elapsed: "گزرا ہوا {{duration}}",
+        remaining: "باقی {{duration}}",
         nextPrayerIn: "اگلی نماز {{duration}} میں",
       },
       duration: {
