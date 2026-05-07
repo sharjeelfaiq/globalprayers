@@ -73,7 +73,7 @@ describe("PrayersTable", () => {
     );
 
     expect(screen.getByRole("columnheader", { name: "Prayer progress" })).toBeInTheDocument();
-    expect(screen.getByText("Next prayer in 3h 16m")).toBeInTheDocument();
+    expect(screen.getByText("Next prayer in 3h 16m 0s")).toBeInTheDocument();
     expect(screen.getAllByText("Dhuhr")).not.toHaveLength(0);
     expect(screen.getAllByText("Asr")).not.toHaveLength(0);
 
@@ -113,20 +113,20 @@ describe("PrayersTable", () => {
 
     const toggle = screen.getByRole("button", { name: "Show elapsed prayer time" });
 
-    expect(toggle).toHaveTextContent("Remaining 3h 16m");
+    expect(toggle).toHaveTextContent("Remaining 3h 16m 0s");
     expect(toggle).toHaveAttribute("aria-pressed", "false");
-    expect(screen.queryByText("Elapsed 0h 9m")).not.toBeInTheDocument();
+    expect(screen.queryByText("Elapsed 0h 9m 0s")).not.toBeInTheDocument();
 
     fireEvent.click(toggle);
 
     expect(screen.getByRole("button", { name: "Show remaining prayer time" })).toHaveTextContent(
-      "Elapsed 0h 9m"
+      "Elapsed 0h 9m 0s"
     );
     expect(screen.getByRole("button", { name: "Show remaining prayer time" })).toHaveAttribute(
       "aria-pressed",
       "true"
     );
-    expect(screen.queryByText("Remaining 3h 16m")).not.toBeInTheDocument();
+    expect(screen.queryByText("Remaining 3h 16m 0s")).not.toBeInTheDocument();
   });
 
   it("does not render visible Prayer and Time column headers", () => {

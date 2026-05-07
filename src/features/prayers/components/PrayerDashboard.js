@@ -5,14 +5,14 @@ import Header from "./Header";
 import PrayersTable from "./PrayersTable";
 
 const PrayerDashboard = () => {
-  const currentMinute = useCurrentTime(60000);
+  const currentTime = useCurrentTime(1000);
 
   return (
     <main className="prayer-dashboard prayer-dashboard-full-height">
       <Header />
       <AsmaUlHusna />
       <Clock />
-      <PrayersTable currentTime={currentMinute} />
+      <PrayersTable currentTime={currentTime} />
     </main>
   );
 };

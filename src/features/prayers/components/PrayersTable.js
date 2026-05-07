@@ -10,9 +10,10 @@ const formatDuration = (duration, t) => {
     return "";
   }
 
-  return t("duration.hoursMinutes", {
+  return t("duration.hoursMinutesSeconds", {
     hours: duration.hours,
     minutes: duration.minutes,
+    seconds: duration.seconds ?? 0,
   });
 };
 

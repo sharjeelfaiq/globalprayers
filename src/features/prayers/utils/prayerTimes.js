@@ -54,6 +54,16 @@ const formatDurationFromMinutes = (differenceInMinutes) => {
   };
 };
 
+const formatDurationFromMilliseconds = (differenceInMilliseconds) => {
+  const totalSeconds = Math.max(0, Math.floor(differenceInMilliseconds / 1000));
+
+  return {
+    hours: Math.floor(totalSeconds / 3600),
+    minutes: Math.floor((totalSeconds % 3600) / 60),
+    seconds: totalSeconds % 60,
+  };
+};
+
 export const getNextPrayer = (times = [], now = new Date()) => {
   if (!times.length) {
     return null;
@@ -89,9 +99,7 @@ export const getDurationBetween = (startTime, endTime) => {
     return null;
   }
 
-  const differenceInMinutes = Math.max(0, (endTime - startTime) / (1000 * 60));
-
-  return formatDurationFromMinutes(differenceInMinutes);
+  return formatDurationFromMilliseconds(endTime - startTime);
 };
 
 const buildPrayerTimelineCandidates = (times = [], now = new Date()) =>

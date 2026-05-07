@@ -145,7 +145,7 @@ describe("prayerTimes utilities", () => {
   });
 
   it("builds timeline state with elapsed and remaining time for the active prayer window", () => {
-    const now = new Date(2026, 3, 7, 12, 30);
+    const now = new Date(2026, 3, 7, 12, 30, 15);
     const result = getPrayerTimelineState(
       getRelevantPrayerTimes(prayerTimes[1].timings),
       now
@@ -158,12 +158,14 @@ describe("prayerTimes utilities", () => {
       elapsed: {
         hours: 0,
         minutes: 9,
+        seconds: 15,
       },
       remaining: {
         hours: 3,
-        minutes: 16,
+        minutes: 15,
+        seconds: 45,
       },
-      progressPercent: 4,
+      progressPercent: 5,
     });
     expect(result.previousPrayerTime).toEqual(new Date(2026, 3, 7, 12, 21));
     expect(result.nextPrayerTime).toEqual(new Date(2026, 3, 7, 15, 46));

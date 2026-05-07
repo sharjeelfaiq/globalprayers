@@ -50,6 +50,7 @@ export const resources = {
       },
       duration: {
         hoursMinutes: "{{hours}}h {{minutes}}m",
+        hoursMinutesSeconds: "{{hours}}h {{minutes}}m {{seconds}}s",
       },
       names: {
         Fajr: "Fajr",
@@ -128,6 +129,7 @@ export const resources = {
       },
       duration: {
         hoursMinutes: "{{hours}}س {{minutes}}د",
+        hoursMinutesSeconds: "{{hours}}س {{minutes}}د {{seconds}}ث",
       },
       names: {
         Fajr: "الفجر",
@@ -206,6 +208,7 @@ export const resources = {
       },
       duration: {
         hoursMinutes: "{{hours}}گ {{minutes}}م",
+        hoursMinutesSeconds: "{{hours}}گ {{minutes}}م {{seconds}}س",
       },
       names: {
         Fajr: "فجر",
