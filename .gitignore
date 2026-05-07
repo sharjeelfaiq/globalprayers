@@ -8,6 +8,9 @@
 # testing
 /coverage
 
+# generated code graph
+/.codegraph
+
 # production
 /build
 

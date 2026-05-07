@@ -74,11 +74,6 @@ const PrayersTable = ({ currentTime }) => {
                       <small>{t("timeline.currentPrayer")}</small>
                       <strong>{t(`names.${timeline.currentPrayerName}`)}</strong>
                     </span>
-                    <p className="prayer-timeline-countdown">
-                      {t("timeline.nextPrayerIn", {
-                        duration: formatDuration(timeline.remaining, t),
-                      })}
-                    </p>
                     <span>
                       <small>{t("timeline.nextPrayer")}</small>
                       <strong>{t(`names.${timeline.nextPrayerName}`)}</strong>
@@ -103,7 +98,7 @@ const PrayersTable = ({ currentTime }) => {
                         ? t("timeline.elapsed", {
                             duration: formatDuration(timeline.elapsed, t),
                           })
-                        : t("timeline.remaining", {
+                        : t("timeline.nextPrayerIn", {
                             duration: formatDuration(timeline.remaining, t),
                           })}
                     </button>

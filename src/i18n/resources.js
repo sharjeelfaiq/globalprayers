@@ -46,7 +46,7 @@ export const resources = {
         remaining: "Remaining {{duration}}",
         nextPrayerIn: "Next prayer in {{duration}}",
         showElapsed: "Show elapsed prayer time",
-        showRemaining: "Show remaining prayer time",
+        showRemaining: "Show next prayer time",
       },
       duration: {
         hoursMinutes: "{{hours}}h {{minutes}}m",
@@ -125,7 +125,7 @@ export const resources = {
         remaining: "متبقٍ {{duration}}",
         nextPrayerIn: "الصلاة التالية بعد {{duration}}",
         showElapsed: "عرض وقت الصلاة المنقضي",
-        showRemaining: "عرض وقت الصلاة المتبقي",
+        showRemaining: "عرض وقت الصلاة التالية",
       },
       duration: {
         hoursMinutes: "{{hours}}س {{minutes}}د",
@@ -204,7 +204,7 @@ export const resources = {
         remaining: "باقی {{duration}}",
         nextPrayerIn: "اگلی نماز {{duration}} میں",
         showElapsed: "گزرا ہوا نماز کا وقت دکھائیں",
-        showRemaining: "باقی نماز کا وقت دکھائیں",
+        showRemaining: "اگلی نماز کا وقت دکھائیں",
       },
       duration: {
         hoursMinutes: "{{hours}}گ {{minutes}}م",

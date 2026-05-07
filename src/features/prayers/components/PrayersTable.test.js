@@ -73,7 +73,10 @@ describe("PrayersTable", () => {
     );
 
     expect(screen.getByRole("columnheader", { name: "Prayer progress" })).toBeInTheDocument();
-    expect(screen.getByText("Next prayer in 3h 16m 0s")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Show elapsed prayer time" })).toHaveTextContent(
+      "Next prayer in 3h 16m 0s"
+    );
+    expect(screen.queryByText("Remaining 3h 16m 0s")).not.toBeInTheDocument();
     expect(screen.getAllByText("Dhuhr")).not.toHaveLength(0);
     expect(screen.getAllByText("Asr")).not.toHaveLength(0);
 
@@ -91,10 +94,10 @@ describe("PrayersTable", () => {
     expect(summary).toContainElement(mainRow);
     expect(summary).toContainElement(metaRow);
     expect(mainRow).not.toContainElement(metaRow);
-    expect(mainRow?.children).toHaveLength(3);
+    expect(mainRow?.children).toHaveLength(2);
   });
 
-  it("toggles the single progress timing value between remaining and elapsed", () => {
+  it("toggles the single progress timing badge between next prayer and elapsed", () => {
     renderWithPrayerData(
       <PrayersTable currentTime={new Date(2026, 3, 1, 12, 30)} />,
       [
@@ -113,20 +116,20 @@ describe("PrayersTable", () => {
 
     const toggle = screen.getByRole("button", { name: "Show elapsed prayer time" });
 
-    expect(toggle).toHaveTextContent("Remaining 3h 16m 0s");
+    expect(toggle).toHaveTextContent("Next prayer in 3h 16m 0s");
     expect(toggle).toHaveAttribute("aria-pressed", "false");
     expect(screen.queryByText("Elapsed 0h 9m 0s")).not.toBeInTheDocument();
 
     fireEvent.click(toggle);
 
-    expect(screen.getByRole("button", { name: "Show remaining prayer time" })).toHaveTextContent(
+    expect(screen.getByRole("button", { name: "Show next prayer time" })).toHaveTextContent(
       "Elapsed 0h 9m 0s"
     );
-    expect(screen.getByRole("button", { name: "Show remaining prayer time" })).toHaveAttribute(
+    expect(screen.getByRole("button", { name: "Show next prayer time" })).toHaveAttribute(
       "aria-pressed",
       "true"
     );
-    expect(screen.queryByText("Remaining 3h 16m 0s")).not.toBeInTheDocument();
+    expect(screen.queryByText("Next prayer in 3h 16m 0s")).not.toBeInTheDocument();
   });
 
   it("does not render visible Prayer and Time column headers", () => {
