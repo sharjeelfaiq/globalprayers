@@ -236,7 +236,9 @@ h5:hover {
   z-index: 20;
   display: grid;
   min-width: 7rem;
-  overflow: hidden;
+  max-height: min(70vh, 24rem);
+  overflow-x: hidden;
+  overflow-y: auto;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
   background: rgba(12, 18, 18, 0.92);

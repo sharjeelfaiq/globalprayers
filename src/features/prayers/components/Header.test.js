@@ -65,6 +65,10 @@ describe("Header", () => {
 
     const languageMenu = screen.getByRole("listbox", { name: "Language" });
     expect(languageMenu).toHaveClass("language-switcher-menu");
+    expect(within(languageMenu).getAllByRole("option")).toHaveLength(20);
+    expect(within(languageMenu).getByRole("option", { name: "Bahasa Indonesia" })).toBeInTheDocument();
+    expect(within(languageMenu).getByRole("option", { name: "简体中文" })).toBeInTheDocument();
+    expect(within(languageMenu).getByRole("option", { name: "Soomaali" })).toBeInTheDocument();
 
     fireEvent.click(within(languageMenu).getByRole("option", { name: "اردو" }));
 

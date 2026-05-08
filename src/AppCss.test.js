@@ -110,6 +110,7 @@ describe("App CSS", () => {
     const iconRule = getRuleBody(css, ".header-icon-button i");
     const hoverRule = getRuleBody(css, ".header-icon-button:hover, .header-icon-button:focus-visible");
     const languageRule = getRuleBody(css, ".language-switcher-trigger");
+    const languageMenuRule = getRuleBody(css, ".language-switcher-menu");
 
     expect(iconButtonRule).toContain("display: inline-grid");
     expect(iconButtonRule).toContain("width: 2.25rem");
@@ -126,6 +127,8 @@ describe("App CSS", () => {
     expect(hoverRule).toContain("border-color: var(--color-accent-start-border)");
     expect(languageRule).not.toContain("width: 2.25rem");
     expect(languageRule).not.toContain("height: 2.25rem");
+    expect(languageMenuRule).toContain("max-height: min(70vh, 24rem)");
+    expect(languageMenuRule).toContain("overflow-y: auto");
   });
 
   it("uses a uniform full-width background for the current prayer row", () => {
