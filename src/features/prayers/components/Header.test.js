@@ -54,7 +54,10 @@ describe("Header", () => {
     expect(header).toHaveClass("dashboard-header-compact");
     expect(header).not.toHaveClass("container-fluid");
     expect(container.querySelector(".header-actions")).toHaveClass("header-actions-fluid");
-    expect(screen.getByRole("button", { name: "Prayer settings" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Language" })).toHaveClass("header-icon-button");
+    expect(screen.getByRole("button", { name: "Prayer settings" })).toHaveClass(
+      "header-icon-button"
+    );
     expect(screen.queryByRole("listbox", { name: "Language" })).not.toBeInTheDocument();
     expect(screen.queryByRole("combobox", { name: "Language" })).not.toBeInTheDocument();
 

@@ -91,7 +91,7 @@ const Header = () => {
         <LanguageSwitcher />
         <button
           ref={settingsButtonRef}
-          className="btn text-white"
+          className="header-icon-button btn text-white"
           type="button"
           aria-expanded={isSettingsOpen}
           aria-haspopup="dialog"

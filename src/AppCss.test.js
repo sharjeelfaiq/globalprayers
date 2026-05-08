@@ -67,7 +67,7 @@ describe("App CSS", () => {
     const toggleRule = getRuleBody(css, ".prayer-progress-toggle");
 
     expect(topRowRule).toContain("grid-template-columns: minmax(0, 1fr) auto");
-    expect(topRowRule).toContain("align-items: start");
+    expect(topRowRule).toContain("align-items: center");
     expect(currentTimeRule).toContain("grid-column: 1");
     expect(currentTimeRule).toContain("justify-self: start");
     expect(currentTimeRule).toContain("text-align: start");
@@ -80,6 +80,30 @@ describe("App CSS", () => {
     expect(toggleRule).toContain("font-size: 0.62rem");
     expect(toggleRule).toContain("border-radius: var(--radius-sm)");
     expect(toggleRule).toContain("white-space: nowrap");
+  });
+
+  it("uses one shared header icon button system for language and settings actions", () => {
+    const css = readAppCss();
+    const iconButtonRule = getRuleBody(css, ".header-icon-button");
+    const iconRule = getRuleBody(css, ".header-icon-button i");
+    const hoverRule = getRuleBody(css, ".header-icon-button:hover, .header-icon-button:focus-visible");
+    const languageRule = getRuleBody(css, ".language-switcher-trigger");
+
+    expect(iconButtonRule).toContain("display: inline-grid");
+    expect(iconButtonRule).toContain("width: 2.25rem");
+    expect(iconButtonRule).toContain("height: 2.25rem");
+    expect(iconButtonRule).toContain("place-items: center");
+    expect(iconButtonRule).toContain("border: 1px solid var(--color-border)");
+    expect(iconButtonRule).toContain("border-radius: var(--radius-sm)");
+    expect(iconButtonRule).toContain("background: var(--color-surface)");
+    expect(iconButtonRule).toContain("color: var(--color-text)");
+    expect(iconButtonRule).toContain("padding: 0");
+    expect(iconButtonRule).toContain("line-height: 1");
+    expect(iconRule).toContain("font-size: 1rem");
+    expect(iconRule).toContain("line-height: 1");
+    expect(hoverRule).toContain("border-color: var(--color-accent-start-border)");
+    expect(languageRule).not.toContain("width: 2.25rem");
+    expect(languageRule).not.toContain("height: 2.25rem");
   });
 
   it("uses a uniform full-width background for the current prayer row", () => {

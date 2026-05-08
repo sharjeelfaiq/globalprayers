@@ -195,7 +195,7 @@ h5:hover {
   flex: 0 0 auto;
 }
 
-.language-switcher-trigger {
+.header-icon-button {
   display: inline-grid;
   width: 2.25rem;
   height: 2.25rem;
@@ -205,18 +205,28 @@ h5:hover {
   background: var(--color-surface);
   color: var(--color-text);
   cursor: pointer;
+  line-height: 1;
+  padding: 0;
   transition:
     border-color 0.2s ease,
     background-color 0.2s ease,
     box-shadow 0.2s ease;
 }
 
-.language-switcher-trigger:hover,
-.language-switcher-trigger:focus-visible {
+.header-icon-button i {
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.header-icon-button:hover, .header-icon-button:focus-visible {
   border-color: var(--color-accent-start-border);
   background-color: var(--color-surface-hover);
   box-shadow: 0 0 0 0.14rem rgba(121, 214, 255, 0.18);
   outline: none;
+}
+
+.language-switcher-trigger {
+  flex: 0 0 auto;
 }
 
 .language-switcher-menu {
@@ -471,7 +481,7 @@ h5:hover {
   display: grid;
   width: 100%;
   grid-template-columns: minmax(0, 1fr) auto;
-  align-items: start;
+  align-items: center;
   gap: clamp(0.28rem, 1.6vw, 0.6rem);
   min-width: 0;
 }

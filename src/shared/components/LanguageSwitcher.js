@@ -17,7 +17,7 @@ const LanguageSwitcher = () => {
     <div className="language-switcher">
       <button
         ref={triggerRef}
-        className="language-switcher-trigger"
+        className="header-icon-button language-switcher-trigger"
         type="button"
         aria-label={t("language")}
         aria-haspopup="listbox"
