@@ -51,7 +51,7 @@ describe("App CSS", () => {
     const tableShellRule = getRuleBody(css, ".prayer-table-shell");
     const tableCellRules = getRuleBodies(css, ".prayer-table td");
 
-    expect(tableShellRule).toContain("width: min(100%, 31rem)");
+    expect(tableShellRule).toContain("width: min(100%, 28rem)");
     expect(tableCellRules).toContain(
       "padding: clamp(0.5rem, 1.8vw, 0.7rem) clamp(0.46rem, 2vw, 0.78rem)"
     );
@@ -76,9 +76,14 @@ describe("App CSS", () => {
     expect(statusRowRule).toContain("grid-column: 2");
     expect(statusRowRule).toContain("justify-self: end");
     expect(toggleRule).toContain("min-height: 1.4rem");
-    expect(toggleRule).toContain("padding: 0.16rem clamp(0.28rem, 1.4vw, 0.42rem)");
-    expect(toggleRule).toContain("font-size: 0.62rem");
+    expect(toggleRule).toContain("padding: 0.2rem clamp(0.36rem, 1.5vw, 0.5rem)");
+    expect(toggleRule).toContain("background-color: rgba(4, 18, 26, 0.72)");
+    expect(toggleRule).toContain("color: #f4fbff");
+    expect(toggleRule).toContain("font-size: 0.68rem");
+    expect(toggleRule).toContain("font-weight: 700");
     expect(toggleRule).toContain("border-radius: var(--radius-sm)");
+    expect(toggleRule).toContain("letter-spacing: 0.02em");
+    expect(toggleRule).toContain("font-variant-numeric: tabular-nums");
     expect(toggleRule).toContain("white-space: nowrap");
   });
 

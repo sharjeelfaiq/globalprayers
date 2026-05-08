@@ -409,7 +409,7 @@ h5:hover {
 }
 
 .prayer-table-shell {
-  width: min(100%, 31rem);
+  width: min(100%, 28rem);
   margin: clamp(0.35rem, 1.8vh, 0.65rem) auto 0;
   min-height: 0;
   flex: 0 1 auto;
@@ -519,15 +519,17 @@ h5:hover {
   max-width: 100%;
   min-width: 0;
   min-height: 1.4rem;
-  padding: 0.16rem clamp(0.28rem, 1.4vw, 0.42rem);
-  border: 1px solid var(--color-border);
+  padding: 0.2rem clamp(0.36rem, 1.5vw, 0.5rem);
+  border: 1px solid var(--color-accent-start-border);
   border-radius: var(--radius-sm);
-  background-color: var(--color-surface-soft);
-  color: var(--color-text-strong);
+  background-color: rgba(4, 18, 26, 0.72);
+  color: #f4fbff;
   font: inherit;
-  font-size: 0.62rem;
+  font-size: 0.68rem;
+  font-weight: 700;
   font-variant-numeric: tabular-nums;
-  line-height: 1.12;
+  letter-spacing: 0.02em;
+  line-height: 1.14;
   overflow: hidden;
   text-overflow: ellipsis;
   transition:
@@ -843,9 +845,9 @@ h5:hover {
   }
 
   .prayer-progress-toggle {
-    min-height: 1.36rem;
-    padding-inline: 0.32rem;
-    font-size: 0.58rem;
+    min-height: 1.42rem;
+    padding-inline: 0.38rem;
+    font-size: 0.64rem;
   }
 
   .prayer-table td {

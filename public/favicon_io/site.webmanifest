@@ -1,9 +1,9 @@
 {
- "name": "Web App To Display Pakistan Prayer Timings",
- "short_name": "Pakistan Prayers",
+ "name": "Global Prayers",
+ "short_name": "Global Prayers",
  "start_url": "/",
  "scope": "/",
- "description": "Web App To Display Pakistan Prayer Timings",
+ "description": "Accurate daily Islamic prayer times and global location-based prayer schedules.",
  "icons": [
    {
      "src": "/android-chrome-192x192.png",
@@ -16,8 +16,8 @@
      "type": "image/png"
    }
  ],
- "theme_color": "#ffffff",
- "background_color": "#ffffff",
+ "theme_color": "#04121a",
+ "background_color": "#04121a",
  "display": "standalone",
  "orientation": "portrait",
  "lang": "en-US",
