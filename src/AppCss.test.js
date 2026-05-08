@@ -19,6 +19,23 @@ const getRuleBodies = (css, selector) => {
     .join("\n");
 };
 
+const getMediaRuleBody = (css, mediaQuery, selector) => {
+  const escapedMediaQuery = mediaQuery.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const escapedSelector = selector.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const mediaStart = css.search(new RegExp(`@media ${escapedMediaQuery}\\s*\\{`, "m"));
+
+  if (mediaStart === -1) {
+    return "";
+  }
+
+  const nextMediaStart = css.indexOf("\n@media", mediaStart + 1);
+  const mediaBlock = css.slice(mediaStart, nextMediaStart === -1 ? undefined : nextMediaStart);
+
+  return [...mediaBlock.matchAll(new RegExp(`${escapedSelector}\\s*\\{([^}]*)\\}`, "gm"))]
+    .map((match) => match[1])
+    .join("\n");
+};
+
 describe("App CSS", () => {
   it("keeps the header top-aligned and separates the main content below it", () => {
     const css = readAppCss();
@@ -119,5 +136,47 @@ describe("App CSS", () => {
     expect(currentRowRule).toContain("background-color: var(--color-accent-start-tint)");
     expect(currentRowRule).not.toContain("linear-gradient");
     expect(rtlCurrentRowRule).toBe("");
+  });
+
+  it("increases mobile typography and spacing without widening the layout", () => {
+    const css = readAppCss();
+    const appShellRule = getMediaRuleBody(css, "(max-width: 480px)", ".app-shell");
+    const dateRule = getMediaRuleBody(css, "(max-width: 480px)", ".dashboard-date");
+    const dailyNameRule = getMediaRuleBody(css, "(max-width: 480px)", ".daily-name");
+    const tableCellRule = getMediaRuleBody(css, "(max-width: 480px)", ".prayer-table td");
+    const tableHeaderRule = getMediaRuleBody(css, "(max-width: 480px)", ".prayer-table th");
+    const currentTimeRule = getMediaRuleBody(css, "(max-width: 480px)", ".prayer-current-time");
+    const toggleRule = getMediaRuleBody(css, "(max-width: 480px)", ".prayer-progress-toggle");
+
+    expect(appShellRule).toContain("padding: clamp(0.62rem, 2.8vw, var(--space-3)) clamp(0.5rem, 3vw, var(--space-2))");
+    expect(dateRule).toContain("font-size: clamp(0.86rem, 3.2vw, 1rem)");
+    expect(dateRule).toContain("line-height: 1.42");
+    expect(dailyNameRule).toContain("font-size: clamp(0.94rem, 3.5vw, 1.08rem)");
+    expect(tableCellRule).toContain("font-size: 0.96rem");
+    expect(tableCellRule).toContain("line-height: 1.48");
+    expect(tableCellRule).toContain("padding: 0.64rem 0.62rem");
+    expect(tableHeaderRule).toContain("font-size: 0.68rem");
+    expect(currentTimeRule).toContain("font-size: clamp(1.16rem, 5.4vw, 1.32rem)");
+    expect(toggleRule).toContain("font-size: 0.68rem");
+    expect(toggleRule).toContain("padding-inline: 0.44rem");
+  });
+
+  it("keeps the narrowest mobile breakpoint readable instead of shrinking key content", () => {
+    const css = readAppCss();
+    const appShellRule = getMediaRuleBody(css, "(max-width: 360px)", ".app-shell");
+    const dateRule = getMediaRuleBody(css, "(max-width: 360px)", ".dashboard-date");
+    const dailyNameRule = getMediaRuleBody(css, "(max-width: 360px)", ".daily-name");
+    const currentTimeRule = getMediaRuleBody(css, "(max-width: 360px)", ".prayer-current-time");
+    const tableCellRule = getMediaRuleBody(css, "(max-width: 360px)", ".prayer-table td");
+    const nextLabelRule = getMediaRuleBody(css, "(max-width: 360px)", ".next-prayer-label");
+
+    expect(appShellRule).toContain("padding-inline: 0.48rem");
+    expect(dateRule).toContain("font-size: 0.76rem");
+    expect(dateRule).toContain("line-height: 1.38");
+    expect(dailyNameRule).toContain("font-size: 0.88rem");
+    expect(currentTimeRule).toContain("font-size: 1.06rem");
+    expect(tableCellRule).toContain("font-size: 0.88rem");
+    expect(tableCellRule).toContain("padding-inline: 0.54rem");
+    expect(nextLabelRule).toContain("font-size: 0.55rem");
   });
 });
