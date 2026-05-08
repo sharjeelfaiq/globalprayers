@@ -9,7 +9,6 @@ jest.mock("../../../shared/hooks/useCurrentTime", () => ({
 
 jest.mock("./Header", () => () => <div data-testid="header" />);
 jest.mock("./AsmaUlHusna", () => () => <div data-testid="asma" />);
-jest.mock("./Clock", () => () => <div data-testid="clock" />);
 jest.mock("./PrayersTable", () => ({ currentTime }) => (
   <div data-testid="prayers-table">{currentTime.toISOString()}</div>
 ));
@@ -25,6 +24,8 @@ describe("PrayerDashboard", () => {
 
     expect(screen.getByTestId("prayers-table")).toBeInTheDocument();
     expect(useCurrentTime).toHaveBeenCalledWith(1000);
+    expect(screen.queryByRole("heading", { name: /12:30/i })).not.toBeInTheDocument();
+    expect(screen.queryByTestId("clock")).not.toBeInTheDocument();
     expect(screen.queryByTestId("next-prayer-card")).not.toBeInTheDocument();
     expect(container.firstElementChild).toHaveClass("prayer-dashboard");
     expect(container.firstElementChild).toHaveClass("prayer-dashboard-full-height");

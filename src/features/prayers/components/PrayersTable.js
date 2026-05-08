@@ -5,17 +5,27 @@ import { usePrayerRows } from "../hooks/usePrayerRows";
 import { usePrayerTimeline } from "../hooks/usePrayerTimeline";
 import { useTodayPrayerData } from "../hooks/useTodayPrayerData";
 
-const formatDuration = (duration, t) => {
+const padTimeUnit = (value = 0) => String(value).padStart(2, "0");
+
+const formatDuration = (duration) => {
   if (!duration) {
     return "";
   }
 
-  return t("duration.hoursMinutesSeconds", {
-    hours: duration.hours,
-    minutes: duration.minutes,
-    seconds: duration.seconds ?? 0,
-  });
+  return [
+    padTimeUnit(duration.hours),
+    padTimeUnit(duration.minutes),
+    padTimeUnit(duration.seconds ?? 0),
+  ].join(":");
 };
+
+const formatCurrentTime = (currentTime, locale = "en-US") =>
+  currentTime.toLocaleTimeString(locale, {
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: true,
+  });
 
 const PrayersTable = ({ currentTime }) => {
   const { i18n, t } = useTranslation("prayers");
@@ -69,26 +79,35 @@ const PrayersTable = ({ currentTime }) => {
                   aria-live="polite"
                   style={{ "--prayer-progress": `${timeline.progressPercent}%` }}
                 >
-                  <div className="prayer-progress-status-row prayer-progress-status-fluid prayer-progress-status-compact">
-                    <button
-                      type="button"
-                      className="prayer-progress-toggle prayer-progress-toggle-fluid"
-                      aria-label={
-                        showingElapsed
-                          ? t("timeline.showRemaining")
-                          : t("timeline.showElapsed")
-                      }
-                      aria-pressed={showingElapsed}
-                      onClick={toggleTimeView}
+                  <div className="prayer-progress-top-row">
+                    <time
+                      className="prayer-current-time"
+                      dateTime={currentTime.toISOString()}
+                      aria-label={t("timeline.currentTimeLabel")}
                     >
-                      {showingElapsed
-                        ? t("timeline.elapsed", {
-                            duration: formatDuration(timeline.elapsed, t),
-                          })
-                        : t("timeline.nextPrayerIn", {
-                            duration: formatDuration(timeline.remaining, t),
-                          })}
-                    </button>
+                      {formatCurrentTime(currentTime, activeLocale)}
+                    </time>
+                    <div className="prayer-progress-status-row prayer-progress-status-fluid prayer-progress-status-compact">
+                      <button
+                        type="button"
+                        className="prayer-progress-toggle prayer-progress-toggle-fluid"
+                        aria-label={
+                          showingElapsed
+                            ? t("timeline.showRemaining")
+                            : t("timeline.showElapsed")
+                        }
+                        aria-pressed={showingElapsed}
+                        onClick={toggleTimeView}
+                      >
+                        {showingElapsed
+                          ? t("timeline.compactElapsed", {
+                              duration: formatDuration(timeline.elapsed),
+                            })
+                          : t("timeline.compactNextPrayerIn", {
+                              duration: formatDuration(timeline.remaining),
+                            })}
+                      </button>
+                    </div>
                   </div>
                   <div
                     className="prayer-progress"

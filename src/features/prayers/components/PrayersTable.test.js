@@ -74,8 +74,10 @@ describe("PrayersTable", () => {
 
     expect(screen.getByRole("columnheader", { name: "Prayer progress" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Show elapsed prayer time" })).toHaveTextContent(
-      "Next prayer in 3h 16m 0s"
+      "Next 03:16:00"
     );
+    expect(screen.queryByText("Next prayer in 3h 16m 0s")).not.toBeInTheDocument();
+    expect(screen.queryByText("Next 3h 16m 0s")).not.toBeInTheDocument();
     expect(screen.queryByText("Remaining 3h 16m 0s")).not.toBeInTheDocument();
     expect(screen.getAllByText("Dhuhr")).not.toHaveLength(0);
     expect(screen.getAllByText("Asr")).not.toHaveLength(0);
@@ -97,6 +99,62 @@ describe("PrayersTable", () => {
     expect(statusRow?.children).toHaveLength(1);
     expect(statusRow?.children[0]).toBe(toggle);
     expect(container.querySelector(".prayer-progress-meta")).not.toBeInTheDocument();
+  });
+
+  it("shows the live current time as the primary table header element", () => {
+    const { container, rerender } = renderWithPrayerData(
+      <PrayersTable currentTime={new Date(2026, 3, 1, 12, 30, 5)} />,
+      [
+        {
+          timings: {
+            Fajr: "05:01",
+            Sunrise: "06:16",
+            Dhuhr: "12:21",
+            Asr: "15:46",
+            Maghrib: "18:32",
+            Isha: "19:46",
+          },
+        },
+      ]
+    );
+
+    const currentTimeDisplay = screen.getByLabelText("Current time");
+    const headerRow = container.querySelector(".prayer-progress-top-row");
+    const statusRow = container.querySelector(".prayer-progress-status-row");
+
+    expect(currentTimeDisplay).toHaveClass("prayer-current-time");
+    expect(currentTimeDisplay).toHaveTextContent("12:30:05 PM");
+    expect(headerRow).toContainElement(currentTimeDisplay);
+    expect(headerRow).toContainElement(statusRow);
+
+    rerender(
+      <PrayersContext.Provider
+        value={{
+          prayerTimes: [
+            {
+              timings: {
+                Fajr: "05:01",
+                Sunrise: "06:16",
+                Dhuhr: "12:21",
+                Asr: "15:46",
+                Maghrib: "18:32",
+                Isha: "19:46",
+              },
+            },
+          ],
+          isLoading: false,
+          error: "",
+          today: "",
+          islamicDate: "",
+          lastUpdated: null,
+          refreshPrayerTimes: jest.fn(),
+        }}
+      >
+        <PrayersTable currentTime={new Date(2026, 3, 1, 12, 30, 6)} />
+      </PrayersContext.Provider>
+    );
+
+    expect(screen.getByLabelText("Current time")).toHaveTextContent("12:30:06 PM");
   });
 
   it("marks only the next upcoming prayer row with a compact label", () => {
@@ -145,20 +203,21 @@ describe("PrayersTable", () => {
 
     const toggle = screen.getByRole("button", { name: "Show elapsed prayer time" });
 
-    expect(toggle).toHaveTextContent("Next prayer in 3h 16m 0s");
+    expect(toggle).toHaveTextContent("Next 03:16:00");
     expect(toggle).toHaveAttribute("aria-pressed", "false");
     expect(screen.queryByText("Elapsed 0h 9m 0s")).not.toBeInTheDocument();
 
     fireEvent.click(toggle);
 
     expect(screen.getByRole("button", { name: "Show next prayer time" })).toHaveTextContent(
-      "Elapsed 0h 9m 0s"
+      "Last 00:09:00"
     );
     expect(screen.getByRole("button", { name: "Show next prayer time" })).toHaveAttribute(
       "aria-pressed",
       "true"
     );
-    expect(screen.queryByText("Next prayer in 3h 16m 0s")).not.toBeInTheDocument();
+    expect(screen.queryByText("Next 03:16:00")).not.toBeInTheDocument();
+    expect(screen.queryByText("Done 00:09:00")).not.toBeInTheDocument();
   });
 
   it("does not render visible Prayer and Time column headers", () => {

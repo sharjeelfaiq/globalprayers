@@ -41,7 +41,7 @@ describe("Header", () => {
     document.documentElement.setAttribute("dir", "ltr");
   });
 
-  it("renders a language switcher beside prayer settings and persists RTL language selection", () => {
+  it("opens the language menu only from the globe button and persists RTL language selection", () => {
     const { container } = render(
       <PrayersContext.Provider value={contextValue}>
         <Header />
@@ -55,14 +55,20 @@ describe("Header", () => {
     expect(header).not.toHaveClass("container-fluid");
     expect(container.querySelector(".header-actions")).toHaveClass("header-actions-fluid");
     expect(screen.getByRole("button", { name: "Prayer settings" })).toBeInTheDocument();
+    expect(screen.queryByRole("listbox", { name: "Language" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("combobox", { name: "Language" })).not.toBeInTheDocument();
 
-    fireEvent.change(screen.getByLabelText("Language"), {
-      target: { value: "ur" },
-    });
+    fireEvent.click(screen.getByRole("button", { name: "Language" }));
+
+    const languageMenu = screen.getByRole("listbox", { name: "Language" });
+    expect(languageMenu).toHaveClass("language-switcher-menu");
+
+    fireEvent.click(within(languageMenu).getByRole("option", { name: "اردو" }));
 
     expect(localStorage.getItem(LANGUAGE_STORAGE_KEY)).toBe("ur");
     expect(document.documentElement).toHaveAttribute("lang", "ur");
     expect(document.documentElement).toHaveAttribute("dir", "rtl");
+    expect(screen.queryByRole("listbox", { name: "Language" })).not.toBeInTheDocument();
   });
 
   it("opens and closes the prayer settings modal", () => {
