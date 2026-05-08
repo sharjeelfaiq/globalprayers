@@ -55,7 +55,7 @@ describe("PrayersTable", () => {
     expect(screen.getByTitle("Asr")).not.toHaveClass("current-prayer-cell");
   });
 
-  it("renders the next prayer progress summary inside the table header", () => {
+  it("renders only the timing badge and progress bar inside the table header", () => {
     const { container } = renderWithPrayerData(
       <PrayersTable currentTime={new Date(2026, 3, 1, 12, 30)} />,
       [
@@ -79,6 +79,8 @@ describe("PrayersTable", () => {
     expect(screen.queryByText("Remaining 3h 16m 0s")).not.toBeInTheDocument();
     expect(screen.getAllByText("Dhuhr")).not.toHaveLength(0);
     expect(screen.getAllByText("Asr")).not.toHaveLength(0);
+    expect(screen.queryByText("Current Prayer")).not.toBeInTheDocument();
+    expect(screen.queryByText("Next Prayer")).not.toBeInTheDocument();
 
     const progressBar = screen.getByRole("progressbar", {
       name: "Progress to next prayer",
@@ -92,11 +94,36 @@ describe("PrayersTable", () => {
     const toggle = screen.getByRole("button", { name: "Show elapsed prayer time" });
 
     expect(summary).toContainElement(statusRow);
-    expect(statusRow?.children).toHaveLength(3);
-    expect(statusRow?.children[0]).toHaveTextContent("Current PrayerDhuhr");
-    expect(statusRow?.children[1]).toBe(toggle);
-    expect(statusRow?.children[2]).toHaveTextContent("Next PrayerAsr");
+    expect(statusRow?.children).toHaveLength(1);
+    expect(statusRow?.children[0]).toBe(toggle);
     expect(container.querySelector(".prayer-progress-meta")).not.toBeInTheDocument();
+  });
+
+  it("marks only the next upcoming prayer row with a compact label", () => {
+    const { container } = renderWithPrayerData(
+      <PrayersTable currentTime={new Date(2026, 3, 1, 12, 30)} />,
+      [
+        {
+          timings: {
+            Fajr: "05:01",
+            Sunrise: "06:16",
+            Dhuhr: "12:21",
+            Asr: "15:46",
+            Maghrib: "18:32",
+            Isha: "19:46",
+          },
+        },
+      ]
+    );
+
+    const nextLabels = screen.getAllByText("Next");
+    const nextRow = container.querySelector(".next-prayer-row");
+
+    expect(nextLabels).toHaveLength(1);
+    expect(nextLabels[0]).toHaveClass("next-prayer-label");
+    expect(nextRow).toContainElement(screen.getByTitle("Asr"));
+    expect(nextRow).not.toHaveAttribute("aria-current");
+    expect(screen.getByTitle("Dhuhr")).not.toHaveClass("next-prayer-label");
   });
 
   it("toggles the single progress timing badge between next prayer and elapsed", () => {

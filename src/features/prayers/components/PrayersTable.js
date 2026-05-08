@@ -70,10 +70,6 @@ const PrayersTable = ({ currentTime }) => {
                   style={{ "--prayer-progress": `${timeline.progressPercent}%` }}
                 >
                   <div className="prayer-progress-status-row prayer-progress-status-fluid prayer-progress-status-compact">
-                    <span>
-                      <small>{t("timeline.currentPrayer")}</small>
-                      <strong>{t(`names.${timeline.currentPrayerName}`)}</strong>
-                    </span>
                     <button
                       type="button"
                       className="prayer-progress-toggle prayer-progress-toggle-fluid"
@@ -93,10 +89,6 @@ const PrayersTable = ({ currentTime }) => {
                             duration: formatDuration(timeline.remaining, t),
                           })}
                     </button>
-                    <span>
-                      <small>{t("timeline.nextPrayer")}</small>
-                      <strong>{t(`names.${timeline.nextPrayerName}`)}</strong>
-                    </span>
                   </div>
                   <div
                     className="prayer-progress"
@@ -114,14 +106,20 @@ const PrayersTable = ({ currentTime }) => {
           ) : null}
         </thead>
         <tbody>
-          {prayerRows.map(({ prayerName, formattedPrayerTime, isCurrent }) => {
+          {prayerRows.map(({ prayerName, formattedPrayerTime, isCurrent, isNext }) => {
             const translatedPrayerName = t(`names.${prayerName}`);
             const currentPrayerClass = isCurrent ? " current-prayer-cell" : "";
+            const rowClasses = [
+              isCurrent ? "current-prayer-row" : "",
+              isNext ? "next-prayer-row" : "",
+            ]
+              .filter(Boolean)
+              .join(" ");
 
             return (
               <tr
                 key={prayerName}
-                className={isCurrent ? "current-prayer-row" : undefined}
+                className={rowClasses || undefined}
                 aria-current={isCurrent ? "true" : undefined}
               >
                 <td>
@@ -131,6 +129,9 @@ const PrayersTable = ({ currentTime }) => {
                   >
                     {translatedPrayerName}
                   </span>
+                  {isNext ? (
+                    <span className="next-prayer-label">{t("timeline.nextIndicator")}</span>
+                  ) : null}
                 </td>
                 <td className={`prayer-time-cell${currentPrayerClass}`}>
                   {formattedPrayerTime}
