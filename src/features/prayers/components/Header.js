@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import Clock from "./Clock";
 import LanguageSwitcher from "../../../shared/components/LanguageSwitcher";
 import { usePrayerData, usePrayerMeta, usePrayerSettings } from "../context/hooks";
 
@@ -84,7 +83,6 @@ const Header = () => {
   return (
     <div className="dashboard-header dashboard-header-fluid dashboard-header-compact d-flex justify-content-between">
       <div className="dashboard-date text-white text-start">
-        <Clock />
         <span>{error ? t("dateUnavailable") : today || t("loadingDate")}</span>
         <span>{error ? t("hijriDateUnavailable") : islamicDate || t("loadingHijriDate")}</span>
       </div>

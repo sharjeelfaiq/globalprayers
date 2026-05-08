@@ -27,7 +27,6 @@ describe("App CSS", () => {
     const contentRule = getRuleBody(css, ".prayer-dashboard-content");
     const headerRule = getRuleBody(css, ".dashboard-header");
     const dateRule = getRuleBody(css, ".dashboard-date");
-    const clockRule = getRuleBody(css, ".dashboard-clock");
     const mobileBlock = css.match(/@media \(max-width: 480px\)\s*\{([\s\S]*?)\n\}/)?.[1] ?? "";
     const narrowBlock = css.match(/@media \(max-width: 360px\)\s*\{([\s\S]*?)\n\}/)?.[1] ?? "";
 
@@ -43,15 +42,8 @@ describe("App CSS", () => {
     expect(contentRule).toContain("display: flex");
     expect(contentRule).toContain("align-items: center");
     expect(contentRule).toContain("margin-top: clamp");
-    expect(clockRule).toContain("justify-self: start");
-    expect(clockRule).toContain("text-align: start");
-    expect(clockRule).toContain("font-size: clamp(1.62rem, 5.8vw, 2.2rem)");
-    expect(clockRule).toContain("font-weight: 700");
-    expect(clockRule).toContain("white-space: nowrap");
     expect(mobileBlock).not.toContain("justify-content: flex-start");
-    expect(mobileBlock).toContain("font-size: clamp(1.28rem, 7.4vw, 1.72rem)");
     expect(narrowBlock).not.toContain("flex-basis: 100%");
-    expect(narrowBlock).toContain("font-size: clamp(1.08rem, 7vw, 1.34rem)");
   });
 
   it("keeps the prayer table compact while increasing body readability", () => {
@@ -67,20 +59,21 @@ describe("App CSS", () => {
     expect(tableCellRules).toContain("line-height: 1.42");
   });
 
-  it("lays out the prayer table header with centered current time and badge right", () => {
+  it("lays out the prayer table header with current time left and badge right", () => {
     const css = readAppCss();
     const topRowRule = getRuleBody(css, ".prayer-progress-top-row");
     const currentTimeRule = getRuleBody(css, ".prayer-current-time");
     const statusRowRule = getRuleBody(css, ".prayer-progress-status-row");
     const toggleRule = getRuleBody(css, ".prayer-progress-toggle");
 
-    expect(topRowRule).toContain("grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr)");
+    expect(topRowRule).toContain("grid-template-columns: minmax(0, 1fr) auto");
     expect(topRowRule).toContain("align-items: start");
-    expect(currentTimeRule).toContain("grid-column: 2");
-    expect(currentTimeRule).toContain("justify-self: center");
+    expect(currentTimeRule).toContain("grid-column: 1");
+    expect(currentTimeRule).toContain("justify-self: start");
+    expect(currentTimeRule).toContain("text-align: start");
     expect(currentTimeRule).toContain("font-size: clamp(1.08rem, 4vw, 1.45rem)");
     expect(currentTimeRule).toContain("font-variant-numeric: tabular-nums");
-    expect(statusRowRule).toContain("grid-column: 3");
+    expect(statusRowRule).toContain("grid-column: 2");
     expect(statusRowRule).toContain("justify-self: end");
     expect(toggleRule).toContain("min-height: 1.4rem");
     expect(toggleRule).toContain("padding: 0.16rem clamp(0.28rem, 1.4vw, 0.42rem)");
