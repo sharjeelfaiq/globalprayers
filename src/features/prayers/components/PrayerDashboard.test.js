@@ -21,13 +21,18 @@ describe("PrayerDashboard", () => {
 
   it("renders the prayer table without the standalone next prayer card", () => {
     const { container } = render(<PrayerDashboard />);
+    const dashboard = container.firstElementChild;
+    const content = container.querySelector(".prayer-dashboard-content");
 
     expect(screen.getByTestId("prayers-table")).toBeInTheDocument();
     expect(useCurrentTime).toHaveBeenCalledWith(1000);
     expect(screen.queryByRole("heading", { name: /12:30/i })).not.toBeInTheDocument();
     expect(screen.queryByTestId("clock")).not.toBeInTheDocument();
     expect(screen.queryByTestId("next-prayer-card")).not.toBeInTheDocument();
-    expect(container.firstElementChild).toHaveClass("prayer-dashboard");
-    expect(container.firstElementChild).toHaveClass("prayer-dashboard-full-height");
+    expect(dashboard).toHaveClass("prayer-dashboard");
+    expect(dashboard).not.toHaveClass("prayer-dashboard-full-height");
+    expect(dashboard.firstElementChild).toHaveAttribute("data-testid", "header");
+    expect(content).toContainElement(screen.getByTestId("asma"));
+    expect(content).toContainElement(screen.getByTestId("prayers-table"));
   });
 });

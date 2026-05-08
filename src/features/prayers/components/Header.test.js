@@ -4,9 +4,14 @@ import Header from "./Header";
 import { PrayersContext } from "../context/PrayersContext";
 import i18n from "../../../i18n";
 import { LANGUAGE_STORAGE_KEY } from "../../../i18n/config";
+import { useCurrentTime } from "../../../shared/hooks/useCurrentTime";
 
 jest.mock("axios", () => ({
   get: jest.fn(),
+}));
+
+jest.mock("../../../shared/hooks/useCurrentTime", () => ({
+  useCurrentTime: jest.fn(),
 }));
 
 const contextValue = {
@@ -32,6 +37,7 @@ describe("Header", () => {
   beforeEach(() => {
     contextValue.handleSettingChange.mockClear();
     contextValue.handleSettingChange.mockImplementation(() => jest.fn());
+    useCurrentTime.mockReturnValue(new Date(2026, 3, 7, 12, 30, 5));
     i18n.changeLanguage("en");
   });
 
@@ -69,6 +75,21 @@ describe("Header", () => {
     expect(document.documentElement).toHaveAttribute("lang", "ur");
     expect(document.documentElement).toHaveAttribute("dir", "rtl");
     expect(screen.queryByRole("listbox", { name: "Language" })).not.toBeInTheDocument();
+  });
+
+  it("renders the live digital clock in the left date and time header section", () => {
+    const { container } = render(
+      <PrayersContext.Provider value={contextValue}>
+        <Header />
+      </PrayersContext.Provider>
+    );
+
+    const dateSection = container.querySelector(".dashboard-date");
+    const clock = screen.getByText("12:30:05 PM");
+
+    expect(useCurrentTime).toHaveBeenCalledWith(1000);
+    expect(clock).toHaveClass("dashboard-clock");
+    expect(dateSection).toContainElement(clock);
   });
 
   it("opens and closes the prayer settings modal", () => {

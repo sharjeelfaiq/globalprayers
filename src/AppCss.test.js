@@ -20,20 +20,38 @@ const getRuleBodies = (css, selector) => {
 };
 
 describe("App CSS", () => {
-  it("centers the full page content vertically with a short-height fallback", () => {
+  it("keeps the header top-aligned and separates the main content below it", () => {
     const css = readAppCss();
     const appShellRule = getRuleBody(css, ".app-shell");
     const dashboardRule = getRuleBody(css, ".prayer-dashboard");
+    const contentRule = getRuleBody(css, ".prayer-dashboard-content");
+    const headerRule = getRuleBody(css, ".dashboard-header");
+    const dateRule = getRuleBody(css, ".dashboard-date");
+    const clockRule = getRuleBody(css, ".dashboard-clock");
     const mobileBlock = css.match(/@media \(max-width: 480px\)\s*\{([\s\S]*?)\n\}/)?.[1] ?? "";
-    const shortHeightBlock = css.match(/@media \(max-height: 680px\)\s*\{([\s\S]*?)\n\}/)?.[1] ?? "";
+    const narrowBlock = css.match(/@media \(max-width: 360px\)\s*\{([\s\S]*?)\n\}/)?.[1] ?? "";
 
     expect(appShellRule).toContain("display: flex");
-    expect(appShellRule).toContain("justify-content: center");
+    expect(appShellRule).toContain("justify-content: flex-start");
+    expect(appShellRule).not.toContain("justify-content: safe center");
     expect(appShellRule).toContain("align-items: center");
     expect(appShellRule).toContain("overflow-y: auto");
-    expect(dashboardRule).toContain("justify-content: center");
+    expect(dashboardRule).toContain("justify-content: flex-start");
+    expect(headerRule).toContain("justify-content: space-between");
+    expect(dateRule).toContain("justify-items: start");
+    expect(dateRule).toContain("text-align: start");
+    expect(contentRule).toContain("display: flex");
+    expect(contentRule).toContain("align-items: center");
+    expect(contentRule).toContain("margin-top: clamp");
+    expect(clockRule).toContain("justify-self: start");
+    expect(clockRule).toContain("text-align: start");
+    expect(clockRule).toContain("font-size: clamp(1.62rem, 5.8vw, 2.2rem)");
+    expect(clockRule).toContain("font-weight: 700");
+    expect(clockRule).toContain("white-space: nowrap");
     expect(mobileBlock).not.toContain("justify-content: flex-start");
-    expect(shortHeightBlock).toContain("justify-content: flex-start");
+    expect(mobileBlock).toContain("font-size: clamp(1.28rem, 7.4vw, 1.72rem)");
+    expect(narrowBlock).not.toContain("flex-basis: 100%");
+    expect(narrowBlock).toContain("font-size: clamp(1.08rem, 7vw, 1.34rem)");
   });
 
   it("keeps the prayer table compact while increasing body readability", () => {

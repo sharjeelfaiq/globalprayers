@@ -7,11 +7,13 @@ const PrayerDashboard = () => {
   const currentTime = useCurrentTime(1000);
 
   return (
-    <main className="prayer-dashboard prayer-dashboard-full-height">
+    <div className="prayer-dashboard">
       <Header />
-      <AsmaUlHusna />
-      <PrayersTable currentTime={currentTime} />
-    </main>
+      <main className="prayer-dashboard-content">
+        <AsmaUlHusna />
+        <PrayersTable currentTime={currentTime} />
+      </main>
+    </div>
   );
 };
 

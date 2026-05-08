@@ -13,6 +13,7 @@ describe("PrayerDashboardPage", () => {
 
     expect(shell).toHaveClass("app-shell");
     expect(shell).not.toHaveClass("container");
+    expect(shell).not.toHaveClass("justify-content-center");
     expect(shell).not.toHaveStyle({ height: "100vh" });
   });
 });
