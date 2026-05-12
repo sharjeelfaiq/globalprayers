@@ -10,8 +10,8 @@ const PrayerDashboard = () => {
     <div className="prayer-dashboard">
       <Header />
       <main className="prayer-dashboard-content">
-        <AsmaUlHusna />
         <PrayersTable currentTime={currentTime} />
+        <AsmaUlHusna />
       </main>
     </div>
   );

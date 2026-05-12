@@ -27,6 +27,15 @@ const formatCurrentTime = (currentTime, locale = "en-US") =>
     hour12: true,
   });
 
+const prayerIcons = {
+  Fajr: "fa-cloud-sun",
+  Sunrise: "fa-sun",
+  Dhuhr: "fa-sun",
+  Asr: "fa-sun",
+  Maghrib: "fa-cloud-moon",
+  Isha: "fa-moon",
+};
+
 const PrayersTable = ({ currentTime }) => {
   const { i18n, t } = useTranslation("prayers");
   const [timeView, setTimeView] = useState("remaining");
@@ -59,108 +68,108 @@ const PrayersTable = ({ currentTime }) => {
   }
 
   return (
-    <div className="prayer-table-shell prayer-table-fluid prayer-table-relaxed prayer-table-full-height prayer-table-content-tight">
-      <table
-        className="table table-borderless prayer-table prayer-table-content-tight text-white"
-        aria-label={t("table.ariaLabel")}
-      >
-        <thead>
-          {timeline ? (
-            <tr className="prayer-table-progress-row">
-              <th
-                className="prayer-table-progress-header"
-                scope="colgroup"
-                colSpan="2"
-                aria-label={t("timeline.progressHeaderLabel")}
+    <section className="prayer-schedule" aria-label={t("table.ariaLabel")}>
+      {timeline ? (
+        <div
+          className="prayer-time-card"
+          aria-label={t("timeline.ariaLabel")}
+          aria-live="polite"
+          style={{ "--prayer-progress": `${timeline.progressPercent}%` }}
+        >
+          <div className="prayer-progress-top-row">
+            <div className="prayer-current-time-block">
+              <span className="prayer-card-kicker">{t("timeline.currentTimeLabel")}</span>
+              <time
+                className="prayer-current-time"
+                dateTime={currentTime.toISOString()}
+                aria-label={t("timeline.currentTimeLabel")}
               >
-                <div
-                  className="prayer-table-progress-summary"
-                  aria-label={t("timeline.ariaLabel")}
-                  aria-live="polite"
-                  style={{ "--prayer-progress": `${timeline.progressPercent}%` }}
-                >
-                  <div className="prayer-progress-top-row">
-                    <time
-                      className="prayer-current-time"
-                      dateTime={currentTime.toISOString()}
-                      aria-label={t("timeline.currentTimeLabel")}
-                    >
-                      {formatCurrentTime(currentTime, activeLocale)}
-                    </time>
-                    <div className="prayer-progress-status-row prayer-progress-status-fluid prayer-progress-status-compact">
-                      <button
-                        type="button"
-                        className="prayer-progress-toggle prayer-progress-toggle-fluid"
-                        aria-label={
-                          showingElapsed
-                            ? t("timeline.showRemaining")
-                            : t("timeline.showElapsed")
-                        }
-                        aria-pressed={showingElapsed}
-                        onClick={toggleTimeView}
-                      >
-                        {showingElapsed
-                          ? t("timeline.compactElapsed", {
-                              duration: formatDuration(timeline.elapsed),
-                            })
-                          : t("timeline.compactNextPrayerIn", {
-                              duration: formatDuration(timeline.remaining),
-                            })}
-                      </button>
-                    </div>
-                  </div>
-                  <div
-                    className="prayer-progress"
-                    role="progressbar"
-                    aria-label={t("timeline.progressAriaLabel")}
-                    aria-valuemin="0"
-                    aria-valuemax="100"
-                    aria-valuenow={timeline.progressPercent}
-                  >
-                    <span className="prayer-progress-fill" />
-                  </div>
-                </div>
-              </th>
-            </tr>
-          ) : null}
-        </thead>
-        <tbody>
-          {prayerRows.map(({ prayerName, formattedPrayerTime, isCurrent, isNext }) => {
-            const translatedPrayerName = t(`names.${prayerName}`);
-            const currentPrayerClass = isCurrent ? " current-prayer-cell" : "";
-            const rowClasses = [
-              isCurrent ? "current-prayer-row" : "",
-              isNext ? "next-prayer-row" : "",
-            ]
-              .filter(Boolean)
-              .join(" ");
+                {formatCurrentTime(currentTime, activeLocale)}
+              </time>
+            </div>
+            <div className="prayer-progress-status-row prayer-progress-status-fluid prayer-progress-status-compact">
+              <button
+                type="button"
+                className="prayer-progress-toggle prayer-progress-toggle-fluid"
+                aria-label={
+                  showingElapsed
+                    ? t("timeline.showRemaining")
+                    : t("timeline.showElapsed")
+                }
+                aria-pressed={showingElapsed}
+                onClick={toggleTimeView}
+              >
+                {showingElapsed
+                  ? t("timeline.compactElapsed", {
+                      duration: formatDuration(timeline.elapsed),
+                    })
+                  : t("timeline.compactNextPrayerIn", {
+                      duration: formatDuration(timeline.remaining),
+                    })}
+              </button>
+            </div>
+          </div>
+          <div
+            className="prayer-progress"
+            role="progressbar"
+            aria-label={t("timeline.progressAriaLabel")}
+            aria-valuemin="0"
+            aria-valuemax="100"
+            aria-valuenow={timeline.progressPercent}
+          >
+            <span className="prayer-progress-fill" />
+          </div>
+        </div>
+      ) : null}
 
-            return (
-              <tr
-                key={prayerName}
-                className={rowClasses || undefined}
-                aria-current={isCurrent ? "true" : undefined}
-              >
-                <td>
-                  <span
-                    className={`prayer-row-name${currentPrayerClass}`}
-                    title={translatedPrayerName}
-                  >
-                    {translatedPrayerName}
-                  </span>
-                  {isNext ? (
-                    <span className="next-prayer-label">{t("timeline.nextIndicator")}</span>
-                  ) : null}
-                </td>
-                <td className={`prayer-time-cell${currentPrayerClass}`}>
-                  {formattedPrayerTime}
-                </td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
-    </div>
+      <div className="prayer-table-shell prayer-table-fluid prayer-table-relaxed prayer-table-full-height prayer-table-content-tight">
+        <table
+          className="table table-borderless prayer-table prayer-table-content-tight text-white"
+          aria-label={t("table.ariaLabel")}
+        >
+          <tbody>
+            {prayerRows.map(({ prayerName, formattedPrayerTime, isCurrent, isNext }) => {
+              const translatedPrayerName = t(`names.${prayerName}`);
+              const currentPrayerClass = isCurrent ? " current-prayer-cell" : "";
+              const rowClasses = [
+                isCurrent ? "current-prayer-row" : "",
+                isNext ? "next-prayer-row" : "",
+              ]
+                .filter(Boolean)
+                .join(" ");
+
+              return (
+                <tr
+                  key={prayerName}
+                  className={rowClasses || undefined}
+                  aria-current={isCurrent ? "true" : undefined}
+                >
+                  <td>
+                    <span className="prayer-name-group">
+                      <span className="prayer-row-icon" aria-hidden="true">
+                        <i className={`fas ${prayerIcons[prayerName] || "fa-circle"}`}></i>
+                      </span>
+                      <span
+                        className={`prayer-row-name${currentPrayerClass}`}
+                        title={translatedPrayerName}
+                      >
+                        {translatedPrayerName}
+                      </span>
+                      {isNext ? (
+                        <span className="next-prayer-label">{t("timeline.nextIndicator")}</span>
+                      ) : null}
+                    </span>
+                  </td>
+                  <td className={`prayer-time-cell${currentPrayerClass}`}>
+                    {formattedPrayerTime}
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+    </section>
   );
 };
 

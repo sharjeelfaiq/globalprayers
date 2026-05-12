@@ -55,7 +55,7 @@ describe("PrayersTable", () => {
     expect(screen.getByTitle("Asr")).not.toHaveClass("current-prayer-cell");
   });
 
-  it("renders only the timing badge and progress bar inside the table header", () => {
+  it("renders the timing badge and progress bar inside the standalone time card", () => {
     const { container } = renderWithPrayerData(
       <PrayersTable currentTime={new Date(2026, 3, 1, 12, 30)} />,
       [
@@ -72,7 +72,8 @@ describe("PrayersTable", () => {
       ]
     );
 
-    expect(screen.getByRole("columnheader", { name: "Prayer progress" })).toBeInTheDocument();
+    expect(container.querySelector(".prayer-time-card")).toBeInTheDocument();
+    expect(screen.queryByRole("columnheader", { name: "Prayer progress" })).not.toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Show elapsed prayer time" })).toHaveTextContent(
       "Next 03:16:00"
     );
@@ -91,7 +92,7 @@ describe("PrayersTable", () => {
     expect(progressBar).toHaveAttribute("aria-valuenow", "4");
     expect(progressBar.querySelector(".prayer-progress-fill")).toBeInTheDocument();
 
-    const summary = container.querySelector(".prayer-table-progress-summary");
+    const summary = container.querySelector(".prayer-time-card");
     const statusRow = container.querySelector(".prayer-progress-status-row");
     const toggle = screen.getByRole("button", { name: "Show elapsed prayer time" });
 

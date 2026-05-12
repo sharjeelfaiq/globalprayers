@@ -6,25 +6,28 @@ const AsmaUlHusna = () => {
   const { asmaUlHusna, isLoading, error } = useAsmaUlHusna();
 
   if (isLoading) {
-    return <p className="daily-name text-white text-center status-text">{t("status.loadingAsma")}</p>;
+    return <p className="daily-name status-text">{t("status.loadingAsma")}</p>;
   }
 
   if (error) {
     return (
-      <p className="daily-name text-white text-center status-text">
+      <p className="daily-name status-text">
         {t("status.asmaUnavailable")}
       </p>
     );
   }
 
   return (
-    <p className="daily-name text-white text-center">
+    <section className="daily-name" aria-label="Asma ul Husna">
       {asmaUlHusna.map(({ name, en: { meaning } }) => (
-        <span key={name}>
-          <strong>{name}:</strong> <small>{meaning}</small>
-        </span>
+        <div className="asma-card" key={name}>
+          <strong className="asma-arabic">{name}</strong>
+          <span className="asma-meaning">{meaning}</span>
+          <span className="asma-divider" aria-hidden="true" />
+          <small className="asma-quote">"{meaning}"</small>
+        </div>
       ))}
-    </p>
+    </section>
   );
 };
 

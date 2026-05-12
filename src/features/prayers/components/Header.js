@@ -1,7 +1,11 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import LanguageSwitcher from "../../../shared/components/LanguageSwitcher";
-import { usePrayerData, usePrayerMeta, usePrayerSettings } from "../context/hooks";
+import {
+  usePrayerData,
+  usePrayerMeta,
+  usePrayerSettings,
+} from "../context/hooks";
 
 const Header = () => {
   const { t } = useTranslation(["common", "prayers"]);
@@ -33,44 +37,49 @@ const Header = () => {
     window.requestAnimationFrame(() => settingsButtonRef.current?.focus());
   }, []);
 
-  const handleSettingsKeyDown = useCallback((event) => {
-    if (event.key === "Escape") {
-      closeSettings();
-      return;
-    }
+  const handleSettingsKeyDown = useCallback(
+    (event) => {
+      if (event.key === "Escape") {
+        closeSettings();
+        return;
+      }
 
-    if (event.key !== "Tab" || !settingsModalRef.current) {
-      return;
-    }
+      if (event.key !== "Tab" || !settingsModalRef.current) {
+        return;
+      }
 
-    const focusableElements = settingsModalRef.current.querySelectorAll(
-      'button, input, select, textarea, [href], [tabindex]:not([tabindex="-1"])'
-    );
-    const firstElement = focusableElements[0];
-    const lastElement = focusableElements[focusableElements.length - 1];
+      const focusableElements = settingsModalRef.current.querySelectorAll(
+        'button, input, select, textarea, [href], [tabindex]:not([tabindex="-1"])',
+      );
+      const firstElement = focusableElements[0];
+      const lastElement = focusableElements[focusableElements.length - 1];
 
-    if (!firstElement || !lastElement) {
-      return;
-    }
+      if (!firstElement || !lastElement) {
+        return;
+      }
 
-    if (event.shiftKey && document.activeElement === firstElement) {
-      event.preventDefault();
-      lastElement.focus();
-      return;
-    }
+      if (event.shiftKey && document.activeElement === firstElement) {
+        event.preventDefault();
+        lastElement.focus();
+        return;
+      }
 
-    if (!event.shiftKey && document.activeElement === lastElement) {
-      event.preventDefault();
-      firstElement.focus();
-    }
-  }, [closeSettings]);
+      if (!event.shiftKey && document.activeElement === lastElement) {
+        event.preventDefault();
+        firstElement.focus();
+      }
+    },
+    [closeSettings],
+  );
 
   useEffect(() => {
     if (!isSettingsOpen) {
       return undefined;
     }
 
-    const firstControl = settingsModalRef.current?.querySelector("select, input, button");
+    const firstControl = settingsModalRef.current?.querySelector(
+      "select, input, button",
+    );
     firstControl?.focus();
 
     document.addEventListener("keydown", handleSettingsKeyDown);
@@ -81,10 +90,19 @@ const Header = () => {
   }, [handleSettingsKeyDown, isSettingsOpen]);
 
   return (
-    <div className="dashboard-header dashboard-header-fluid dashboard-header-compact d-flex justify-content-between">
-      <div className="dashboard-date text-white text-start">
-        <span>{error ? t("dateUnavailable") : today || t("loadingDate")}</span>
-        <span>{error ? t("hijriDateUnavailable") : islamicDate || t("loadingHijriDate")}</span>
+    <header className="dashboard-header dashboard-header-fluid dashboard-header-compact">
+      <div className="dashboard-brand-block">
+        <h1 className="dashboard-title mb-3">Global Prayers</h1>
+        <p className="dashboard-date text-start">
+          <span>
+            {error ? t("dateUnavailable") : today || t("loadingDate")}
+          </span>
+          <span>
+            {error
+              ? t("hijriDateUnavailable")
+              : islamicDate || t("loadingHijriDate")}
+          </span>
+        </p>
       </div>
 
       <div className="header-actions header-actions-fluid">
@@ -119,7 +137,9 @@ const Header = () => {
               aria-labelledby={settingsTitleId}
             >
               <div className="settings-modal-header">
-                <h2 id={settingsTitleId}>{t("settings.title", { ns: "prayers" })}</h2>
+                <h2 id={settingsTitleId}>
+                  {t("settings.title", { ns: "prayers" })}
+                </h2>
                 <button
                   className="settings-modal-close"
                   type="button"
@@ -157,7 +177,9 @@ const Header = () => {
                     id="prayer-city"
                     type="text"
                     className={formClass}
-                    placeholder={t("settings.cityPlaceholder", { ns: "prayers" })}
+                    placeholder={t("settings.cityPlaceholder", {
+                      ns: "prayers",
+                    })}
                     value={city}
                     onChange={handleSettingChange("city")}
                   />
@@ -171,7 +193,9 @@ const Header = () => {
                     id="prayer-country"
                     type="text"
                     className={formClass}
-                    placeholder={t("settings.countryPlaceholder", { ns: "prayers" })}
+                    placeholder={t("settings.countryPlaceholder", {
+                      ns: "prayers",
+                    })}
                     value={country}
                     onChange={handleSettingChange("country")}
                   />
@@ -196,7 +220,10 @@ const Header = () => {
                 </div>
 
                 <div className="settings-field">
-                  <label className="settings-label" htmlFor="prayer-latitude-adjustment">
+                  <label
+                    className="settings-label"
+                    htmlFor="prayer-latitude-adjustment"
+                  >
                     {t("settings.latitudeAdjustment", { ns: "prayers" })}
                   </label>
                   <select
@@ -214,7 +241,10 @@ const Header = () => {
                 </div>
 
                 <div className="settings-field">
-                  <label className="settings-label" htmlFor="prayer-midnight-calculation">
+                  <label
+                    className="settings-label"
+                    htmlFor="prayer-midnight-calculation"
+                  >
                     {t("settings.midnightCalculation", { ns: "prayers" })}
                   </label>
                   <select
@@ -235,7 +265,7 @@ const Header = () => {
           </div>
         ) : null}
       </div>
-    </div>
+    </header>
   );
 };
 

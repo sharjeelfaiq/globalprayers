@@ -37,46 +37,60 @@ const getMediaRuleBody = (css, mediaQuery, selector) => {
 };
 
 describe("App CSS", () => {
-  it("keeps the header top-aligned and separates the main content below it", () => {
+  it("uses the Stitch-inspired dark glass design tokens and background", () => {
+    const css = readAppCss();
+    const rootRule = getRuleBody(css, ":root");
+    const bodyRule = getRuleBody(css, "body");
+
+    expect(css).toContain("Playfair Display");
+    expect(rootRule).toContain("--font-display: \"Playfair Display\", Georgia, serif");
+    expect(rootRule).toContain("--color-accent: #55dfff");
+    expect(rootRule).toContain("--color-gold: #e5c35b");
+    expect(bodyRule).toContain("url(\"./Images/mosque-bg.jpg\")");
+    expect(bodyRule).toContain("background-attachment: fixed");
+  });
+
+  it("keeps the header top-aligned with a prominent brand block", () => {
     const css = readAppCss();
     const appShellRule = getRuleBody(css, ".app-shell");
     const dashboardRule = getRuleBody(css, ".prayer-dashboard");
     const contentRule = getRuleBody(css, ".prayer-dashboard-content");
     const headerRule = getRuleBody(css, ".dashboard-header");
+    const titleRule = getRuleBody(css, ".dashboard-title");
     const dateRule = getRuleBody(css, ".dashboard-date");
-    const mobileBlock = css.match(/@media \(max-width: 480px\)\s*\{([\s\S]*?)\n\}/)?.[1] ?? "";
-    const narrowBlock = css.match(/@media \(max-width: 360px\)\s*\{([\s\S]*?)\n\}/)?.[1] ?? "";
 
     expect(appShellRule).toContain("display: flex");
     expect(appShellRule).toContain("justify-content: flex-start");
-    expect(appShellRule).not.toContain("justify-content: safe center");
     expect(appShellRule).toContain("align-items: center");
-    expect(appShellRule).toContain("overflow-y: auto");
+    expect(dashboardRule).toContain("width: min(100%, 90rem)");
     expect(dashboardRule).toContain("justify-content: flex-start");
+    expect(contentRule).toContain("width: min(100%, 52.5rem)");
+    expect(contentRule).toContain("align-self: center");
+    expect(headerRule).toContain("align-items: flex-start");
     expect(headerRule).toContain("justify-content: space-between");
-    expect(dateRule).toContain("justify-items: start");
-    expect(dateRule).toContain("text-align: start");
-    expect(contentRule).toContain("display: flex");
-    expect(contentRule).toContain("align-items: center");
-    expect(contentRule).toContain("margin-top: clamp");
-    expect(mobileBlock).not.toContain("justify-content: flex-start");
-    expect(narrowBlock).not.toContain("flex-basis: 100%");
+    expect(titleRule).toContain("font-family: var(--font-display)");
+    expect(dateRule).toContain("letter-spacing: 0.18em");
+    expect(dateRule).toContain("text-transform: uppercase");
   });
 
-  it("keeps the prayer table compact while increasing body readability", () => {
+  it("separates the live time card from the prayer list card", () => {
     const css = readAppCss();
-    const tableShellRule = getRuleBody(css, ".prayer-table-shell");
-    const tableCellRules = getRuleBodies(css, ".prayer-table td");
+    const scheduleRule = getRuleBody(css, ".prayer-schedule");
+    const timeCardRule = getRuleBody(css, ".prayer-time-card");
+    const tableShellRule = getRuleBodies(css, ".prayer-table-shell");
+    const sharedCardRule = getRuleBody(css, ".prayer-time-card,\n.prayer-table-shell");
 
-    expect(tableShellRule).toContain("width: min(100%, 28rem)");
-    expect(tableCellRules).toContain(
-      "padding: clamp(0.5rem, 1.8vw, 0.7rem) clamp(0.46rem, 2vw, 0.78rem)"
-    );
-    expect(tableCellRules).toContain("font-size: 0.98rem");
-    expect(tableCellRules).toContain("line-height: 1.42");
+    expect(scheduleRule).toContain("width: min(100%, 52.5rem)");
+    expect(scheduleRule).toContain("grid-template-rows: auto minmax(0, 1fr)");
+    expect(scheduleRule).toContain("gap: clamp(0.7rem, 1.7vh, 1rem)");
+    expect(timeCardRule).toContain("min-height: 7.5rem");
+    expect(timeCardRule).toContain("border-radius: var(--radius-lg)");
+    expect(tableShellRule).toContain("width: 100%");
+    expect(tableShellRule).toContain("overflow: auto");
+    expect(sharedCardRule).toContain("backdrop-filter: blur(18px)");
   });
 
-  it("lays out the prayer table header with current time left and badge right", () => {
+  it("lays out the current time left and countdown pill right", () => {
     const css = readAppCss();
     const topRowRule = getRuleBody(css, ".prayer-progress-top-row");
     const currentTimeRule = getRuleBody(css, ".prayer-current-time");
@@ -85,101 +99,145 @@ describe("App CSS", () => {
 
     expect(topRowRule).toContain("grid-template-columns: minmax(0, 1fr) auto");
     expect(topRowRule).toContain("align-items: center");
-    expect(currentTimeRule).toContain("grid-column: 1");
     expect(currentTimeRule).toContain("justify-self: start");
-    expect(currentTimeRule).toContain("text-align: start");
-    expect(currentTimeRule).toContain("font-size: clamp(1.08rem, 4vw, 1.45rem)");
+    expect(currentTimeRule).toContain("font-size: clamp(2rem, 4vw, 2.65rem)");
     expect(currentTimeRule).toContain("font-variant-numeric: tabular-nums");
     expect(statusRowRule).toContain("grid-column: 2");
     expect(statusRowRule).toContain("justify-self: end");
-    expect(toggleRule).toContain("min-height: 1.4rem");
-    expect(toggleRule).toContain("padding: 0.2rem clamp(0.36rem, 1.5vw, 0.5rem)");
-    expect(toggleRule).toContain("background-color: rgba(4, 18, 26, 0.72)");
-    expect(toggleRule).toContain("color: #f4fbff");
-    expect(toggleRule).toContain("font-size: 0.68rem");
-    expect(toggleRule).toContain("font-weight: 700");
-    expect(toggleRule).toContain("border-radius: var(--radius-sm)");
-    expect(toggleRule).toContain("letter-spacing: 0.02em");
-    expect(toggleRule).toContain("font-variant-numeric: tabular-nums");
-    expect(toggleRule).toContain("white-space: nowrap");
+    expect(toggleRule).toContain("border-radius: 999px");
+    expect(toggleRule).toContain("color: var(--color-accent)");
+    expect(toggleRule).toContain("letter-spacing: 0.2em");
+    expect(toggleRule).toContain("text-transform: uppercase");
   });
 
-  it("uses one shared header icon button system for language and settings actions", () => {
+  it("styles prayer rows with icons, active highlight, and compact next badge", () => {
+    const css = readAppCss();
+    const tableCellRules = getRuleBodies(css, ".prayer-table td");
+    const iconRule = getRuleBody(css, ".prayer-row-icon");
+    const nameGroupRule = getRuleBody(css, ".prayer-name-group");
+    const nextLabelRule = getRuleBody(css, ".next-prayer-label");
+    const currentRowRule = getRuleBody(css, ".current-prayer-row td");
+    const currentIconRule = getRuleBody(css, ".current-prayer-row .prayer-row-icon,\n.current-prayer-row .prayer-time-cell");
+
+    expect(tableCellRules).toContain("font-size: clamp(0.94rem, 1.25vw, 1.08rem)");
+    expect(tableCellRules).toContain("padding: clamp(0.68rem, 1.55vh, 0.86rem) clamp(1rem, 3.4vw, 2.2rem)");
+    expect(nameGroupRule).toContain("display: inline-flex");
+    expect(iconRule).toContain("color: rgba(230, 236, 240, 0.42)");
+    expect(nextLabelRule).toContain("background: var(--color-accent)");
+    expect(nextLabelRule).toContain("border-radius: 999px");
+    expect(currentRowRule).toContain("linear-gradient");
+    expect(currentIconRule).toContain("color: var(--color-accent)");
+  });
+
+  it("uses one shared subtle icon button system for language and settings actions", () => {
     const css = readAppCss();
     const iconButtonRule = getRuleBody(css, ".header-icon-button");
     const iconRule = getRuleBody(css, ".header-icon-button i");
-    const hoverRule = getRuleBody(css, ".header-icon-button:hover, .header-icon-button:focus-visible");
-    const languageRule = getRuleBody(css, ".language-switcher-trigger");
+    const hoverRule = getRuleBody(css, ".header-icon-button:hover,\n.header-icon-button:focus-visible");
     const languageMenuRule = getRuleBody(css, ".language-switcher-menu");
 
     expect(iconButtonRule).toContain("display: inline-grid");
-    expect(iconButtonRule).toContain("width: 2.25rem");
-    expect(iconButtonRule).toContain("height: 2.25rem");
+    expect(iconButtonRule).toContain("width: 2.45rem");
+    expect(iconButtonRule).toContain("height: 2.45rem");
     expect(iconButtonRule).toContain("place-items: center");
-    expect(iconButtonRule).toContain("border: 1px solid var(--color-border)");
-    expect(iconButtonRule).toContain("border-radius: var(--radius-sm)");
-    expect(iconButtonRule).toContain("background: var(--color-surface)");
-    expect(iconButtonRule).toContain("color: var(--color-text)");
-    expect(iconButtonRule).toContain("padding: 0");
-    expect(iconButtonRule).toContain("line-height: 1");
-    expect(iconRule).toContain("font-size: 1rem");
-    expect(iconRule).toContain("line-height: 1");
-    expect(hoverRule).toContain("border-color: var(--color-accent-start-border)");
-    expect(languageRule).not.toContain("width: 2.25rem");
-    expect(languageRule).not.toContain("height: 2.25rem");
+    expect(iconButtonRule).toContain("border-radius: 999px");
+    expect(iconButtonRule).toContain("backdrop-filter: blur(12px)");
+    expect(iconRule).toContain("font-size: 0.95rem");
+    expect(hoverRule).toContain("border-color: var(--color-accent-border)");
     expect(languageMenuRule).toContain("max-height: min(70vh, 24rem)");
     expect(languageMenuRule).toContain("overflow-y: auto");
   });
 
-  it("uses a uniform full-width background for the current prayer row", () => {
+  it("renders the Asma section as a lower gold devotional block", () => {
     const css = readAppCss();
-    const currentRowRule = getRuleBody(css, ".current-prayer-row td");
-    const rtlCurrentRowRule = getRuleBody(css, '[dir="rtl"] .current-prayer-row td');
+    const dailyRule = getRuleBody(css, ".daily-name");
+    const arabicRule = getRuleBody(css, ".asma-arabic");
+    const meaningRule = getRuleBody(css, ".asma-meaning");
+    const dividerRule = getRuleBody(css, ".asma-divider");
+    const quoteRule = getRuleBody(css, ".asma-quote");
 
-    expect(currentRowRule).toContain("background-color: var(--color-accent-start-tint)");
-    expect(currentRowRule).not.toContain("linear-gradient");
-    expect(rtlCurrentRowRule).toBe("");
+    expect(dailyRule).toContain("width: min(100%, 38rem)");
+    expect(dailyRule).toContain("text-align: center");
+    expect(arabicRule).toContain("color: var(--color-gold)");
+    expect(meaningRule).toContain("letter-spacing: 0.22em");
+    expect(dividerRule).toContain("background: rgba(229, 195, 91, 0.58)");
+    expect(quoteRule).toContain("font-style: italic");
   });
 
-  it("increases mobile typography and spacing without widening the layout", () => {
+  it("keeps mobile and narrow viewport layouts readable", () => {
     const css = readAppCss();
-    const appShellRule = getMediaRuleBody(css, "(max-width: 480px)", ".app-shell");
-    const dateRule = getMediaRuleBody(css, "(max-width: 480px)", ".dashboard-date");
-    const dailyNameRule = getMediaRuleBody(css, "(max-width: 480px)", ".daily-name");
-    const tableCellRule = getMediaRuleBody(css, "(max-width: 480px)", ".prayer-table td");
-    const tableHeaderRule = getMediaRuleBody(css, "(max-width: 480px)", ".prayer-table th");
-    const currentTimeRule = getMediaRuleBody(css, "(max-width: 480px)", ".prayer-current-time");
-    const toggleRule = getMediaRuleBody(css, "(max-width: 480px)", ".prayer-progress-toggle");
+    const mobileAppShellRule = getMediaRuleBody(css, "(max-width: 720px)", ".app-shell");
+    const mobileBodyRule = getMediaRuleBody(css, "(max-width: 720px)", "body");
+    const mobileTopRowRule = getMediaRuleBody(css, "(max-width: 720px)", ".prayer-progress-top-row");
+    const mobileStatusRule = getMediaRuleBody(css, "(max-width: 720px)", ".prayer-progress-status-row");
+    const mobileTableCellRule = getMediaRuleBody(css, "(max-width: 720px)", ".prayer-table td");
+    const narrowTitleRule = getMediaRuleBody(css, "(max-width: 380px)", ".dashboard-title");
+    const narrowCurrentTimeRule = getMediaRuleBody(css, "(max-width: 380px)", ".prayer-current-time");
 
-    expect(appShellRule).toContain("padding: clamp(0.62rem, 2.8vw, var(--space-3)) clamp(0.5rem, 3vw, var(--space-2))");
-    expect(dateRule).toContain("font-size: clamp(0.86rem, 3.2vw, 1rem)");
-    expect(dateRule).toContain("line-height: 1.42");
-    expect(dailyNameRule).toContain("font-size: clamp(0.94rem, 3.5vw, 1.08rem)");
-    expect(tableCellRule).toContain("font-size: 0.96rem");
-    expect(tableCellRule).toContain("line-height: 1.48");
-    expect(tableCellRule).toContain("padding: 0.64rem 0.62rem");
-    expect(tableHeaderRule).toContain("font-size: 0.68rem");
-    expect(currentTimeRule).toContain("font-size: clamp(1.16rem, 5.4vw, 1.32rem)");
-    expect(toggleRule).toContain("font-size: 0.68rem");
-    expect(toggleRule).toContain("padding-inline: 0.44rem");
+    expect(mobileAppShellRule).toContain("padding: clamp(0.62rem, 2.4vh, 0.9rem) clamp(0.72rem, 4vw, 1rem) clamp(0.62rem, 2.4vh, 0.9rem)");
+    expect(mobileBodyRule).toContain("background-attachment: scroll");
+    expect(mobileTopRowRule).toContain("grid-template-columns: minmax(0, 1fr)");
+    expect(mobileStatusRule).toContain("justify-self: stretch");
+    expect(mobileTableCellRule).toContain("font-size: 0.88rem");
+    expect(narrowTitleRule).toContain("font-size: 1.55rem");
+    expect(narrowCurrentTimeRule).toContain("font-size: 1.55rem");
   });
 
-  it("keeps the narrowest mobile breakpoint readable instead of shrinking key content", () => {
+  it("avoids common responsive overflow traps in the dashboard CSS", () => {
     const css = readAppCss();
-    const appShellRule = getMediaRuleBody(css, "(max-width: 360px)", ".app-shell");
-    const dateRule = getMediaRuleBody(css, "(max-width: 360px)", ".dashboard-date");
-    const dailyNameRule = getMediaRuleBody(css, "(max-width: 360px)", ".daily-name");
-    const currentTimeRule = getMediaRuleBody(css, "(max-width: 360px)", ".prayer-current-time");
-    const tableCellRule = getMediaRuleBody(css, "(max-width: 360px)", ".prayer-table td");
-    const nextLabelRule = getMediaRuleBody(css, "(max-width: 360px)", ".next-prayer-label");
+    const tableRowRule = getRuleBody(css, ".prayer-table tbody tr");
+    const nextLabelRule = getRuleBody(css, ".next-prayer-label");
+    const languageMenuRule = getRuleBody(css, ".language-switcher-menu");
+    const titleRule = getRuleBody(css, ".dashboard-title");
+    const nameGroupRule = getRuleBody(css, ".prayer-name-group");
 
-    expect(appShellRule).toContain("padding-inline: 0.48rem");
-    expect(dateRule).toContain("font-size: 0.76rem");
-    expect(dateRule).toContain("line-height: 1.38");
-    expect(dailyNameRule).toContain("font-size: 0.88rem");
-    expect(currentTimeRule).toContain("font-size: 1.06rem");
-    expect(tableCellRule).toContain("font-size: 0.88rem");
-    expect(tableCellRule).toContain("padding-inline: 0.54rem");
-    expect(nextLabelRule).toContain("font-size: 0.55rem");
+    expect(css).not.toMatch(/width:\s*100vw/);
+    expect(css).not.toMatch(/margin-inline-start:\s*-/);
+    expect(tableRowRule).not.toMatch(/\bheight:\s*\d/);
+    expect(nextLabelRule).toContain("flex: 0 0 auto");
+    expect(languageMenuRule).toContain("max-width: calc(100vw - 1.5rem)");
+    expect(titleRule).toContain("overflow-wrap: anywhere");
+    expect(nameGroupRule).toContain("min-width: 0");
+  });
+
+  it("keeps the dashboard bounded to the viewport with compact first-fold spacing", () => {
+    const css = readAppCss();
+    const bodyRule = getRuleBody(css, "body");
+    const rootRule = getRuleBody(css, "#root");
+    const appShellRule = getRuleBody(css, ".app-shell");
+    const dashboardRule = getRuleBody(css, ".prayer-dashboard");
+    const contentRule = getRuleBody(css, ".prayer-dashboard-content");
+    const timeCardRule = getRuleBody(css, ".prayer-time-card");
+    const tableShellRule = getRuleBodies(css, ".prayer-table-shell");
+    const tableCellRules = getRuleBodies(css, ".prayer-table td");
+    const compactHeightShellRule = getMediaRuleBody(
+      css,
+      "(max-height: 720px) and (min-width: 721px)",
+      ".app-shell"
+    );
+    const compactHeightContentRule = getMediaRuleBody(
+      css,
+      "(max-height: 720px) and (min-width: 721px)",
+      ".prayer-dashboard-content"
+    );
+
+    expect(bodyRule).toContain("height: 100dvh");
+    expect(bodyRule).toContain("overflow-y: hidden");
+    expect(rootRule).toContain("height: 100dvh");
+    expect(appShellRule).toContain("height: 100dvh");
+    expect(appShellRule).toContain("overflow-y: hidden");
+    expect(appShellRule).toContain("padding: clamp(0.75rem, 2vh, 1.35rem) clamp(1rem, 5vw, 5rem) clamp(0.9rem, 2.4vh, 1.55rem)");
+    expect(dashboardRule).toContain("height: 100%");
+    expect(dashboardRule).toContain("overflow: hidden");
+    expect(contentRule).toContain("flex: 1 1 auto");
+    expect(contentRule).toContain("justify-content: space-between");
+    expect(contentRule).toContain("gap: clamp(0.85rem, 2.2vh, 1.45rem)");
+    expect(contentRule).toContain("margin-top: clamp(0.95rem, 2.7vh, 1.85rem)");
+    expect(timeCardRule).toContain("min-height: 7.5rem");
+    expect(tableShellRule).toContain("overflow: auto");
+    expect(tableCellRules).toContain("padding: clamp(0.68rem, 1.55vh, 0.86rem) clamp(1rem, 3.4vw, 2.2rem)");
+    expect(compactHeightShellRule).toContain("padding-bottom: 0.82rem");
+    expect(compactHeightContentRule).toContain("gap: 0.9rem");
+    expect(compactHeightContentRule).toContain("margin-top: 0.9rem");
   });
 });
