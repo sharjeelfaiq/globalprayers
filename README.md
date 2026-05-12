@@ -1,250 +1,197 @@
 # Global Prayers
 
-Global Prayers is a client-side React application that displays daily Islamic prayer times for a selected city and country. It retrieves a monthly prayer calendar from the AlAdhan API, highlights the current prayer, shows the countdown to the next prayer, and surfaces a randomly selected name from Asma ul Husna.
+Global Prayers is a client-side React dashboard for daily Islamic prayer times. It fetches a monthly prayer calendar from the public AlAdhan API, derives the current day's schedule in the browser, highlights the active and next prayer, and displays a random Asma ul Husna entry.
 
-The app is built as a single-screen dashboard with local, browser-based persistence for prayer calculation preferences. It is intended to be simple to run, easy to customize, and deployable as a static frontend.
+The application is a single-page Create React App project. It has no backend, no authentication, and no required environment variables.
 
-## Overview
+## Features
 
-### What the app does
-
-- Fetches monthly prayer times by city and country from the AlAdhan API
-- Displays today's Gregorian and Hijri dates
-- Shows the current local time
-- Calculates and displays the time remaining until the next prayer
-- Highlights the currently active prayer row
-- Lets users change calculation method, juristic school, and location settings
-- Persists prayer settings in `localStorage`
-- Displays a random Asma ul Husna entry on load
-
-### Current scope
-
-- Frontend-only application
-- No authentication
-- No backend or internal API routes
-- No environment-specific configuration currently required
+- Daily prayer schedule for the configured city and country
+- Gregorian and Hijri date display from AlAdhan calendar data
+- Live current-time card with prayer-window progress
+- Current prayer row highlighting and next-prayer badge
+- Toggleable remaining/elapsed prayer timing display
+- Prayer settings modal for city, country, calculation method, juristic school, higher-latitude adjustment, and midnight calculation
+- Browser persistence for prayer settings with `localStorage`
+- Language switcher with persisted language choice and RTL document direction support
+- 20 configured locales in `src/i18n/config.js`
+- Random Asma ul Husna entry loaded from AlAdhan
+- Static SEO metadata, favicon manifest, robots.txt, sitemap, and Google tag in `public/`
 
 ## Tech Stack
 
 - React 18
-- Create React App (`react-scripts`)
+- Create React App / `react-scripts`
+- JavaScript
 - Axios
-- Bootstrap 5
-- Font Awesome
-- Browser `localStorage`
-- AlAdhan public API
+- i18next, react-i18next, and i18next-browser-languagedetector
+- Bootstrap 5 styles/scripts loaded from `public/index.html`
+- Font Awesome package CSS imported in `src/index.js`
+- Jest and React Testing Library via Create React App
+- Global CSS in `src/App.css`
 
-## Architecture
+## Architecture Overview
 
-This project follows a lightweight client-side architecture:
+The active application flow is:
 
-1. `src/index.js` bootstraps React and wraps the app in `PrayersProvider`.
-2. `src/features/prayers/context/PrayersContext.js` stores user settings, persists them to `localStorage`, fetches prayer-time data, and exposes derived values such as today's dates.
-3. `src/features/prayers/api/api.js` centralizes requests to the AlAdhan API and normalizes settings before requests are sent.
-4. Feature components under `src/features/prayers/components/` consume hooks/context and render the UI.
-5. Legacy paths under `src/context/`, `src/api/`, and `src/Components/` remain as thin compatibility wrappers while the feature module becomes the default place for new work.
+```text
+src/index.js
+  -> PrayersProvider
+  -> src/App.js
+  -> src/pages/PrayerDashboardPage.js
+  -> src/features/prayers/components/PrayerDashboard.js
+  -> Header, PrayersTable, AsmaUlHusna
+```
 
-### Data flow
+State and data fetching are centralized in `src/features/prayers/context/PrayersContext.js`. The provider loads default settings from `src/features/prayers/config/config.js`, merges saved browser settings from `localStorage`, fetches prayer data when settings change, and exposes settings, loading/error state, date metadata, and refresh helpers through context hooks.
 
-1. Default settings are loaded from `src/features/prayers/config/config.js`.
-2. If saved settings exist in `localStorage`, they override the defaults.
-3. When settings change, the provider stores the new values and refetches the monthly prayer calendar.
-4. Utilities and hooks derive today's timings from the fetched month-level response and render live countdown/time-based UI on the client.
+Prayer-specific calculations live in `src/features/prayers/utils/prayerTimes.js`. Feature hooks under `src/features/prayers/hooks/` derive the current day, prayer rows, timeline state, next-prayer data, and Asma ul Husna loading state.
 
-### Architectural notes
+Files under `src/Components/`, `src/api/`, and `src/context/` are compatibility re-exports that point to the feature-module implementation. New prayer work should normally go under `src/features/prayers/`.
 
-- Prayer settings are managed globally through React Context rather than prop drilling.
-- The app fetches the entire month and then selects the current day locally.
-- Time-sensitive UI such as the clock and active prayer row is calculated in the browser with shared hooks.
-- Bootstrap is loaded from CDN in `public/index.html` for styling and dropdown behavior.
-
-## Project Structure
+## Folder Structure
 
 ```text
 globalprayers/
-|-- docs/
-|   `-- vite-migration-readiness.md
 |-- public/
 |   |-- favicon_io/
-|   `-- index.html
+|   |-- index.html
+|   |-- robots.txt
+|   `-- sitemap.xml
 |-- src/
-|   |-- api/
-|   |   `-- api.js
-|   |-- Components/
-|   |   `-- ...
-|   |-- context/
-|   |   `-- prayersContext.js
+|   |-- api/                         # compatibility API re-export
+|   |-- Components/                  # compatibility component re-exports
+|   |-- context/                     # compatibility context re-export
 |   |-- features/
 |   |   `-- prayers/
-|   |       |-- api/
-|   |       |   `-- api.js
-|   |       |-- components/
-|   |       |   `-- ...
-|   |       |-- config/
-|   |       |   `-- config.js
-|   |       |-- context/
-|   |       |   |-- hooks.js
-|   |       |   `-- PrayersContext.js
-|   |       |-- hooks/
-|   |       |   `-- ...
-|   |       `-- utils/
-|   |           |-- prayerTimes.js
-|   |           `-- prayerTimes.test.js
+|   |       |-- api/                 # AlAdhan API client
+|   |       |-- components/          # active prayer UI components
+|   |       |-- config/              # default settings and option lists
+|   |       |-- context/             # React context and context hooks
+|   |       |-- hooks/               # prayer feature hooks
+|   |       `-- utils/               # pure prayer-time helpers
+|   |-- i18n/                        # i18next setup, locale metadata, resources
 |   |-- Images/
-|   |   `-- mosque-bg.jpg
 |   |-- pages/
-|   |   `-- PrayerDashboardPage.js
 |   |-- shared/
-|   |   `-- hooks/
-|   |       `-- useCurrentTime.js
 |   |-- App.css
 |   |-- App.js
-|   `-- index.js
+|   |-- index.js
+|   `-- setupTests.js
 |-- package-lock.json
 |-- package.json
 `-- README.md
 ```
 
-## Key Modules
-
-### `src/features/prayers/context/PrayersContext.js`
-
-Central application state for:
-
-- Active prayer settings
-- Saved settings persistence
-- Monthly prayer time data
-- Async state such as loading, errors, and last refresh time
-- Derived display values such as Gregorian and Hijri dates
-
-### `src/features/prayers/api/api.js`
-
-API abstraction for:
-
-- `getData.prayerTimes(params)` to fetch the prayer calendar by city
-- `getData.asmaUlHusma()` to fetch a random Asma ul Husna entry
-- settings normalization before external API requests
-
-### `src/features/prayers/utils/prayerTimes.js`
-
-Pure domain helpers for:
-
-- selecting today's data from the monthly response
-- filtering the display prayer list
-- formatting prayer times
-- calculating the next prayer and active prayer window
-
-### `src/features/prayers/hooks/`
-
-Feature hooks for:
-
-- current-day prayer selection
-- next-prayer countdown derivation
-- display-row derivation
-- Asma ul Husna async state
-
-### `src/Components/Header/Header.js`
-
-Settings UI for:
-
-- Calculation method
-- City
-- Country
-- Juristic school
-- Higher latitude adjustment
-- Midnight calculation mode
-
-### `src/Components/NextPrayer/NextPrayer.js`
-
-Computes the next upcoming prayer and updates the countdown every minute.
-
-### `src/Components/PrayersTable/PrayersTable.js`
-
-Builds a display table from the current day's timings and highlights the active prayer window.
-
-## External APIs
-
-This project depends on the [AlAdhan API](https://aladhan.com/prayer-times-api).
-
-### Prayer times
-
-- Base endpoint: `https://api.aladhan.com/v1/calendarByCity/{year}/{month}`
-- Used for monthly prayer times filtered by:
-  - `city`
-  - `country`
-  - `method`
-  - `school`
-  - `latitudeAdjustment`
-  - `midnightCalculation`
-
-### Asma ul Husna
-
-- Base endpoint: `https://api.aladhan.com/v1/asmaAlHusna/:number`
-- A random number from `1` to `99` is selected on load
-
 ## Installation
 
-### Prerequisites
-
-- Node.js 18+ recommended
-- npm 9+ recommended
-
-### Setup
+Prerequisite: install Node.js and npm. The project uses `package-lock.json` lockfile version 3, so a modern npm version is recommended.
 
 ```bash
 npm install
 ```
 
-## Running the Project
+## Environment Variables
 
-### Development
+No environment variables are required by the current codebase.
+
+There is no `.env.example` file and no `process.env` or `import.meta.env` usage in `src/` or `public/`. Local `.env.*.local` files are ignored by `.gitignore`, but the application does not currently read any custom environment values.
+
+## Local Development
 
 ```bash
 npm start
 ```
 
-This starts the Create React App development server, typically at [http://localhost:3000](http://localhost:3000).
+Create React App starts the development server, typically at `http://localhost:3000`.
 
-### Production build
+## Available Scripts
+
+Scripts are defined in `package.json`:
+
+- `npm start` - run the Create React App development server
+- `npm run build` - create an optimized production build in `build/`
+- `npm test` - run the Jest test runner in interactive mode
+- `npm run eject` - eject Create React App configuration
+
+For a one-time non-watch test run:
+
+```bash
+npm test -- --watchAll=false
+```
+
+## Build Instructions
 
 ```bash
 npm run build
 ```
 
-This creates an optimized production build in the `build/` directory.
+The generated static output is written to `build/`. The current package does not define a `homepage` field, so Create React App builds assuming the app is hosted at `/`.
 
-### Serve the production build locally
+## Deployment Instructions
 
-One common option is:
+This repository does not include deployment-provider configuration such as Docker, Vercel, Netlify, or CI/CD workflow files.
+
+Deploy the contents of `build/` to any static hosting service that can serve a Create React App build. If hosting from a subpath instead of `/`, configure the Create React App `homepage` setting in `package.json` before building.
+
+To preview a production build locally, one option is:
 
 ```bash
 npx serve -s build
 ```
 
-## Environment Variables
+## Testing Instructions
 
-No environment variables are currently required by the codebase.
+The test setup uses Jest, React Testing Library, and `@testing-library/jest-dom` through Create React App. Test initialization lives in `src/setupTests.js`.
 
-If you later need configurable API endpoints, analytics IDs, or deployment-specific options, add them here:
+Run the full test suite once:
 
-```env
-[SPECIFY_ENV_VAR_NAME]=[SPECIFY_VALUE]
+```bash
+npm test -- --watchAll=false
 ```
 
-## Available Scripts
+Current test coverage includes:
 
-Defined in `package.json`:
+- prayer-time utility behavior
+- prayer dashboard/page structure
+- header language and settings interactions
+- prayer table timing, progress, and row states
+- i18n configuration and locale metadata
+- public metadata, manifest, robots, and sitemap checks
+- global CSS layout expectations
 
-- `npm start` - Runs the app in development mode
-- `npm run build` - Creates a production build
-- `npm test` - Runs the test runner
-- `npm run eject` - Exposes Create React App configuration
+## API Overview
+
+The app uses the public AlAdhan API through `src/features/prayers/api/api.js`.
+
+Prayer calendar request:
+
+```text
+GET https://api.aladhan.com/v1/calendarByCity/{year}/{month}
+```
+
+Query parameters are derived from the current settings:
+
+- `city`
+- `country`
+- `method`
+- `school`
+- `latitudeAdjustment`
+- `midnightCalculation`
+
+Asma ul Husna request:
+
+```text
+GET https://api.aladhan.com/v1/asmaAlHusna/{number}
+```
+
+The number is randomly selected from `1` through `99` when the Asma hook loads.
+
+There are no internal backend services or application API routes in this repository.
 
 ## Configuration
 
-Default app settings live in `src/features/prayers/config/config.js`.
-
-Current defaults:
+Default prayer settings live in `src/features/prayers/config/config.js`:
 
 - Country: `Pakistan`
 - City: `Rawalpindi`
@@ -253,85 +200,15 @@ Current defaults:
 - Higher latitude adjustment: `Middle of the Night Method`
 - Midnight calculation: `Standard (Mid Sunset to Sunrise)`
 
-User changes are saved in browser `localStorage` under the key:
+Persisted browser storage keys:
 
-```text
-prayerSettings
-```
+- `prayerSettings` - prayer settings JSON from `PrayersContext`
+- `globalprayers.language` - selected i18n language
 
-## UI and User Experience
+## Known Limitations
 
-- Background image and global styles are defined in `src/App.css`
-- Bootstrap dropdown behavior is provided via CDN scripts in `public/index.html`
-- Font Awesome is used for the settings icon
-- Google Analytics is embedded directly in `public/index.html`
-
-## API / Route Surface
-
-There are no internal application routes or backend API endpoints in this repository.
-
-The frontend uses:
-
-- `GET https://api.aladhan.com/v1/calendarByCity/{year}/{month}`
-- `GET https://api.aladhan.com/v1/asmaAlHusna/:number`
-
-## Testing
-
-Prayer-domain utility coverage lives in `src/features/prayers/utils/prayerTimes.test.js`.
-
-Run tests with:
-
-```bash
-npm test
-```
-
-## Deployment Notes
-
-- The app builds successfully with `npm run build`
-- The generated output is static and can be deployed to any static hosting platform
-- The current build assumes the app is hosted at `/`
-- If deploying under a subpath, set `homepage` in `package.json` as needed
-
-## Limitations and Trade-offs
-
-- The app is fully client-side, so external API availability directly affects functionality
-- Async loading and failure states are lightweight and intentionally minimal
-- Prayer times are derived from the current browser date/time rather than a server-synchronized source
-- Test coverage currently focuses on pure prayer-domain logic rather than UI integration
-
-## Development Notes
-
-- Add prayer business logic under `src/features/prayers/utils/`
-- Add prayer-specific hooks under `src/features/prayers/hooks/`
-- Add shared cross-feature hooks under `src/shared/hooks/`
-- Add new prayer UI in `src/features/prayers/components/`
-- Keep legacy wrapper files only for compatibility while the feature module becomes the default place for new changes
-
-## Modernization Notes
-
-Bundler migration prep is tracked in `docs/vite-migration-readiness.md`.
-
-## Missing or Unclear Context
-
-The following areas are not fully defined in the current codebase and should be confirmed if this project is being prepared for broader use:
-
-- Intended deployment target: `[SPECIFY_HOSTING_PLATFORM]`
-- Supported browsers/devices: `[SPECIFY_BROWSER_SUPPORT_POLICY]`
-- Ownership/maintainer details: `[SPECIFY_TEAM_OR_OWNER]`
-- License: `[SPECIFY_LICENSE]`
-- Whether Google Analytics tracking ID `G-YERG4EGZ7C` is production-approved for all environments: `[CONFIRM_ANALYTICS_POLICY]`
-
-## Contributing
-
-Basic contribution flow:
-
-1. Fork or branch from the main code line.
-2. Install dependencies with `npm install`.
-3. Run the app locally with `npm start`.
-4. Make focused changes and verify they build with `npm run build`.
-5. Add or update tests where applicable.
-6. Open a pull request with a clear summary of the change.
-
-## License
-
-[SPECIFY_LICENSE]
+- The app is fully client-side; AlAdhan API failures directly affect prayer and Asma data.
+- Prayer calculations use the browser's current date and time.
+- There are no dedicated lint or typecheck scripts beyond Create React App's built-in checks during test/build.
+- Deployment target, license, and maintainer policy are not defined in the repository.
+- Google Analytics tag `G-YERG4EGZ7C` is embedded directly in `public/index.html`; there is no environment-specific analytics configuration.
